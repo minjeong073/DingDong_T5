@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# 산학연계프로젝트 딩동팀
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
