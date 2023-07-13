@@ -1,1 +1,1 @@
-export {};
+export { QuestionBoard } from "./QuestionBoard";

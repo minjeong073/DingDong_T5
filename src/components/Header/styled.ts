@@ -4,10 +4,8 @@ import Logo from "../../assets/icon/logo.svg";
 import NotificationIcon from "../../assets/icon/notification.svg";
 
 export const Root = styled.div`
-  width: 100%;
   padding-top: 32px;
   display: flex;
-  justify-content: center;
   align-items: center;
 `;
 

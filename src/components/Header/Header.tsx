@@ -1,4 +1,3 @@
-import { Outlet } from "react-router-dom";
 import {
   LogoImg,
   LogoSection,
@@ -11,17 +10,14 @@ import {
 
 export const Header = () => {
   return (
-    <>
-      <Root>
-        <LogoSection>
-          <LogoImg />
-          <LogoTypo>DINGDONG</LogoTypo>
-        </LogoSection>
-        <SearchInput />
-        <UserSection>딩동</UserSection>
-        <NotificationSection />
-      </Root>
-      <Outlet />
-    </>
+    <Root>
+      <LogoSection>
+        <LogoImg />
+        <LogoTypo>DINGDONG</LogoTypo>
+      </LogoSection>
+      <SearchInput />
+      <UserSection>딩동</UserSection>
+      <NotificationSection />
+    </Root>
   );
 };
