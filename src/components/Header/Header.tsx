@@ -11,15 +11,17 @@ import {
 
 export const Header = () => {
   return (
-    <Root>
-      <LogoSection>
-        <LogoImg />
-        <LogoTypo>DINGDONG</LogoTypo>
-      </LogoSection>
-      <SearchInput />
-      <UserSection>딩동</UserSection>
-      <NotificationSection />
+    <>
+      <Root>
+        <LogoSection>
+          <LogoImg />
+          <LogoTypo>DINGDONG</LogoTypo>
+        </LogoSection>
+        <SearchInput />
+        <UserSection>딩동</UserSection>
+        <NotificationSection />
+      </Root>
       <Outlet />
-    </Root>
+    </>
   );
 };
