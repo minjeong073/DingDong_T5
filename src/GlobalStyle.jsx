@@ -15,6 +15,23 @@ const GlobalStyle = createGlobalStyle`
   a {
     all: unset;
   }
+
+  input, textarea {
+    border: none;
+    outline: none;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    &:focus {
+      outline: none;
+    }
+  }
 `;
 
 export default GlobalStyle;

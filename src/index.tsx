@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import GlobalStyle from "./GlobalStyle";
 import { Layout } from "./routes/Layout";
-import { QuestionBoard } from "./pages/QuestionBoard";
+import { WriteQuestion } from "./pages/WriteQuestion";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -15,7 +15,8 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path="/questions" element={<QuestionBoard />} />
+          {/* <Rout path="/questions" element={<ListPage />} /> */}
+          <Route path="/questions/write" element={<WriteQuestion />} />
         </Route>
       </Routes>
     </BrowserRouter>

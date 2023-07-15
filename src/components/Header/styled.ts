@@ -19,10 +19,7 @@ export const SearchInput = styled.input`
   background-repeat: no-repeat;
   background-position: 20px 50%;
   box-shadow: 0px 2px 8px 0px #f1f5f9;
-  font-size: 17px;
-  &:focus {
-    outline: none;
-  }
+  font-size: 15px;
 `;
 
 export const LogoSection = styled.div`
