@@ -13,13 +13,13 @@ export const SearchInput = styled.input`
   width: 681px;
   height: 48px;
   padding-left: 60px;
-  border-radius: 10px;
+  border-radius: 15px;
   border: 0.5px solid #e2e8f0;
   background-image: url(${SearchIcon});
   background-repeat: no-repeat;
   background-position: 20px 50%;
   box-shadow: 0px 2px 8px 0px #f1f5f9;
-  font-size: 15px;
+  font-size: 16px;
 `;
 
 export const LogoSection = styled.div`
@@ -44,6 +44,7 @@ export const LogoImg = styled.img.attrs({
 export const LogoTypo = styled.div`
   color: #7c3aed;
   text-align: right;
+  font-family: "Inter";
   font-size: 20px;
   font-weight: 600;
   letter-spacing: -1px;

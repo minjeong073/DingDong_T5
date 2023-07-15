@@ -27,6 +27,7 @@ export const QuestionTypo = styled.div`
   height: 50px;
   background: #7c3aed;
   border-radius: 50%;
+  font-family: "Inter", sans-serif;
   color: #fff;
   font-size: 26px;
   font-weight: 600;
@@ -53,6 +54,16 @@ export const QuestionContentSection = styled.div`
   border: 1px solid #e2e8f0;
   background: #fff;
   margin-top: 25px;
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #e2e8f0;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 `;
 
 export const Toolbar = styled.div`
@@ -94,14 +105,13 @@ export const Textarea = styled.textarea`
   width: 100%;
   height: 100%;
   color: #0f172a;
-  font-family: Inter;
   font-size: 15px;
   font-style: normal;
   font-weight: 500;
   line-height: 22px; /* 146.667% */
-  padding: 18px 25px;
+  margin: 18px 0;
+  padding: 0 25px;
   resize: none;
-  color: #0f172a;
 `;
 
 export const QuestionKeywordSection = styled.div`
@@ -125,7 +135,7 @@ export const KeywordInput = styled.input`
   border-bottom: 1px solid #e2e8f0;
   background: #fff;
   font-size: 16px;
-  font-weight: 500;
+  /* font-weight: 500; */
   padding-left: 15px;
   padding-bottom: 5px;
 `;
@@ -144,12 +154,9 @@ export const QuestionSubmitButton = styled.button.attrs({
   background: #7c3aed;
   flex-shrink: 0;
   color: #fff;
-  text-align: center;
-  font-family: Inter;
   font-size: 17px;
-  font-style: normal;
   font-weight: 500;
-  line-height: normal;
+  letter-spacing: 0.3px;
   margin-top: 30px;
   transition: 0.1s;
   &:hover {
