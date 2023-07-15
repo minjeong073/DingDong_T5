@@ -8,12 +8,12 @@ export const Nav = () => {
     []
   );
   return (
-    <Container>
-      {navItems.map((item) => (
-        <Link to={`/${item.toLowerCase()}`} key={item}>
-          <NavItem>{item}</NavItem>
-        </Link>
-      ))}
-    </Container>
+      <Container>
+        {navItems.map((item) => (
+          <Link to={`/${item.toLowerCase()}`} key={item}>
+            <NavItem>{item}</NavItem>
+          </Link>
+        ))}
+      </Container>
   );
 };
