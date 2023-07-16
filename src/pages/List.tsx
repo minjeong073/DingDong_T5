@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Header2 } from "../components/Header2";
 import { Nav2 } from "../components/Nav2";
 import { Wrapper2 } from "../components/Wrapper2";
-import { Articles } from "../components/Articles"
+import { Articles } from "../components/List/Articles"
 
 
 export const List = () => {
