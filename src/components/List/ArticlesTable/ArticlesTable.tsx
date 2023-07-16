@@ -1,4 +1,3 @@
-import styled from "styled-components"
 import React, {useState} from 'react';
 import dummy from "../../../db/articles.json";
 import { Link } from "react-router-dom";

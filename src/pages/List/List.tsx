@@ -3,11 +3,9 @@ import { ListContainer } from "./styled";
 
 export const List = () => {
     return (
-      <>
-        <ListContainer>
-          <Articles />
-        </ListContainer>
-      </>
+      <ListContainer>
+        <Articles />
+      </ListContainer>
     );
   };
 
