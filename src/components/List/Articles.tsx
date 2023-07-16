@@ -68,6 +68,5 @@ const Img = styled.img`
 const ArticleContainer = styled.div`
   margin-top: 20px;
   border: 1px solid #e6e8e7;
-
   overflow-x: scroll; 
 `;

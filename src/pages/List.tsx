@@ -3,7 +3,7 @@ import { Header2 } from "../components/Header2";
 import { Nav2 } from "../components/Nav2";
 import { Wrapper2 } from "../components/Wrapper2";
 import { Articles } from "../components/List/Articles"
-
+import { HashTagNav } from "../components/HashtagNav";
 
 export const List = () => {
     return (
@@ -13,7 +13,8 @@ export const List = () => {
         </TopContainer>
         <Body>
             <LWrapper>
-               <Nav2/> 
+               <Nav2/>
+               <HashTagNav/> 
             </LWrapper>           
             <ListContainer>
                 <Articles />
@@ -40,6 +41,9 @@ const Body = styled.div`
 `;
 
 const LWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   width: 27vw;
 `;
 

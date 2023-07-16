@@ -20,20 +20,21 @@ export const Nav2 = () => {
   );
 };
 
-export const Container = styled.div`
+const Container = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin-top: 1vh;
   width: 100%;
 `;
 
-export const NavContainer = styled.div`
+const NavContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
   width: 250px;
 `;
 
-export const NavItem = styled.div`
+const NavItem = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
