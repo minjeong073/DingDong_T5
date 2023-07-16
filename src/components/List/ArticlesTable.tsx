@@ -1,11 +1,11 @@
 import styled from "styled-components"
 import React from 'react';
-import dummy from "../db/articles.json";
-import { isTemplateSpan } from "typescript";
-
-const itemsPerPage = 5;
+import dummy from "../../db/articles.json";
+import { Link } from "react-router-dom";
 
 export const ArticlesTable = () => {
+
+  const onClickHashtag = () => {}
 
   return(
     <Table>
@@ -18,9 +18,15 @@ export const ArticlesTable = () => {
               <Box><Div>{item.views}</Div> <Span>조회수</Span></Box>
             </Info>          
             <Context>
-              <Title>{item.title}</Title>
+              <Title>
+                <Link to={'/articles/${articles-id}'}>{item.title}</Link>
+              </Title>
               <Addition>
-                <HashTag>{item.hashtag}</HashTag>
+                <HashTagWrapper>
+                  {item.hashtag.map((content, index) => (
+                    <HashTag onClick={onClickHashtag}>{content}</HashTag>
+                  ))}                  
+                </HashTagWrapper>
                 <Author>{item.author}</Author>
                 <Date>{item.date}</Date>
               </Addition>
@@ -87,27 +93,51 @@ const Span= styled.div`
 `;
 
 const Context = styled.div`
-
-
+  height: 100%;
 `;
 
 const Title = styled.div`
-  margin: 0px 30px 0px 30px;
-  border: 1px solid black;
+  margin: 30px 30px 0px 30px;
   font-size: 23px;
   font-weight: medium;
+  &:hover{
+    cursor: pointer;
+    text-decoration: underline;  
+  }
 `;
 
 const Addition = styled.div`
   display: flex;
   flex-direction: row;
-`;
-
-const HashTag = styled.div`
-  margin: 20px;
+  margin-top: 40px;
+  margin-left: 30px;
 
 `;
 
-const Author = styled.div``;
+const HashTagWrapper = styled.div`
+`;
 
-const Date = styled.div``;
+const HashTag = styled.button`
+  margin-left: 5px;
+  padding: 10px;
+  background-color: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #F1F5F9;
+  border-radius: 20px;
+  font-size: 17px;
+  &:hover{
+    cursor: pointer;
+  };
+`;
+
+const Author = styled.div`
+  color: gray;
+  margin-top: 30px;
+  margin-left: 500px;
+`;
+
+const Date = styled.div`
+  color: gray;
+  margin-left: 20px;
+  margin-top: 30px;
+`;

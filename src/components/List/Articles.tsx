@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import WhiteLogo from "../assets/icon/white_logo.svg";
+import WhiteLogo from "../../assets/icon/white_logo.svg";
 import { ArticlesTable } from "./ArticlesTable"
 
 
@@ -68,6 +68,6 @@ const Img = styled.img`
 const ArticleContainer = styled.div`
   margin-top: 20px;
   border: 1px solid #e6e8e7;
-  align-items: center;
-  overflow: scroll; 
+
+  overflow-x: scroll; 
 `;
