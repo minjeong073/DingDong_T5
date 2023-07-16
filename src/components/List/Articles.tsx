@@ -16,7 +16,7 @@ export const Articles = () => {
     return(
         <>
         <Holder>
-            <Text>Questions</Text>
+            <Text>최신순</Text>
             <Button onClick={onClickWrite}> 
                 <Img src={WhiteLogo} />
                 <Span>
@@ -39,7 +39,7 @@ const Holder = styled.div`
 `;
 
 const Text = styled.div`
-  font-size: 35px;
+  font-size: 30px;
 `;
 
 const Button = styled.button`
