@@ -155,7 +155,7 @@ export const QuestionSubmitButton = styled.button.attrs({
   flex-shrink: 0;
   color: #fff;
   font-size: 17px;
-  font-weight: 500;
+  /* font-weight: 500; */
   letter-spacing: 0.3px;
   margin-top: 30px;
   transition: 0.1s;

@@ -3,7 +3,7 @@ import SearchIcon from "../../assets/icon/search.svg";
 import Logo from "../../assets/icon/logo.svg";
 import NotificationIcon from "../../assets/icon/notification.svg";
 
-export const Root = styled.div`
+export const Root = styled.header`
   padding-top: 32px;
   display: flex;
   align-items: center;
