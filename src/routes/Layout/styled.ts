@@ -13,3 +13,10 @@ export const Container = styled.div`
   justify-content: center;
   margin-top: 40px;
 `;
+
+export const LeftWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 185px;
+`;

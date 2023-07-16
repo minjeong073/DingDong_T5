@@ -1,4 +1,4 @@
-export const Wrapper = () => {
+export const RightWrapper = () => {
     return(
         <>
         </>

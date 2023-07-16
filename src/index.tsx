@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import GlobalStyle from "./GlobalStyle";
 import { Layout } from "./routes/Layout";
 import { WriteQuestion } from "./pages/WriteQuestion";
-import { List } from "./pages/List";
+import { List } from "./pages/List/List";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -18,7 +18,7 @@ root.render(
         <Route path="/" element={<Layout />}>
             <Route path="/questions" element={<WriteQuestion />} />
         </Route>
-        <Route path="/" >
+        <Route path="/" element={<Layout />} >
             <Route path="/articles" element={<List />} />
         </Route>
       </Routes>
