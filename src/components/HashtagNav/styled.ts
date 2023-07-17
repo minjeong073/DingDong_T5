@@ -15,9 +15,7 @@ export const NavBar = styled.div`
   }
 `;
 
-export const Table = styled.table`
-
-`;
+export const Table = styled.table``;
 
 export const Tr = styled.tr`
   display: flex;
@@ -27,19 +25,19 @@ export const Tr = styled.tr`
 export const HashTag = styled.button`
   margin-left: 10px;
   margin-bottom: 5px;
-  padding: 10px;
-  background-color: #F1F5F9;
-  color: #64748B;
-  border: 1px solid #F1F5F9;
+  padding: 5px 10px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #f1f5f9;
   border-radius: 20px;
-  font-size: 17px;
-  &:hover{
+  font-size: 15px;
+  &:hover {
     cursor: pointer;
-  };
+  }
 `;
 
 export const Span = styled.div`
   border: 1px solid black;
-  width:2px;
+  width: 2px;
   height: 2px;
 `;
