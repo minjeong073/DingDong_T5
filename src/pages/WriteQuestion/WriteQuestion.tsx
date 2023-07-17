@@ -1,3 +1,4 @@
+import { Button } from "../../components/Button";
 import {
   BoldButton,
   HashtagIcon,
@@ -7,7 +8,6 @@ import {
   QuestionContentSection,
   QuestionForm,
   QuestionKeywordSection,
-  QuestionSubmitButton,
   QuestionTitleInput,
   QuestionTitleSection,
   QuestionTypo,
@@ -34,7 +34,7 @@ export const WriteQuestion = () => {
         <HashtagIcon />
         <KeywordInput />
       </QuestionKeywordSection>
-      <QuestionSubmitButton>질문하기</QuestionSubmitButton>
+      <Button alignSelf="flex-end">질문등록</Button>
     </QuestionForm>
   );
 };

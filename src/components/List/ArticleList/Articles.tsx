@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import WhiteLogo from "../../../assets/icon/white_logo.svg";
 import { ArticlesTable } from "../ArticlesTable/ArticlesTable";
-import { Holder, Text, Button, Span, Img, ArticleContainer } from "./styled";
+import { Holder, Text, Span, Img, ArticleContainer } from "./styled";
+import { Button } from "../../Button";
 
 export const Articles = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export const Articles = () => {
     <>
       <Holder>
         <Text>최신순</Text>
-        <Button onClick={onClickWrite}>
+        <Button width="123px" onClick={onClickWrite}>
           <Img src={WhiteLogo} />
           <Span>질문하기</Span>
         </Button>

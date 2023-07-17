@@ -6,15 +6,14 @@ export const Table = styled.table`
   border: 1px solid #e6e8e7;
   border-collapse: collapse;
 
-  td{
+  td {
     height: 180px;
     border: 1px solid #e6e8e7;
   }
-  
 `;
 
 export const TableRow = styled.tr`
-  display:flex;
+  display: flex;
 `;
 
 export const TableCell = styled.td`
@@ -40,15 +39,14 @@ export const Box = styled.div`
   width: 100px;
   height: 32px;
   border-radius: 5px;
-
 `;
 
-export const Div = styled. div`
+export const Div = styled.div`
   font-size: 20px;
   margin-right: 10px;
 `;
 
-export const Span= styled.div`
+export const Span = styled.div`
   font-size: 20px;
 `;
 
@@ -60,9 +58,9 @@ export const Title = styled.div`
   margin: 30px 30px 0px 30px;
   font-size: 23px;
   font-weight: medium;
-  &:hover{
+  &:hover {
     cursor: pointer;
-    text-decoration: underline;  
+    text-decoration: underline;
   }
 `;
 
@@ -71,23 +69,21 @@ export const Addition = styled.div`
   flex-direction: row;
   margin-top: 40px;
   margin-left: 30px;
-
 `;
 
-export const HashTagWrapper = styled.div`
-`;
+export const HashTagWrapper = styled.div``;
 
 export const HashTag = styled.button`
   margin-left: 5px;
   padding: 10px;
-  background-color: #F1F5F9;
-  color: #64748B;
-  border: 1px solid #F1F5F9;
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #f1f5f9;
   border-radius: 20px;
   font-size: 17px;
-  &:hover{
+  &:hover {
     cursor: pointer;
-  };
+  }
 `;
 
 export const Author = styled.div`

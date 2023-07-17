@@ -120,6 +120,7 @@ export const QuestionKeywordSection = styled.div`
   width: 100%;
   height: 50px;
   margin-top: 5px;
+  margin-bottom: 30px;
 `;
 
 export const HashtagIcon = styled.img.attrs({
@@ -141,7 +142,7 @@ export const KeywordInput = styled.input`
   padding-bottom: 5px;
 `;
 
-export const QuestionSubmitButton = styled.button.attrs({
+/* export const QuestionSubmitButton = styled.button.attrs({
   type: "submit",
 })`
   display: flex;
@@ -162,4 +163,4 @@ export const QuestionSubmitButton = styled.button.attrs({
   &:hover {
     background: #6d28d9;
   }
-`;
+`; */

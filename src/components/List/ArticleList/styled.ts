@@ -12,7 +12,7 @@ export const Text = styled.div`
   font-size: 30px;
 `;
 
-export const Button = styled.button`
+/* export const Button = styled.button`
   width: 123px;
   height: 44px;
   border-radius: 10px;
@@ -22,22 +22,24 @@ export const Button = styled.button`
     cursor: pointer;
     background-color: #AC8DCA
   }
-`;
+`; */
 
 export const Span = styled.span`
   color: white;
   font-size: 18px;
+  margin-bottom: 1px;
 `;
 
 export const Img = styled.img`
   width: 22px;
   height: 22px;
   color: white;
-  `;
+  margin-right: 3px;
+`;
 
 export const ArticleContainer = styled.div`
   width: 683px;
   margin-top: 20px;
   border: 1px solid #e6e8e7;
-  overflow-x: scroll; 
+  overflow-x: scroll;
 `;
