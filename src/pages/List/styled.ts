@@ -20,7 +20,7 @@ export const LWrapper = styled.div`
 `;
 
 export const ListContainer = styled.div`
-  margin-right: 180px;
+  margin-right: 240px;
 `;
 
 export const RWrapper = styled.div`
