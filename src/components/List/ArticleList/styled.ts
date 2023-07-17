@@ -9,7 +9,11 @@ export const Holder = styled.div`
 `;
 
 export const Text = styled.div`
-  font-size: 30px;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  color: #475569;
+  margin-left: 20px;
 `;
 
 /* export const Button = styled.button`
@@ -39,7 +43,7 @@ export const Img = styled.img`
 
 export const ArticleContainer = styled.div`
   width: 683px;
-  margin-top: 20px;
+  margin-top: 10px;
   /* border: 1px solid #e6e8e7; */
   /* overflow-x: scroll; */
 `;
