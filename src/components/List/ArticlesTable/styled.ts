@@ -7,7 +7,7 @@ export const Table = styled.table`
   border-collapse: collapse;
 
   td {
-    height: 180px;
+    height: 150px;
     border-top: 1px solid #e6e8e7;
     border-bottom: 1px solid #e6e8e7;
   }
@@ -21,7 +21,7 @@ export const TableCell = styled.td`
   flex: 1;
   display: flex;
   flex-direction: row;
-  height: 180px;
+  /* height: 180px; */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
