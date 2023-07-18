@@ -40,6 +40,9 @@ const GlobalStyle = createGlobalStyle`
     &:focus {
       outline: none;
     }
+    &::placeholder {
+      color: #94a3b8;
+    }
   }
 
   button {

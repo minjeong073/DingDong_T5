@@ -106,7 +106,7 @@ export const Textarea = styled.textarea`
   width: 100%;
   height: 100%;
   color: #0f172a;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: 22px; /* 146.667% */
