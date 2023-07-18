@@ -5,6 +5,7 @@ import GlobalStyle from "./GlobalStyle";
 import { Layout } from "./routes/Layout";
 import { WriteQuestion } from "./pages/WriteQuestion";
 import { List } from "./pages/List/List";
+import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,15 +13,17 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <GlobalStyle />
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/articles" element={<List />} />
-          <Route path="/articles/write" element={<WriteQuestion />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <RecoilRoot>
+      <GlobalStyle />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path="/articles" element={<List />} />
+            <Route path="/articles/write" element={<WriteQuestion />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </RecoilRoot>
   </React.StrictMode>
 );
 
