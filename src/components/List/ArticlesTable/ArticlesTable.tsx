@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import dummy from "../../../db/articles.json";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { CurrentState, ItemsState } from '../../../stores/page-store';
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -18,19 +20,25 @@ import {
   Date
 } from "./styled"
 
-const itemsPerPage = 5;
 
+//더미데이터 연결용 인수삽입
 export const ArticlesTable = () => {
 
+  const [currentPage, setCurrentPage] = useRecoilState(CurrentState);
+  const [itemsPerPage, setItemsPerPage] = useRecoilState(ItemsState);
+
+  const getPageData = () => {
+    const startIndex = (currentPage -1)*itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return dummy.articles.slice(startIndex, endIndex);
+  }
+
   const onClickHashtag = () => {}
-  const [currentPage, setCurrentPage] = useState(1);
-
-
 
   return(
     <Table>
       <tbody>
-        {dummy.articles.map((item) => (
+        {getPageData().map((item) => (
           <TableRow key={item.id}>
             <TableCell>                
               <Info>
@@ -52,8 +60,7 @@ export const ArticlesTable = () => {
                   <Date>{item.date}</Date>
                 </Addition>
               </Context>
-            </TableCell>
-                      
+            </TableCell>                      
           </TableRow>
         ))}
       </tbody>

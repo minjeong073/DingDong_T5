@@ -3,6 +3,7 @@ import WhiteLogo from "../../../assets/icon/white_logo.svg";
 import { ArticlesTable } from "../ArticlesTable/ArticlesTable";
 import { Holder, Text, Span, Img, ArticleContainer } from "./styled";
 import { Button } from "../../Button";
+import { Pagination } from "../Pagination";
 
 export const Articles = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export const Articles = () => {
       </Holder>
       <ArticleContainer>
         <ArticlesTable />
+        <Pagination />
       </ArticleContainer>
     </>
   );
