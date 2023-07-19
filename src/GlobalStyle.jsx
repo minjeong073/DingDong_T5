@@ -59,16 +59,22 @@ const GlobalStyle = createGlobalStyle`
   .quill {
     width: 100%;
     height: 480px;
-    margin: 25px 0 50px 0;
+    margin: 15px 0 50px 0;
 
     .ql-toolbar {
       font-family: "Noto Sans KR", "Inter", "sans-serif" !important;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
     }
+    /* .ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:hover, .ql-snow.ql-toolbar button:focus, .ql-snow .ql-toolbar button:focus, .ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active, .ql-snow.ql-toolbar .ql-picker-label:hover, .ql-snow .ql-toolbar .ql-picker-label:hover, .ql-snow.ql-toolbar .ql-picker-label.ql-active, .ql-snow .ql-toolbar .ql-picker-label.ql-active, .ql-snow.ql-toolbar .ql-picker-item:hover, .ql-snow .ql-toolbar .ql-picker-item:hover, .ql-snow.ql-toolbar .ql-picker-item.ql-selected, .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+      color: #7c3aed !important;
+    } */
     .ql-container {
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
+    }
+    .ql-toolbar button.ql-active {
+      color: #b54319 !important;
     }
     .ql-snow {
       border: 1px solid #e2e8f0 !important;

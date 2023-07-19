@@ -24,9 +24,8 @@ export const WriteQuestion = () => {
         container: [
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
           [{ align: [] }],
-          ["bold", "italic", "underline", "strike", "blockquote"],
+          ["bold", "italic", "underline", "strike"],
           [{ color: [] }],
-          [{ list: "ordered" }, { list: "bullet" }, { align: [] }],
           ["image", "video", "link"],
         ],
         history: {
