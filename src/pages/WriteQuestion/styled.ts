@@ -1,3 +1,4 @@
+import { Text } from "./../../components/List/ArticleList/styled";
 import styled from "styled-components";
 import HashTagIcon from "../../assets/icon/hashtag.svg";
 import BoldIcon from "../../assets/icon/bold.svg";
@@ -108,11 +109,19 @@ export const Textarea = styled.textarea`
   color: #0f172a;
   font-size: 16px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 22px; /* 146.667% */
   margin: 18px 0;
   padding: 0 25px;
   resize: none;
+`;
+
+export const Bold = styled.span`
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  font-weight: 400;
+  line-height: 22px; /* 146.667% */
 `;
 
 export const QuestionKeywordSection = styled.div`
