@@ -46,84 +46,6 @@ export const QuestionTitleInput = styled.input`
   margin-left: 15px;
 `;
 
-export const QuestionContentSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 480px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #fff;
-  margin-top: 25px;
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: #e2e8f0;
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-`;
-
-export const Toolbar = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  width: 100%;
-  height: 39px;
-  border-radius: 10px 10px 0px 0px;
-  background: #f1f5f9;
-  padding: 10px 25px;
-`;
-
-export const BoldButton = styled.img.attrs({
-  src: BoldIcon,
-})`
-  width: 10px;
-  height: 18px;
-  cursor: pointer;
-`;
-
-export const ItalicButton = styled.img.attrs({
-  src: ItalicIcon,
-})`
-  width: 8px;
-  height: 20px;
-  cursor: pointer;
-`;
-
-export const ImgBoxButton = styled.img.attrs({
-  src: ImgBoxIcon,
-})`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-`;
-
-export const Textarea = styled.textarea`
-  width: 100%;
-  height: 100%;
-  color: #0f172a;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 22px; /* 146.667% */
-  margin: 18px 0;
-  padding: 0 25px;
-  resize: none;
-`;
-
-export const Bold = styled.span`
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 600;
-  font-weight: 400;
-  line-height: 22px; /* 146.667% */
-`;
-
 export const QuestionKeywordSection = styled.div`
   display: flex;
   width: 100%;
@@ -135,7 +57,7 @@ export const QuestionKeywordSection = styled.div`
 export const HashtagIcon = styled.img.attrs({
   src: HashTagIcon,
 })`
-  width: 30px;
+  width: 27px;
   height: 50px;
 `;
 
