@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import dummy from "../../../db/articles.json";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { CurrentState, ItemsState } from '../../../stores/page-store';
@@ -26,25 +27,52 @@ export const ArticlesTable = () => {
 
   const [currentPage, setCurrentPage] = useRecoilState(CurrentState);
   const [itemsPerPage, setItemsPerPage] = useRecoilState(ItemsState);
+  const [data, setData] = useState<IDataType[]>([]);
 
-  const getPageData = () => {
-    const startIndex = (currentPage -1)*itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return dummy.articles.slice(startIndex, endIndex);
+  interface IDataType {
+    id: number,
+    title: string,
+    content: string,
+    createdAt: string,
+    updatedAt: string,
+    userId: number
   }
+
+
+  const getPageData = async () => {
+    try{
+      const result = await axios.get("https://koreanjson.com/posts");
+      console.log(result.data);
+      setData(result.data);
+    }catch(error){
+      console.error(error);
+      alert("게시판 정보 가져오기 실패!");
+    }
+  }
+  
+    useEffect(() => {
+      getPageData();
+     } ,[])
 
   const onClickHashtag = () => {}
 
   return(
+    <>
     <Table>
       <tbody>
-        {getPageData().map((item) => (
+        {data.map((item) => (
           <TableRow key={item.id}>
             <TableCell>                
               <Info>
-                <Box> <Div>{item.votes}</Div> <Span>투표수</Span></Box>
-                <Box><Div>{item.answers}</Div> <Span>답변수</Span></Box>
-                <Box><Div>{item.views}</Div> <Span>조회수</Span></Box>
+                <Box> <Div>
+                  {/* {item.votes} */}
+                  </Div> <Span>투표수</Span></Box>
+                <Box><Div>
+                  {/* {item.answers} */}
+                  </Div> <Span>답변수</Span></Box>
+                <Box><Div>
+                  {/* {item.views} */}
+                  </Div> <Span>조회수</Span></Box>
               </Info>          
               <Context>
                 <Title>
@@ -52,12 +80,12 @@ export const ArticlesTable = () => {
                 </Title>
                 <Addition>
                   <HashTagWrapper>
-                    {item.hashtag.map((content, index) => (
+                    {/* {item.hashtag.map((content, index) => (
                       <HashTag onClick={onClickHashtag} key={content}>{content}</HashTag>
-                    ))}                  
+                    ))}                   */}
                   </HashTagWrapper>
-                  <Author>{item.author}</Author>
-                  <Date>{item.date}</Date>
+                  <Author>{item.userId}</Author>
+                  <Date>{item.createdAt}</Date>
                 </Addition>
               </Context>
             </TableCell>                      
@@ -65,5 +93,6 @@ export const ArticlesTable = () => {
         ))}
       </tbody>
     </Table>
+    </>
   )
 }

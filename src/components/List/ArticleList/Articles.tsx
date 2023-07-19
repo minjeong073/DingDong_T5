@@ -23,7 +23,7 @@ export const Articles = () => {
       </Holder>
       <ArticleContainer>
         <ArticlesTable />
-        <Pagination />
+        {/* <Pagination /> */}
       </ArticleContainer>
     </>
   );

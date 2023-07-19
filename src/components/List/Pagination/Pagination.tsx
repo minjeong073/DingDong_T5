@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
+import { articlesAPI } from "../../../api/articlesAPI";
 import {
   PrevSpan,
   Span,
@@ -11,28 +12,13 @@ import dummy from "../../../db/articles.json";
 
 const itemsPerPage = 5;
 
-// const FETCH_BOARDS = gql`
-//   query fetchBoards($page: Int) {
-//     fetchBoards(page: $page){
-//       _id
-//       writer
-//       title
-//       contents
-//     }
-//   }
-// `;
-
-// const FETCH_BOARDS_COUNT = gql`
-//  query{
-//   fetchBoardsCount
-//  } 
-// `;
-
 export const Pagination = () => {
   
   const [startPage, setStartPage] = useState(1);
   const [currentPage, setCurrentPage] = useRecoilState(CurrentState);
   const [itemsPerPage, setItemsPerPage] = useRecoilState(ItemsState);
+
+  
 
   // const { data, refetch } = useQuery<
   //   Pick<IQUery, "fetchBoards">,
