@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { articlesAPI } from "../../../api/articlesAPI";
+import axios from 'axios';
 import {
   PrevSpan,
   Span,
   NextSpan
 } from "./styled";
-import { ArticlesTable } from '../ArticlesTable';
+
 import { useRecoilState, useRecoilValue } from "recoil";
 import { ItemsState, StartState, CurrentState } from "../../../stores/page-store";
 import dummy from "../../../db/articles.json";
-
-const itemsPerPage = 5;
 
 export const Pagination = () => {
   
@@ -19,19 +17,9 @@ export const Pagination = () => {
   const [itemsPerPage, setItemsPerPage] = useRecoilState(ItemsState);
 
   
-
-  // const { data, refetch } = useQuery<
-  //   Pick<IQUery, "fetchBoards">,
-  //   IQueryFetchBoardsArgs
-  // >{FETCH_BOARDS};
-
-  // const { data: dataBoardsCount } = useQuery{FETCH_BOARDS_COUNT};
-  // const lastPage = Math.ceil((dataBoardsCount?.fetchBoardsCount ?? 10) / 10);
   // 더미데이터로 페이지 범위 설정하기
   const BoardsCount = dummy.articles.length;
   const lastPage = Math.ceil((BoardsCount ?? 5)/5);
-
-
 
   const onClickPage = (event : any)=> {
     setCurrentPage(event);

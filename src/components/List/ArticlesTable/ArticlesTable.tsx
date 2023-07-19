@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import dummy from "../../../db/articles.json";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { CurrentState, ItemsState } from '../../../stores/page-store';
 import { Link } from "react-router-dom";
