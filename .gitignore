@@ -25,3 +25,4 @@ yarn-error.log*
 =======
 node_modules
 >>>>>>> ab3b1ff0e919bce0d7d79db9f36084126dd21e45
+.env
