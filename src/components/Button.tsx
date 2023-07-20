@@ -1,7 +1,8 @@
+import { FC } from "react";
 import styled from "styled-components";
 
 interface IButton {
-  alignSelf?: string;
+  alignself?: string;
   width?: string;
   height?: string;
   borderRadius?: string;
@@ -11,7 +12,7 @@ export const Button = styled.button<IButton>`
   display: flex;
   justify-content: center;
   align-items: center;
-  align-self: ${(props) => props.alignSelf || "center"};
+  align-self: ${(props) => props.alignself || "center"};
   width: ${(props) => props.width || "100px"};
   height: ${(props) => props.height || "44px"};
   border-radius: ${(props) => props.borderRadius || "10px"};
