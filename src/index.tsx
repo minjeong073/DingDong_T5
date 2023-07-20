@@ -5,7 +5,7 @@ import GlobalStyle from "./GlobalStyle";
 import { Layout } from "./routes/Layout";
 import { WriteQuestion } from "./pages/WriteQuestion";
 import { List } from "./pages/List/List";
-import { Home } from "./pages/Landing/Home";
+import { Home } from "./pages/Home/Home";
 import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(

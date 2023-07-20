@@ -1,10 +1,10 @@
 import {
-  Root, 
+
   LogoSection, 
   LogoImg, 
   LogoTypo,
 } from "../../components/Header/styled";
-import { Header, SearchBar, Container } from "./styled";
+import { Root, Header, SearchBar, Container } from "./styled";
 
 export const Home = () => {
   return(
@@ -18,6 +18,6 @@ export const Home = () => {
       <Container>
         <SearchBar/>
       </Container> 
-    </Root>   
+    </Root>
   )
 }
