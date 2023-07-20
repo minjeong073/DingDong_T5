@@ -7,6 +7,7 @@ const articleRoute = require('./routes/article');
 
 dotenv.config();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 mongoose
   .connect(process.env.MONGO_URL, {
