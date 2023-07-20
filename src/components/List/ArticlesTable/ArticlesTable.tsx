@@ -33,11 +33,12 @@ export const ArticlesTable = () => {
     createdAt: string;
     updatedAt: string;
     userId: number;
+    username: string;
   }
 
   const getPageData = async () => {
     try {
-      const result = await axios.get("https://koreanjson.com/posts");
+      const result = await axios.get("/api/articles");
       console.log(result.data);
       setData(result.data);
     } catch (error) {
@@ -81,7 +82,7 @@ export const ArticlesTable = () => {
                       <HashTag onClick={onClickHashtag} key={content}>{content}</HashTag>
                     ))}                   */}
                     </HashTagWrapper>
-                    <Author>{item.userId}</Author>
+                    <Author>{item.username}</Author>
                     <Date>{item.createdAt}</Date>
                   </Addition>
                 </Context>
