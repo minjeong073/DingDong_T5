@@ -24,7 +24,7 @@ export const TableCell = styled.td`
   /* height: 180px; */
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+ /* white-space: nowrap;*/
 `;
 
 export const Info = styled.div`
@@ -63,6 +63,10 @@ export const Context = styled.div`
 export const Title = styled.div`
   margin: 30px 30px 0 0;
   font-size: 17px;
+  width: 484px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 500;
   &:hover {
     cursor: pointer;
