@@ -19,13 +19,13 @@ export const WriteQuestion = () => {
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState("");
   const [newArticle, setNewArticle] = useState({
-    id: "",
+    id: 10,
     title: "",
     content: "",
     votes: 0,
     answers: 0,
     views: 0,
-    author: "",
+    author: "soy",
     hashtags: [],
   });
 
@@ -35,7 +35,7 @@ export const WriteQuestion = () => {
         alert("제목과 내용을 모두 입력해주세요.");
         return;
       }
-      await axios.post("/api/articles", newArticle).then((res) => {
+      await axios.post("/api/articles/", newArticle).then((res) => {
         console.log(res);
         alert("질문 등록 성공!");
       });

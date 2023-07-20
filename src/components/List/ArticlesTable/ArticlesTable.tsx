@@ -33,7 +33,7 @@ export const ArticlesTable = () => {
     createdAt: string;
     updatedAt: string;
     userId: number;
-    username: string;
+    author: string;
   }
 
   const getPageData = async () => {
@@ -82,7 +82,7 @@ export const ArticlesTable = () => {
                       <HashTag onClick={onClickHashtag} key={content}>{content}</HashTag>
                     ))}                   */}
                     </HashTagWrapper>
-                    <Author>{item.username}</Author>
+                    <Author>{item.author}</Author>
                     <Date>{item.createdAt}</Date>
                   </Addition>
                 </Context>
