@@ -13,8 +13,6 @@ import {
 } from "./styled";
 
 export const WriteQuestion = () => {
-  const [keyword, setKeyword] = useState<string>("");
-  const [keywordList, setKeywordList] = useState<string[]>([]);
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState("");
 
@@ -41,17 +39,9 @@ export const WriteQuestion = () => {
     []
   );
 
-  const onChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value);
-  };
-
   useEffect(() => {
-    if (keyword.endsWith(", ")) {
-      setKeywordList(
-        keyword.split(", ").filter((keyword) => keyword.length > 0)
-      );
-    }
-  }, [keyword]);
+    console.log(contents);
+  }, [contents]);
 
   return (
     <QuestionForm>
@@ -59,13 +49,6 @@ export const WriteQuestion = () => {
         <QuestionTypo>Q</QuestionTypo>
         <QuestionTitleInput placeholder="질문 내용을 명확하게 요약하여 작성해주세요." />
       </QuestionTitleSection>
-      {/* <QuestionContentSection> */}
-      {/* <Toolbar>
-          <BoldButton />
-          <ItalicButton />
-          <ImgBoxButton />
-        </Toolbar>
-        <Textarea placeholder="질문 내용을 작성해주세요." /> */}
       <ReactQuill
         ref={(element) => {
           if (element !== null) {
@@ -81,11 +64,7 @@ export const WriteQuestion = () => {
       {/* </QuestionContentSection> */}
       <QuestionKeywordSection>
         <HashtagIcon />
-        <KeywordInput
-          placeholder="질문 내용의 키워드를 작성해주세요."
-          value={keyword}
-          onChange={onChangeKeyword}
-        />
+        <KeywordInput placeholder="질문 내용의 키워드를 선택해주세요." />
       </QuestionKeywordSection>
       <Button alignself="flex-end">질문등록</Button>
     </QuestionForm>

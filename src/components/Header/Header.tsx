@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   LogoImg,
   LogoSection,
@@ -6,9 +7,14 @@ import {
   Root,
   SearchInput,
   UserSection,
+  LoginTypo,
+  SignUpTypo,
+  LogoutTypo,
 } from "./styled";
 
 export const Header = () => {
+  const [isLogin, setIsLogin] = useState(true);
+
   return (
     <Root>
       <LogoSection>
@@ -16,8 +22,16 @@ export const Header = () => {
         <LogoTypo>DINGDONG</LogoTypo>
       </LogoSection>
       <SearchInput />
-      <UserSection>딩동</UserSection>
-      <NotificationSection />
+      {isLogin ? (
+        <UserSection>딩동</UserSection>
+      ) : (
+        <LoginTypo>로그인</LoginTypo>
+      )}
+      {isLogin ? (
+        <LogoutTypo>로그아웃</LogoutTypo>
+      ) : (
+        <SignUpTypo>회원가입</SignUpTypo>
+      )}
     </Root>
   );
 };
