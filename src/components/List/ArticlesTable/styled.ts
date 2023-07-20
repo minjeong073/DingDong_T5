@@ -24,7 +24,7 @@ export const TableCell = styled.td`
   /* height: 180px; */
   overflow: hidden;
   text-overflow: ellipsis;
- /* white-space: nowrap;*/
+  /* white-space: nowrap;*/
 `;
 
 export const Info = styled.div`
@@ -40,14 +40,14 @@ export const Box = styled.div`
   display: flex;
   justify-content: flex-end;
   margin: 5px 0;
-  width: 120px;
+  width: 115px;
   height: 32px;
   /* border-radius: 5px; */
 `;
 
 export const Div = styled.div`
   font-size: 15px;
-  margin-right: 10px;
+  padding-right: 10px;
 `;
 
 export const Span = styled.div`
@@ -57,7 +57,7 @@ export const Span = styled.div`
 export const Context = styled.div`
   flex: 1;
   height: 100%;
-  margin-left: 50px;
+  margin-left: 40px;
 `;
 
 export const Title = styled.div`
