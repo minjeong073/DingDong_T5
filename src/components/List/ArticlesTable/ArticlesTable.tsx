@@ -57,8 +57,8 @@ export const ArticlesTable = () => {
     <>
       <Table>
         <tbody>
-          {data.map((item) => (
-            <TableRow key={item.id}>
+          {data.map((item, idx) => (
+            <TableRow key={`${item.id}_${idx}`}>
               <TableCell>
                 <Info>
                   <Box>
