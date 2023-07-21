@@ -5,6 +5,7 @@ interface IButton {
   width?: string;
   height?: string;
   borderradius?: string;
+  margin?: string;
 }
 
 export const Button = styled.button<IButton>`
@@ -15,6 +16,7 @@ export const Button = styled.button<IButton>`
   width: ${(props) => props.width || "100px"};
   height: ${(props) => props.height || "44px"};
   border-radius: ${(props) => props.borderradius || "10px"};
+  margin: ${(props) => props.margin || "0"};
   background: #7c3aed;
   color: #fff;
   font-size: 17px;

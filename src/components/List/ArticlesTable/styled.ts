@@ -5,11 +5,11 @@ export const Table = styled.table`
   height: 900px;
   /* border: 1px solid #e6e8e7; */
   border-collapse: collapse;
-  border-top: 1px solid #e6e8e7;
+  border-top: 1px solid #e2e8f0;
 
   td {
     height: 150px;
-    border-bottom: 1px solid #e6e8e7;
+    border-bottom: 1px solid #e2e8f0;
   }
 `;
 
