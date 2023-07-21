@@ -1,9 +1,5 @@
-import { Text } from "./../../components/List/ArticleList/styled";
 import styled from "styled-components";
 import HashTagIcon from "../../assets/icon/hashtag.svg";
-import BoldIcon from "../../assets/icon/bold.svg";
-import ItalicIcon from "../../assets/icon/italic.svg";
-import ImgBoxIcon from "../../assets/icon/img_box.svg";
 
 export const QuestionForm = styled.form`
   display: flex;

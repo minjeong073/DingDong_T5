@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // 제목, 내용, 작성자, 조회수, 해시태그
 const QuestionSchema = new mongoose.Schema(
@@ -40,4 +40,4 @@ const QuestionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Question', QuestionSchema);
+module.exports = mongoose.model("Question", QuestionSchema);
