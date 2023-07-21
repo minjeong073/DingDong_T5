@@ -70,11 +70,9 @@ const GlobalStyle = createGlobalStyle`
       color: #7c3aed !important;
     } */
     .ql-container {
+      padding-top: 10px;
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
-    }
-    .ql-toolbar button.ql-active {
-      color: #b54319 !important;
     }
     .ql-snow {
       border: 1px solid #e2e8f0 !important;

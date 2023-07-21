@@ -4,7 +4,7 @@ interface IButton {
   alignself?: string;
   width?: string;
   height?: string;
-  borderRadius?: string;
+  borderradius?: string;
 }
 
 export const Button = styled.button<IButton>`
@@ -14,7 +14,7 @@ export const Button = styled.button<IButton>`
   align-self: ${(props) => props.alignself || "center"};
   width: ${(props) => props.width || "100px"};
   height: ${(props) => props.height || "44px"};
-  border-radius: ${(props) => props.borderRadius || "10px"};
+  border-radius: ${(props) => props.borderradius || "10px"};
   background: #7c3aed;
   color: #fff;
   font-size: 17px;
