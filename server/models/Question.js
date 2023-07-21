@@ -1,21 +1,33 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // 제목, 내용, 작성자, 조회수, 해시태그
 const QuestionSchema = new mongoose.Schema(
   {
+    id: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
     },
-    desc: {
+    content: {
       type: String,
       required: true,
+    },
+    votes: {
+      type: Number,
+      default: 0,
+    },
+    answers: {
+      type: Number,
+      default: 0,
     },
     views: {
       type: Number,
       default: 0,
     },
-    username: {
+    author: {
       type: String,
       required: true,
     },
@@ -28,4 +40,4 @@ const QuestionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Question', QuestionSchema);
+module.exports = mongoose.model("Question", QuestionSchema);

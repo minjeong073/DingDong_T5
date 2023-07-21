@@ -11,7 +11,14 @@
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.7",
     "axios": "^1.4.0",
+<<<<<<< HEAD
     "mongodb": "^5.7.0",
+=======
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.4.0",
+>>>>>>> 84c3e0cf6cd7060bb937bc086896852debb2b270
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-quill": "^2.0.0",
@@ -48,7 +55,11 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+<<<<<<< HEAD
     "@types/styled-components": "5.1.26"   
+=======
+    "@types/styled-components": "5.1.26"
+>>>>>>> 84c3e0cf6cd7060bb937bc086896852debb2b270
   },
   "proxy": "http://localhost:5001"
 }
