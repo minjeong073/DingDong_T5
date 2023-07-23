@@ -1,17 +1,32 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { QuestionData } from "../../stores/page-store";
 import { useRecoilState } from "recoil";
 import type { QuestionDataType } from "../../stores/page-store";
 import { Root } from "./styled";
 import DOMPurify from "dompurify";
+import axios from "axios";
 
 export const Detail = () => {
   const [questionData, setQuestionData] = useRecoilState(QuestionData);
   const [currentQuestion, setCurrentQuestion] =
     useState<QuestionDataType | null>(null); // Change initial state to null
+  const navigate = useNavigate();
 
   let { id } = useParams<{ id: string }>();
+
+  const deleteQuestion = async () => {
+    try {
+      await axios.delete(`/api/articles/${id}`).then((res) => {
+        console.log(res);
+        alert("질문 삭제 성공!");
+        navigate("/articles");
+      });
+    } catch (error) {
+      console.error(error);
+      alert("질문 삭제 실패!");
+    }
+  };
 
   useEffect(() => {
     // Find the question with the matching ID
@@ -21,9 +36,9 @@ export const Detail = () => {
     }
   }, [id, questionData]);
 
-  /*   if (!currentQuestion) {
+  if (!currentQuestion) {
     return <div>Loading...</div>; // Add a loading state while data is being fetched
-  } */
+  }
 
   return (
     <Root>
@@ -36,7 +51,7 @@ export const Detail = () => {
           __html: DOMPurify.sanitize(currentQuestion?.content as string),
         }}
       />
-      {/* ... and so on */}
+      <button onClick={deleteQuestion}>Delete</button>
     </Root>
   );
 };

@@ -13,6 +13,7 @@ import {
 } from "./styled";
 import axios from "axios";
 import e from "express";
+import { useNavigate } from "react-router-dom";
 
 export const WriteQuestion = () => {
   const [title, setTitle] = useState("");
@@ -28,6 +29,7 @@ export const WriteQuestion = () => {
     author: "soy",
     hashtags: [],
   });
+  const navigate = useNavigate();
 
   const postQuestion = async () => {
     try {
@@ -36,8 +38,9 @@ export const WriteQuestion = () => {
         return;
       }
       await axios.post("/api/articles/", newArticle).then((res) => {
-        console.log(res);
+        // console.log(res);
         alert("질문 등록 성공!");
+        navigate(`/articles/${res.data._id}`);
       });
     } catch (error) {
       console.error(error);

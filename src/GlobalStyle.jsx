@@ -80,10 +80,11 @@ const GlobalStyle = createGlobalStyle`
     .ql-editor {
       font-family: "Noto Sans KR", "Inter", "sans-serif";
       font-size: 16px;
-      font-weight: 500;
+      /* font-weight: 500; */
       color: #0f172a;
-            /* 스크롤바 전체 기본 꾸미기 */
-            &::-webkit-scrollbar {
+      
+      /* 스크롤바 기본 꾸미기 */
+      &::-webkit-scrollbar {
         width: 12px; /* 세로축 스크롤바 폭 너비 */
       }
 
