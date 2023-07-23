@@ -1,23 +1,24 @@
 import dummy from "../../db/articles.json";
 import {
-  NavBar,
   Table,
   Tr,
   HashTag
 } from "./styled"
 
-export const HashTagNav = () => {
+export const HashTagBar = () => {
 
   const HashtagArr = dummy.articles.map((item) => item.hashtag);
   const oneHashtag = HashtagArr.flat();
   const onlyHashtag = Array.from(new Set(oneHashtag));
 
+  const lastRow = onlyHashtag[onlyHashtag.length - 1];
+
   return(
-    <NavBar>
-      <Table>
-        <tbody>
+    <>
+    <Table>
+        {/* <tbody>
             {onlyHashtag.map((item, index) => (
-              index % 2 === 0 ? (
+              index % 5 === 0 ? (
                 <Tr key={index}>
                   <td>
                   <HashTag key={item}>{item}</HashTag>
@@ -26,8 +27,9 @@ export const HashTagNav = () => {
                 </Tr>
               ) : null
             ))}
-      </tbody>
+      </tbody> */}
+      
     </Table>
-  </NavBar>  
+    </>
   )
 }

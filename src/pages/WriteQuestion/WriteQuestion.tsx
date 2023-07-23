@@ -11,12 +11,44 @@ import {
   QuestionTitleSection,
   QuestionTypo,
 } from "./styled";
+import axios from "axios";
+import e from "express";
 
 export const WriteQuestion = () => {
-  const [keyword, setKeyword] = useState<string>("");
-  const [keywordList, setKeywordList] = useState<string[]>([]);
+  const [title, setTitle] = useState("");
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState("");
+  const [newArticle, setNewArticle] = useState({
+    id: 10,
+    title: "",
+    content: "",
+    votes: 0,
+    answers: 0,
+    views: 0,
+    author: "soy",
+    hashtags: [],
+  });
+
+  const postQuestion = async () => {
+    try {
+      if (newArticle.title === "" || contents === "") {
+        alert("제목과 내용을 모두 입력해주세요.");
+        return;
+      }
+      await axios.post("/api/articles/", newArticle).then((res) => {
+        console.log(res);
+        alert("질문 등록 성공!");
+      });
+    } catch (error) {
+      console.error(error);
+      alert("질문 등록 실패!");
+    }
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    console.log(e.target.value);
+  };
 
   const modules = useMemo(
     () => ({
@@ -41,31 +73,23 @@ export const WriteQuestion = () => {
     []
   );
 
-  const onChangeKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value);
-  };
-
   useEffect(() => {
-    if (keyword.endsWith(", ")) {
-      setKeywordList(
-        keyword.split(", ").filter((keyword) => keyword.length > 0)
-      );
-    }
-  }, [keyword]);
+    console.log(contents);
+    setNewArticle({ ...newArticle, content: contents });
+  }, [contents, title]);
 
   return (
     <QuestionForm>
       <QuestionTitleSection>
         <QuestionTypo>Q</QuestionTypo>
-        <QuestionTitleInput placeholder="질문 내용을 명확하게 요약하여 작성해주세요." />
+        <QuestionTitleInput
+          placeholder="질문 내용을 명확하게 요약하여 작성해주세요."
+          value={newArticle.title}
+          onChange={(e) =>
+            setNewArticle({ ...newArticle, title: e.target.value })
+          }
+        />
       </QuestionTitleSection>
-      {/* <QuestionContentSection> */}
-      {/* <Toolbar>
-          <BoldButton />
-          <ItalicButton />
-          <ImgBoxButton />
-        </Toolbar>
-        <Textarea placeholder="질문 내용을 작성해주세요." /> */}
       <ReactQuill
         ref={(element) => {
           if (element !== null) {
@@ -81,13 +105,11 @@ export const WriteQuestion = () => {
       {/* </QuestionContentSection> */}
       <QuestionKeywordSection>
         <HashtagIcon />
-        <KeywordInput
-          placeholder="질문 내용의 키워드를 작성해주세요."
-          value={keyword}
-          onChange={onChangeKeyword}
-        />
+        <KeywordInput placeholder="질문 내용의 키워드를 선택해주세요." />
       </QuestionKeywordSection>
-      <Button alignself="flex-end">질문등록</Button>
+      <Button alignself="flex-end" type="button" onClick={postQuestion}>
+        질문등록
+      </Button>
     </QuestionForm>
   );
 };

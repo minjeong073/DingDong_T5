@@ -5,6 +5,7 @@ import GlobalStyle from "./GlobalStyle";
 import { Layout } from "./routes/Layout";
 import { WriteQuestion } from "./pages/WriteQuestion";
 import { List } from "./pages/List/List";
+import { Home } from "./pages/Home/Home";
 import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(
@@ -17,8 +18,9 @@ root.render(
       <GlobalStyle />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="/articles" element={<List />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/articles" element={<Layout />}>            
+            <Route index element={<List />} />
             <Route path="/articles/write" element={<WriteQuestion />} />
           </Route>
         </Routes>
