@@ -1,21 +1,38 @@
 const mongoose = require('mongoose');
 
-// 제목, 내용, 작성자, 조회수, 해시태그
+// id, 제목, 내용, 투표수, 답변수, 조회수, 작성자, 해시태그
 const QuestionSchema = new mongoose.Schema(
   {
+    id: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
     },
-    desc: {
+    content: {
       type: String,
       required: true,
+    },
+    votes: {
+      type: Number,
+      default: 0,
+    },
+    answers: {
+      type: Number,
+      default: 0,
     },
     views: {
       type: Number,
       default: 0,
     },
-    username: {
+    // Login 구현 후 수정 예정 : 작성자는 User의 id를 참조
+    // userId: {
+    //   type: Number,
+    //   required: true,
+    // },
+    author: {
       type: String,
       required: true,
     },
