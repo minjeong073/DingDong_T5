@@ -7,6 +7,7 @@ import { WriteQuestion } from "./pages/WriteQuestion";
 import { List } from "./pages/List/List";
 import { Home } from "./pages/Landing/Home";
 import { RecoilRoot } from "recoil";
+import { Detail } from "./pages/Detail";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -19,8 +20,9 @@ root.render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/articles" element={<Layout />}>            
+          <Route path="/articles" element={<Layout />}>
             <Route index element={<List />} />
+            <Route path="/articles/:id" element={<Detail />} />
             <Route path="/articles/write" element={<WriteQuestion />} />
           </Route>
         </Routes>
@@ -28,4 +30,3 @@ root.render(
     </RecoilRoot>
   </React.StrictMode>
 );
-
