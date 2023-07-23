@@ -4,6 +4,7 @@ import { QuestionData } from "../../stores/page-store";
 import { useRecoilState } from "recoil";
 import type { QuestionDataType } from "../../stores/page-store";
 import { Root } from "./styled";
+import DOMPurify from "dompurify";
 
 export const Detail = () => {
   const [questionData, setQuestionData] = useRecoilState(QuestionData);
@@ -29,7 +30,12 @@ export const Detail = () => {
       <h1>Detail {id}</h1>
       {/* Render the details of the currentQuestion here */}
       <p>Title: {currentQuestion?.title}</p>
-      <p>Content: {currentQuestion?.content}</p>
+      {/* <p>Content: {currentQuestion?.content}</p> */}
+      <div
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(currentQuestion?.content as string),
+        }}
+      />
       {/* ... and so on */}
     </Root>
   );
