@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { CurrentState, ItemsState } from "../../../stores/page-store";
+import {
+  CurrentState,
+  ItemsState,
+  QuestionData,
+} from "../../../stores/page-store";
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -24,23 +28,13 @@ import {
 export const ArticlesTable = () => {
   const [currentPage, setCurrentPage] = useRecoilState(CurrentState);
   const [itemsPerPage, setItemsPerPage] = useRecoilState(ItemsState);
-  const [data, setData] = useState<IDataType[]>([]);
-
-  interface IDataType {
-    id: number;
-    title: string;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-    userId: number;
-    author: string;
-  }
+  const [questionData, setQuestionData] = useRecoilState(QuestionData);
 
   const getPageData = async () => {
     try {
       const result = await axios.get("/api/articles");
       console.log(result.data);
-      setData(result.data);
+      setQuestionData(result.data);
     } catch (error) {
       console.error(error);
       alert("게시판 정보 가져오기 실패!");
@@ -57,7 +51,7 @@ export const ArticlesTable = () => {
     <>
       <Table>
         <tbody>
-          {data.map((item, idx) => (
+          {questionData.map((item, idx) => (
             <TableRow key={`${item.id}_${idx}`}>
               <TableCell>
                 <Info>
@@ -74,7 +68,7 @@ export const ArticlesTable = () => {
                 </Info>
                 <Context>
                   <Title>
-                    <Link to={"/articles/${articles-id}"}>{item.title}</Link>
+                    <Link to={`/articles/${item._id}`}>{item.title}</Link>
                   </Title>
                   <Addition>
                     <HashTagWrapper>

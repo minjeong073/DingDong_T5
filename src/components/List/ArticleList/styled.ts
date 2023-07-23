@@ -14,7 +14,7 @@ export const Text = styled.div`
   font-size: 24px;
   color: #475569;
   margin-left: 20px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
 `;
 
 /* export const Button = styled.button`
