@@ -13,13 +13,16 @@ import {
 } from "./styled";
 import axios from "axios";
 import e from "express";
+import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { QuestionData } from "../../stores/page-store";
+import type { QuestionDataType } from "../../stores/page-store";
 
 export const WriteQuestion = () => {
-  const [title, setTitle] = useState("");
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState("");
   const [newArticle, setNewArticle] = useState({
-    id: 10,
+    id: 0,
     title: "",
     content: "",
     votes: 0,
@@ -28,6 +31,9 @@ export const WriteQuestion = () => {
     author: "soy",
     hashtags: [],
   });
+  const navigate = useNavigate();
+
+  const setQuestionData = useSetRecoilState(QuestionData); // Recoil setter
 
   const postQuestion = async () => {
     try {
@@ -36,8 +42,12 @@ export const WriteQuestion = () => {
         return;
       }
       await axios.post("/api/articles/", newArticle).then((res) => {
-        console.log(res);
+        setQuestionData((prevQuestionData: QuestionDataType[]) => [
+          ...prevQuestionData,
+          res.data, // Add the new question to the Recoil state
+        ]);
         alert("질문 등록 성공!");
+        navigate(`/articles/${res.data._id}`);
       });
     } catch (error) {
       console.error(error);
@@ -46,8 +56,7 @@ export const WriteQuestion = () => {
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-    console.log(e.target.value);
+    setNewArticle({ ...newArticle, title: e.target.value });
   };
 
   const modules = useMemo(
@@ -76,7 +85,7 @@ export const WriteQuestion = () => {
   useEffect(() => {
     console.log(contents);
     setNewArticle({ ...newArticle, content: contents });
-  }, [contents, title]);
+  }, [contents]);
 
   return (
     <QuestionForm>
@@ -85,9 +94,7 @@ export const WriteQuestion = () => {
         <QuestionTitleInput
           placeholder="질문 내용을 명확하게 요약하여 작성해주세요."
           value={newArticle.title}
-          onChange={(e) =>
-            setNewArticle({ ...newArticle, title: e.target.value })
-          }
+          onChange={handleTitleChange}
         />
       </QuestionTitleSection>
       <ReactQuill
