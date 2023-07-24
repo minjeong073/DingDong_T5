@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const port = process.env.PORT || 5001;
 const authRoute = require('./routes/auth');
-const articleRoute = require('./routes/article');
+const questionRoute = require('./routes/question');
 const userRoute = require('./routes/user');
 
 dotenv.config();
@@ -20,7 +20,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use('/api/auth', authRoute);
-app.use('/api/articles', articleRoute);
+app.use('/api/articles', questionRoute);
 app.use('/api/users', userRoute);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
