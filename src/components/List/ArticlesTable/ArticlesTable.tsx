@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 // import { allArticles } from "../../../api/url";
 import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  CurrentState,
-  ItemsState,
-  QuestionData,
-  QuestionListState
-} from "../../../stores/page-store";
+import {  QuestionListState } from "../../../stores/page-store";
 import type { QuestionDataType } from "../../../stores/page-store";
 import { Link } from "react-router-dom";
 import {
@@ -25,17 +20,17 @@ import {
   HashTag,
   Author,
   Date,
+  ForPage
 } from "./styled";
+import { Pagination } from "../Pagination";
 
+const itemsPerPage = 5;
 
-//더미데이터 연결용 인수삽입
 export const ArticlesTable = () => {
-  //pagination 구현
-  const [currentPage, setCurrentPage] = useRecoilState(CurrentState);
-  const [itemsPerPage, setItemsPerPage] = useRecoilState(ItemsState);
-  
+  const [page, setPage] = useState(1);  
   const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
 
+  //데이터 가져오기
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,6 +43,9 @@ export const ArticlesTable = () => {
     };
     fetchData();
   }, [setQuestionData]);
+
+  //handleevent 추가하기
+  const handlePaginationChange = (e:number, value:number) => setPage(value);
 
   //api 이용해서 
   // useEffect(() => {
@@ -71,19 +69,20 @@ export const ArticlesTable = () => {
     <>
       <Table>
         <tbody>
-          {questionData.map((item, idx) => (
+          {questionData.slice((page-1) * itemsPerPage, (page-1)*itemsPerPage + itemsPerPage)
+          .map((item, idx) => (
             <TableRow key={`${item.id}_${idx}`}>
               <TableCell>
                 <Info>
                   <Box>
                     {" "}
-                    <Div>5{/* {item.votes} */}</Div> <Span>투표수</Span>
+                    <Div>{item.votes}</Div> <Span>투표수</Span>
                   </Box>
                   <Box>
-                    <Div>50{/* {item.answers} */}</Div> <Span>답변수</Span>
+                    <Div>{item.answers}</Div> <Span>답변수</Span>
                   </Box>
                   <Box>
-                    <Div>50000{/* {item.views} */}</Div> <Span>조회수</Span>
+                    <Div>{item.views}</Div> <Span>조회수</Span>
                   </Box>
                 </Info>
                 <Context>
@@ -104,7 +103,14 @@ export const ArticlesTable = () => {
             </TableRow>
           ))}
         </tbody>
+        <Pagination
+          page={page}
+          itemList={questionData}
+          itemsPerPage={itemsPerPage}
+          handlePaginationChange={()=>handlePaginationChange}
+        />  
       </Table>
+
     </>
   );
 };

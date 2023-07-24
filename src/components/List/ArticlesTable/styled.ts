@@ -1,8 +1,9 @@
+import { style } from "@mui/system";
 import styled from "styled-components";
 
 export const Table = styled.table`
   width: 100%;
-  height: 900px;
+  height: 830px;
   /* border: 1px solid #e6e8e7; */
   border-collapse: collapse;
   border-top: 1px solid #e2e8f0;
@@ -111,4 +112,8 @@ export const Date = styled.div`
   margin: 0 45px 0 20px;
   /* margin-top: 30px; */
   font-size: 13px;
+`;
+
+export const ForPage = styled.div`
+  margin-bottom: 60px;
 `;
