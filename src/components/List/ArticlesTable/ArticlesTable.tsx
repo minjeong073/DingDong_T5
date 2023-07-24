@@ -109,7 +109,7 @@ export const ArticlesTable = () => {
                   </Title>
                   <Addition>
                     <HashTagWrapper>
-                      {item.hashtag.map((content, index) => (
+                      {item.hashtags.map((content, index) => (
                       <HashTag onClick={onClickHashtag} key={content}>{content}</HashTag>
                     ))}                  
                     </HashTagWrapper>

@@ -9,7 +9,7 @@ export interface ArticleDataType {
   updatedAt: string;
   userId: number;
   author: string;
-  hashtag: string[];
+  hashtags: string[];
   votes: number;
   answers: number;
   views: number;
