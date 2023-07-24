@@ -6,7 +6,9 @@ import {
   CurrentState,
   ItemsState,
   QuestionData,
+  QuestionListState
 } from "../../../stores/page-store";
+import type { QuestionDataType } from "../../../stores/page-store";
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -24,8 +26,7 @@ import {
   Author,
   Date,
 } from "./styled";
-import { articleListState, articleState } from "../../../stores/post-store";
-import type { ArticleDataType } from "../../../stores/post-store";
+
 
 //더미데이터 연결용 인수삽입
 export const ArticlesTable = () => {
@@ -33,38 +34,20 @@ export const ArticlesTable = () => {
   const [currentPage, setCurrentPage] = useRecoilState(CurrentState);
   const [itemsPerPage, setItemsPerPage] = useRecoilState(ItemsState);
   
-  // 질문 데이터를 id에서 확인하는 법
-  // const [questionData, setQuestionData] = useRecoilState(QuestionData);
-
-  // const getPageData = async () => {
-  //   try {
-  //     const result = await axios.get("/api/articles");
-  //     console.log(result.data);
-  //     setQuestionData(result.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("게시판 정보 가져오기 실패!");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getPageData();
-  // }, []);
-  
-  const [articles, setArticles] = useRecoilState<ArticleDataType[]>(articleListState);
+  const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('/api/articles');
-        setArticles(response.data);
+        setQuestionData(response.data);
       }catch(error){
       console.error(error);
       alert("게시판 정보 가져오기 실패!");
       }
     };
     fetchData();
-  }, [setArticles]);
+  }, [setQuestionData]);
 
   //api 이용해서 
   // useEffect(() => {
@@ -88,7 +71,7 @@ export const ArticlesTable = () => {
     <>
       <Table>
         <tbody>
-          {articles.map((item, idx) => (
+          {questionData.map((item, idx) => (
             <TableRow key={`${item.id}_${idx}`}>
               <TableCell>
                 <Info>
