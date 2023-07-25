@@ -5,8 +5,8 @@ import { Div } from "./styled";
 
 interface PaginationProps {
   page: number;
-  itemList: QuestionDataType[];
-  itemsPerPage: number;
+  itemList: QuestionDataType[]; //table
+  itemsPerPage: number; //tableRow
   handlePaginationChange : (pageNumber: number) => void;
 }
 
