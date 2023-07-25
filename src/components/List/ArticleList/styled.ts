@@ -5,7 +5,7 @@ export const Holder = styled.div`
   flex-direction: row;
   justify-content: space-between;
   width: 683px;
-  height: 50px;
+  height: 47px;
 `;
 
 export const Text = styled.div`
@@ -14,6 +14,7 @@ export const Text = styled.div`
   font-size: 24px;
   color: #475569;
   margin-left: 20px;
+  padding-bottom: 10px;
 `;
 
 /* export const Button = styled.button`
@@ -43,7 +44,7 @@ export const Img = styled.img`
 
 export const ArticleContainer = styled.div`
   width: 683px;
-  margin-top: 10px;
+  /* margin-top: 10px; */
   /* border: 1px solid #e6e8e7; */
   /* overflow-x: scroll; */
 `;

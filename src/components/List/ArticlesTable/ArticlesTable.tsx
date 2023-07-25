@@ -91,11 +91,11 @@ export const ArticlesTable = () => {
                   </Info>
                   <Context>
                     <Title>
-                      <Link to={"/articles/${articles-id}"}>{item.title}</Link>
+                      <Link to={`/articles/${item._id}`}>{item.title}</Link>
                     </Title>
                     <Addition>
                       <HashTagWrapper>
-                        {item.hashtags.map((content) => (
+                        {item.hashtags.map((content, index) => (
                           <HashTag onClick={onClickHashtag} key={content}>
                             {content}
                           </HashTag>

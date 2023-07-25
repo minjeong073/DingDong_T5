@@ -15,6 +15,9 @@ export const Container = styled.div`
 `;
 
 export const LeftWrapper = styled.div`
+  position: sticky;
+  top: 10px;
+  height: fit-content;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
