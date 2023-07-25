@@ -31,10 +31,12 @@ export const SearchBar = styled.input`
   background-repeat: no-repeat;
   background-position: 30px 50%;
   box-shadow: 0px 0px 30px 0px rgba(100, 116, 139, 0.18);
-  font-size: 16px;
+  font-size: 18px;
+  /* text-align: center;/ */
+  padding-left: 70px;
   &::placeholder {
     color: #94a3b8;
-    text-align: center;
+    padding-left: 115px;
     font-family: Inter;
     font-size: 17px;
     font-style: normal;
