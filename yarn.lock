@@ -2434,6 +2434,7 @@
   version "18.2.16"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.16.tgz#403dda0e933caccac9efde569923239ac426786c"
   integrity sha512-LLFWr12ZhBJ4YVw7neWLe6Pk7Ey5R9OCydfuMsz1L8bZxzaawJj2p06Q8/EFEHDeTBQNFLF62X+CG7B2zIyu0Q==
+  
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -6910,6 +6911,7 @@ mongoose@^7.4.0:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-7.4.1.tgz#658a0d8ffbbc963990405bd2279fcd2b452be089"
   integrity sha512-o3E5KHHiHdaiwCJG3+9r70sncRKki71Ktf/TfXdW6myu+53rtZ56uLl5ylkQiCf60V3COJuOeekcxXVsjQ7cBA==
+
   dependencies:
     bson "^5.4.0"
     kareem "2.5.1"
