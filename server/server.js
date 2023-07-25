@@ -1,14 +1,17 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+
 const port = process.env.PORT || 5001;
 const authRoute = require('./routes/auth');
-const articleRoute = require('./routes/article');
+const questionRoute = require('./routes/question');
 const userRoute = require('./routes/user');
+const answerRoute = require('./routes/answer');
 
 dotenv.config();
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
@@ -20,7 +23,8 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use('/api/auth', authRoute);
-app.use('/api/articles', articleRoute);
+app.use('/api/articles', questionRoute);
 app.use('/api/users', userRoute);
+app.use('/api/answer', answerRoute);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
