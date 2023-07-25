@@ -2,7 +2,7 @@ import React ,{ useState, useEffect, Fragment } from "react";
 import axios from "axios";
 // import { allArticles } from "../../../api/url";
 import { useRecoilState, useRecoilValue } from "recoil";
-import {  QuestionListState } from "../../../stores/page-store";
+import { QuestionListState } from "../../../stores/page-store";
 import type { QuestionDataType } from "../../../stores/page-store";
 import { Link } from "react-router-dom";
 import {
@@ -20,11 +20,9 @@ import {
   HashTag,
   Author,
   Date,
-  ForPage
+  ForPage,
 } from "./styled";
-// import { Pagination } from "@mui/material";
 import { Pagination } from "../Pagination";
-// import dummy from "../../../db/articles.json";
 
 export const ArticlesTable = () => {
   const [page, setPage] = useState(1);  
@@ -36,34 +34,21 @@ export const ArticlesTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/articles');
+        const response = await axios.get("/api/articles");
         setQuestionData(response.data);
-      }catch(error){
-      console.error(error);
-      alert("게시판 정보 가져오기 실패!");
+      } catch (error) {
+        console.error(error);
+        alert("게시판 정보 가져오기 실패!");
       }
     };
     fetchData();
   }, [setQuestionData]);
 
-  // useEffect(() => {
-  //   if( page === LAST_PAGE){
-  //     setQuestionData(questionData.slice(5 * (page - 1)));
-  //   }else{
-  //     setQuestionData(questionData.slice((page - 1), 5 * (page -1 ) +5));
-  //   }
-  // }, [page]);
-
-  // const handlePaginationChange = (e, value: number) => {
-  //   setPage(value); 
-  //   console.log(typeof(e));
-  // }
-
   const handlePaginationChange = ( e: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   }
 
-  //api 이용해서 
+  //api 이용해서
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -80,6 +65,7 @@ export const ArticlesTable = () => {
     const startIndex = (page -1 ) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentQuestion = questionData.slice(startIndex, endIndex);
+
   //해시태그 클릭하면 그 기능을 확인할 수 있음
   const onClickHashtag = () => {};
 
@@ -126,9 +112,6 @@ export const ArticlesTable = () => {
           page={page}
           itemList={questionData}
           itemsPerPage={itemsPerPage}
-          // color= 'primary'
-          // size="large"
-          // sx={{margin: 2}}
           handlePaginationChange={handlePaginationChange}
         />  
     </div>

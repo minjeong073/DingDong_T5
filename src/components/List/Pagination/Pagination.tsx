@@ -5,8 +5,8 @@ import { Div } from "./styled";
 
 interface PaginationProps {
   page: number;
-  itemList: QuestionDataType[]; //table
-  itemsPerPage: number; //tableRow
+  itemList: QuestionDataType[]; 
+  itemsPerPage: number; 
   handlePaginationChange :  (e: React.ChangeEvent<unknown>, value: number) => void;
 }
 
