@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React ,{ useState, useEffect, Fragment } from "react";
 import axios from "axios";
+// import { allArticles } from "../../../api/url";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { CurrentState, ItemsState } from "../../../stores/page-store";
+import { QuestionListState } from "../../../stores/page-store";
+import type { QuestionDataType } from "../../../stores/page-store";
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -18,69 +20,84 @@ import {
   HashTag,
   Author,
   Date,
+  ForPage,
 } from "./styled";
+import { Pagination } from "../Pagination";
 
-//더미데이터 연결용 인수삽입
 export const ArticlesTable = () => {
-  const [currentPage, setCurrentPage] = useRecoilState(CurrentState);
-  const [itemsPerPage, setItemsPerPage] = useRecoilState(ItemsState);
-  const [data, setData] = useState<IDataType[]>([]);
+  const [page, setPage] = useState(1);  
+  const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(questionData.length / itemsPerPage); 
 
-  interface IDataType {
-    id: number;
-    title: string;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-    userId: number;
-    author: string;
+  //데이터 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/articles");
+        setQuestionData(response.data);
+      } catch (error) {
+        console.error(error);
+        alert("게시판 정보 가져오기 실패!");
+      }
+    };
+    fetchData();
+  }, [setQuestionData]);
+
+  const handlePaginationChange = ( e: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
   }
 
-  const getPageData = async () => {
-    try {
-      const result = await axios.get("/api/articles");
-      console.log(result.data);
-      setData(result.data);
-    } catch (error) {
-      console.error(error);
-      alert("게시판 정보 가져오기 실패!");
-    }
-  };
+  //api 이용해서
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await allArticles<String[]>();
+  //       setArticles(response.data);
+  //     }catch(error){
+  //     console.error(error);
+  //     alert("게시판 정보 가져오기 실패!");
+  //     }
+  //   };
+  //   fetchData();
+  // }, [setArticles]);
 
-  useEffect(() => {
-    getPageData();
-  }, []);
+    const startIndex = (page -1 ) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentQuestion = questionData.slice(startIndex, endIndex);
 
+  //해시태그 클릭하면 그 기능을 확인할 수 있음
   const onClickHashtag = () => {};
 
   return (
-    <>
+    <div>
       <Table>
         <tbody>
-          {data.map((item, idx) => (
+          {currentQuestion
+          .map((item, idx) => (
             <TableRow key={`${item.id}_${idx}`}>
               <TableCell>
                 <Info>
                   <Box>
                     {" "}
-                    <Div>5{/* {item.votes} */}</Div> <Span>투표수</Span>
+                    <Div>{item.votes}</Div> <Span>투표수</Span>
                   </Box>
                   <Box>
-                    <Div>50{/* {item.answers} */}</Div> <Span>답변수</Span>
+                    <Div>{item.answers}</Div> <Span>답변수</Span>
                   </Box>
                   <Box>
-                    <Div>50000{/* {item.views} */}</Div> <Span>조회수</Span>
+                    <Div>{item.views}</Div> <Span>조회수</Span>
                   </Box>
                 </Info>
                 <Context>
                   <Title>
-                    <Link to={"/articles/${articles-id}"}>{item.title}</Link>
+                    <Link to={`/articles/${item._id}`}>{item.title}</Link>
                   </Title>
                   <Addition>
                     <HashTagWrapper>
-                      {/* {item.hashtag.map((content, index) => (
+                      {item.hashtags.map((content, index) => (
                       <HashTag onClick={onClickHashtag} key={content}>{content}</HashTag>
-                    ))}                   */}
+                    ))}                  
                     </HashTagWrapper>
                     <Author>{item.author}</Author>
                     <Date>{item.createdAt}</Date>
@@ -91,6 +108,12 @@ export const ArticlesTable = () => {
           ))}
         </tbody>
       </Table>
-    </>
+      <Pagination
+          page={page}
+          itemList={questionData}
+          itemsPerPage={itemsPerPage}
+          handlePaginationChange={handlePaginationChange}
+        />  
+    </div>
   );
 };
