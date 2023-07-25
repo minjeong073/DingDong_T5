@@ -48,4 +48,52 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// UPDATE
+router.put('/:id', async (req, res) => {
+  try {
+    const answer = await Answer.findById(req.params.id);
+    if (answer.author === req.body.author) {
+      // 수정 사항에 questionId, title 있으면 무시
+      delete req.body.questionId;
+      delete req.body.questionTitle;
+
+      try {
+        const updateAnswer = await Answer.findByIdAndUpdate(
+          req.params.id,
+          {
+            $set: req.body,
+          },
+          { new: true }
+        );
+        res.status(200).json(updateAnswer);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(401).json('You can update only your Answer!');
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// DELETE
+router.delete('/:id', async (req, res) => {
+  try {
+    const answer = await Answer.findById(req.params.id);
+    if (answer.author === req.body.author) {
+      try {
+        await answer.delete();
+        res.status(200).json('Answer has been deleted!');
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(401).json('You can delete only your Answer!');
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
