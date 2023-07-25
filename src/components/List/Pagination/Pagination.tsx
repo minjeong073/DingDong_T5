@@ -7,7 +7,7 @@ interface PaginationProps {
   page: number;
   itemList: QuestionDataType[]; //table
   itemsPerPage: number; //tableRow
-  handlePaginationChange : (pageNumber: number) => void;
+  handlePaginationChange :  (e: React.ChangeEvent<unknown>, value: number) => void;
 }
 
 export const Pagination = ({
@@ -21,7 +21,7 @@ export const Pagination = ({
           shape="rounded"
           page={page}
           count={Math.ceil(itemList.length/itemsPerPage)}
-          onChange={() => handlePaginationChange}
+          onChange={handlePaginationChange}
           style={{ float:'right', margin:'0 13px 16px 0'}}
           renderItem={(item) => (
             <PaginationItem {...item} sx={{ color: '#8B5CF6', border: '1px solid white'}} />
