@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React ,{ useState, useEffect, Fragment } from "react";
 import axios from "axios";
 // import { allArticles } from "../../../api/url";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -24,12 +24,11 @@ import {
 } from "./styled";
 import { Pagination } from "../Pagination";
 
-const itemsPerPage = 5;
-
 export const ArticlesTable = () => {
-  const [page, setPage] = useState(1);
-  const [questionData, setQuestionData] =
-    useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [page, setPage] = useState(1);  
+  const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(questionData.length / itemsPerPage); 
 
   //데이터 가져오기
   useEffect(() => {
@@ -45,8 +44,9 @@ export const ArticlesTable = () => {
     fetchData();
   }, [setQuestionData]);
 
-  //handleevent 추가하기
-  const handlePaginationChange = (e: number, value: number) => setPage(value);
+  const handlePaginationChange = ( e: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  }
 
   //api 이용해서
   // useEffect(() => {
@@ -62,60 +62,58 @@ export const ArticlesTable = () => {
   //   fetchData();
   // }, [setArticles]);
 
+    const startIndex = (page -1 ) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentQuestion = questionData.slice(startIndex, endIndex);
+
   //해시태그 클릭하면 그 기능을 확인할 수 있음
   const onClickHashtag = () => {};
 
   return (
-    <>
+    <div>
       <Table>
         <tbody>
-          {questionData
-            .slice(
-              (page - 1) * itemsPerPage,
-              (page - 1) * itemsPerPage + itemsPerPage
-            )
-            .map((item, idx) => (
-              <TableRow key={`${item.id}_${idx}`}>
-                <TableCell>
-                  <Info>
-                    <Box>
-                      {" "}
-                      <Div>{item.votes}</Div> <Span>투표수</Span>
-                    </Box>
-                    <Box>
-                      <Div>{item.answers}</Div> <Span>답변수</Span>
-                    </Box>
-                    <Box>
-                      <Div>{item.views}</Div> <Span>조회수</Span>
-                    </Box>
-                  </Info>
-                  <Context>
-                    <Title>
-                      <Link to={`/articles/${item._id}`}>{item.title}</Link>
-                    </Title>
-                    <Addition>
-                      <HashTagWrapper>
-                        {item.hashtags.map((content, index) => (
-                          <HashTag onClick={onClickHashtag} key={content}>
-                            {content}
-                          </HashTag>
-                        ))}
-                      </HashTagWrapper>
-                      <Author>{item.author}</Author>
-                      <Date>{item.createdAt}</Date>
-                    </Addition>
-                  </Context>
-                </TableCell>
-              </TableRow>
-            ))}
+          {currentQuestion
+          .map((item, idx) => (
+            <TableRow key={`${item.id}_${idx}`}>
+              <TableCell>
+                <Info>
+                  <Box>
+                    {" "}
+                    <Div>{item.votes}</Div> <Span>투표수</Span>
+                  </Box>
+                  <Box>
+                    <Div>{item.answers}</Div> <Span>답변수</Span>
+                  </Box>
+                  <Box>
+                    <Div>{item.views}</Div> <Span>조회수</Span>
+                  </Box>
+                </Info>
+                <Context>
+                  <Title>
+                    <Link to={`/articles/${item._id}`}>{item.title}</Link>
+                  </Title>
+                  <Addition>
+                    <HashTagWrapper>
+                      {item.hashtags.map((content, index) => (
+                      <HashTag onClick={onClickHashtag} key={content}>{content}</HashTag>
+                    ))}                  
+                    </HashTagWrapper>
+                    <Author>{item.author}</Author>
+                    <Date>{item.createdAt}</Date>
+                  </Addition>
+                </Context>
+              </TableCell>
+            </TableRow>
+          ))}
         </tbody>
-        <Pagination
+      </Table>
+      <Pagination
           page={page}
           itemList={questionData}
           itemsPerPage={itemsPerPage}
-          handlePaginationChange={() => handlePaginationChange}
-        />
-      </Table>
-    </>
+          handlePaginationChange={handlePaginationChange}
+        />  
+    </div>
   );
 };
