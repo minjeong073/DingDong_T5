@@ -1,19 +1,8 @@
 import styled from "styled-components";
-
-export const PrevSpan = styled.span`
-  &:hover{
-    cursor: pointer;
-  }
-`;
-
-export const Span = styled.span`
-  &:hover{
-    cursor: pointer;
-  }
-`;
-
-export const NextSpan = styled.span`
-  &:hover{
-    cursor: pointer;
-  }
+ 
+export const Div = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 `;
