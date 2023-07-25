@@ -45,6 +45,14 @@ export const Detail = () => {
       <h1>Detail {id}</h1>
       {/* Render the details of the currentQuestion here */}
       <p>Title: {currentQuestion?.title}</p>
+      <p>Author: {currentQuestion?.author}</p>
+      <p>Votes: {currentQuestion?.votes}</p>
+      <p>Answers: {currentQuestion?.answers}</p>
+      <p>Views: {currentQuestion?.views}</p>
+      <p>Hashtags: {currentQuestion?.hashtags}</p>
+      <p>Created: {currentQuestion?.createdAt}</p>
+      <p>Updated: {currentQuestion?.updatedAt}</p>
+
       {/* <p>Content: {currentQuestion?.content}</p> */}
       <div
         dangerouslySetInnerHTML={{
