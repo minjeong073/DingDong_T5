@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
+// const AutoIncrement = require('mongoose-sequence')(mongoose);
+// const autoIdSetter = require('../utils/auto-id-setter');
 
 // id, 제목, 내용, 투표수, 답변수, 조회수, 작성자, 해시태그
 const QuestionSchema = new mongoose.Schema(
   {
     id: {
       type: Number,
-      required: true,
     },
     title: {
       type: String,
@@ -40,9 +41,15 @@ const QuestionSchema = new mongoose.Schema(
       type: Array,
       required: false,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   // 생성일(createdAt)과 수정일(updatedAt)을 자동으로 관리
   { timestamps: true }
 );
+
+// autoIdSetter(QuestionSchema, mongoose, 'Question', 'id');
 
 module.exports = mongoose.model('Question', QuestionSchema);
