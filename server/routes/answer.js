@@ -4,16 +4,20 @@ const Question = require('../models/Question');
 
 // Answer CRUD
 // CREATE
-router.post('/:id', async (req, res) => {
-  const questionId = req.params.id;
+router.post('/:qId', async (req, res) => {
   const { content, author } = req.body;
-  const newAnswer = new Answer({
-    questionId,
-    content,
-    author,
-  });
-  console.log(`new answer : ${newAnswer}`);
+
   try {
+    const question = await Question.findById(req.params.qId);
+    if (!question) {
+      res.status(404).json('Question not found!');
+    }
+    const newAnswer = new Answer({
+      questionId: req.params.id,
+      questionTitle: question.title,
+      content,
+      author,
+    });
     const savedAnswer = await newAnswer.save();
     res.status(200).json(savedAnswer);
   } catch (err) {
@@ -22,9 +26,9 @@ router.post('/:id', async (req, res) => {
 });
 
 // GET ALL
-router.get('/:id', async (req, res) => {
+router.get('/all/:qId', async (req, res) => {
   try {
-    const answers = await Answer.find({ questionId: req.params.id });
+    const answers = await Answer.find({ questionId: req.params.qId });
     res.status(200).json(answers);
   } catch (err) {
     res.status(500).json(err);
@@ -35,6 +39,9 @@ router.get('/:id', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const answer = await Answer.findById(req.params.id);
+    if (!answer) {
+      res.status(404).json('Answer not found!');
+    }
     res.status(200).json(answer);
   } catch (err) {
     res.status(500).json(err);

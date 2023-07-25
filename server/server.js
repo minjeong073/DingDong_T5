@@ -25,6 +25,6 @@ mongoose
 app.use('/api/auth', authRoute);
 app.use('/api/articles', questionRoute);
 app.use('/api/users', userRoute);
-app.use('/api/comment', answerRoute);
+app.use('/api/answer', answerRoute);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

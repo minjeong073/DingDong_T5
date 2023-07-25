@@ -12,6 +12,9 @@ const AnswerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    questionTitle: {
+      type: String,
+    },
     questionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Question',
