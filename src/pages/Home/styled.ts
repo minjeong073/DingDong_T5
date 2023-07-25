@@ -34,11 +34,11 @@ export const SearchBar = styled.input`
   font-size: 18px;
   /* text-align: center;/ */
   padding-left: 70px;
+  border: 0.1px solid #e2e8f0;
   &::placeholder {
     color: #94a3b8;
     padding-left: 115px;
-    font-family: Inter;
-    font-size: 17px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -53,7 +53,7 @@ export const ButtonBar = styled.div`
 
 export const Button1 = styled.button`
   width: 100px;
-  height: 45px;
+  height: 47px;
   border-radius: 50px;
   background: #7c3aed;
   color: #fff;
@@ -69,12 +69,13 @@ export const Button1 = styled.button`
 
 export const Button2 = styled.button`
   width: 98px;
-  height: 44px;
+  height: 47px;
   border-radius: 50px;
   background: transparent;
   color: #7c3aed;
   text-align: center;
   font-size: 18px;
+  font-weight: 500;
   letter-spacing: 0.3px;
   transition: 0.1s;
   &:hover {
