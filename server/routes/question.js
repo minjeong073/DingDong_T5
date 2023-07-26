@@ -59,12 +59,14 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE
-router.delete('/:id', async (req, res) => {
+router.put('/delete/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
     if (question.username === req.body.username) {
       try {
-        await question.deleteOne();
+        // isDeleted 를 true 로 변경
+        question.isDeleted = true;
+        await question.save();
         res.status(200).json('Question has been deleted');
       } catch (err) {
         res.status(500).json(err);
