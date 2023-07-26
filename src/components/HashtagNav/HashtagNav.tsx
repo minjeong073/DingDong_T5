@@ -5,13 +5,20 @@ import {
   Tr,
   HashTag
 } from "./styled";
-import axios from "axios";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { QuestionData, QuestionListState } from "../../stores/page-store";
+import type { QuestionDataType } from "../../stores/page-store";
 
 export const HashTagNav = () => {
 
-  const fetchData = async () => {
-    const response = await axios.get("/api/");
-  }
+  const [QuestionData, setQuestionData] =
+  useRecoilState<QuestionDataType[]>(QuestionListState);
+
+  // console.log(typeof{QuestionData});
+  // const Values = useRecoilValue<QuestionDataType[]>(QuestionData).hashtags;
+  // console.log(QuestionData[10].hashtags);
+
+
 
   const HashtagArr = dummy.articles.map((item) => item.hashtag);
   const oneHashtag = HashtagArr.flat();

@@ -12,9 +12,6 @@ export const HashTagBar = () => {
   const oneHashtag = HashtagArr.flat();
   const onlyHashtag = Array.from(new Set(oneHashtag));
   console.log(onlyHashtag);
-
-  let rowNum: number[] = [];
-  let rowKey: number = 0;
   
   return(
     <>
