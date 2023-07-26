@@ -132,7 +132,9 @@ export const Detail = () => {
               <AskedTypo>Asked</AskedTypo>
               <AuthorContainer>
                 <AuthorProfile>딩동</AuthorProfile>
-                <UserStateCircle />
+                <UserStateCircle
+                  color={currentQuestion?.votes! < 15 ? "#D1D5DB" : "#ffd700"}
+                />
                 <Typo>{currentQuestion?.votes}</Typo>
               </AuthorContainer>
             </AuthorBox>

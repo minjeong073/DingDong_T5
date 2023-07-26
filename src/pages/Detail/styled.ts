@@ -221,7 +221,7 @@ interface IUserStateCircle {
 export const UserStateCircle = styled.div<IUserStateCircle>`
   width: 15px;
   height: 15px;
-  background: ${(props) => props.color || "#ffd700"};
+  background: ${(props) => props.color};
   border-radius: 50%;
 `;
 
