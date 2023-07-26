@@ -26,7 +26,7 @@ import { Pagination } from "../Pagination";
 
 export const ArticlesTable = () => {
   const [page, setPage] = useState(1);
-  const [questionData, setQuestionData] =
+  const [QuestionData, setQuestionData] =
     useRecoilState<QuestionDataType[]>(QuestionListState);
   const itemsPerPage = 5;
 
@@ -71,7 +71,7 @@ export const ArticlesTable = () => {
 
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentQuestion = questionData.slice(startIndex, endIndex);
+  const currentQuestion = QuestionData.slice(startIndex, endIndex);
 
   //해시태그 클릭하면 그 기능을 확인할 수 있음
   const onClickHashtag = () => {};
@@ -121,7 +121,7 @@ export const ArticlesTable = () => {
       </Table>
       <Pagination
         page={page}
-        itemList={questionData}
+        itemList={QuestionData}
         itemsPerPage={itemsPerPage}
         handlePaginationChange={handlePaginationChange}
       />
