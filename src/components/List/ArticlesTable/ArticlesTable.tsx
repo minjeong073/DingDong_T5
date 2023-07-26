@@ -29,20 +29,28 @@ export const ArticlesTable = () => {
   const [questionData, setQuestionData] =
     useRecoilState<QuestionDataType[]>(QuestionListState);
   const itemsPerPage = 5;
-  const totalPages = Math.ceil(questionData.length / itemsPerPage);
+  let dateArray:number[] = [];
+  let created_array: number[] = [];
+
+  const CompareDate = (a: number, b: number) => {
+    return b-a;
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("/api/articles");
+      setQuestionData(response.data);
+      let mutableData = [...response.data].reverse();
+      response.data = mutableData;
+      setQuestionData(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("게시판 정보 가져오기 실패!");
+    }
+  };
 
   //데이터 가져오기
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/api/articles");
-        setQuestionData(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-        alert("게시판 정보 가져오기 실패!");
-      }
-    };
     fetchData();
   }, [setQuestionData]);
 
