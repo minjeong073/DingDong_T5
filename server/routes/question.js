@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
       .skip(startIndex)
       .limit(pageSize)
       .exec();
-    const updatedQuestions = questions.map((question) => {
+    const updatedQuestions = questions.map(question => {
       return {
         ...question._doc,
         createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
@@ -83,7 +83,7 @@ router.put('/:id', async (req, res) => {
               timeZone: 'Asia/Seoul',
             }),
           },
-          { new: true }
+          { new: true },
         );
         // console.log('test' + updatedQuestion.updatedAt);
 
@@ -117,7 +117,7 @@ router.put('/:id/delete', async (req, res) => {
           timeZone: 'Asia/Seoul',
         }),
       },
-      { new: true }
+      { new: true },
     );
     await Vote.deleteMany({ questionId: req.params.id });
 

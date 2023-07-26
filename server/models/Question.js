@@ -48,7 +48,7 @@ const QuestionSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 현재 UTC 시간을 기준으로 한국 시간으로 변환
