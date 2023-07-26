@@ -9,9 +9,11 @@ const AnswerSchema = new mongoose.Schema(
     content: {
       type: String,
       required: true,
+      index: true,
     },
     questionTitle: {
       type: String,
+      index: true,
     },
     questionId: {
       type: mongoose.Schema.Types.ObjectId,
