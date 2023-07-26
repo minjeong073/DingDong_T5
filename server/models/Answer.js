@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-// const AutoIncrement = require('mongoose-sequence')(mongoose);
-// const autoIdSetter = require('../utils/auto-id-setter');
 
 // id, 내용, 질문 pk, 작성자, 투표수
 const AnswerSchema = new mongoose.Schema(
@@ -32,6 +30,11 @@ const AnswerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// autoIdSetter(AnswerSchema, mongoose, 'Answer', 'id');
+// Date 객체로 변환
+AnswerSchema.methods.convertDate = () => {
+  this.createdAt = new Date(this.createdAt);
+  this.updatedAt = new Date(this.updatedAt);
+  return this;
+};
 
 module.exports = mongoose.model('Answer', AnswerSchema);

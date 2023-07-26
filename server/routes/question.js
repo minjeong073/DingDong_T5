@@ -16,8 +16,9 @@ router.post('/', async (req, res) => {
 // GET ALL
 router.get('/', async (req, res) => {
   try {
-    const question = await Question.find();
-    res.status(200).json(question);
+    const questions = await Question.find();
+    questions.forEach((question) => question.convertDate());
+    res.status(200).json(questions);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -27,6 +28,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
+    question.convertDate();
     res.status(200).json(question);
   } catch (err) {
     res.status(500).json(err);
