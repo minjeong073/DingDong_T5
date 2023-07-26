@@ -29,12 +29,6 @@ export const ArticlesTable = () => {
   const [questionData, setQuestionData] =
     useRecoilState<QuestionDataType[]>(QuestionListState);
   const itemsPerPage = 5;
-  let dateArray:number[] = [];
-  let created_array: number[] = [];
-
-  const CompareDate = (a: number, b: number) => {
-    return b-a;
-  };
 
   const fetchData = async () => {
     try {
