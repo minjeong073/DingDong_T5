@@ -19,7 +19,7 @@ export const Table = styled.table``;
 
 export const Tr = styled.tr`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 `;
 
 export const HashTag = styled.button`

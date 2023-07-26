@@ -4,9 +4,14 @@ import {
   Table,
   Tr,
   HashTag
-} from "./styled"
+} from "./styled";
+import axios from "axios";
 
 export const HashTagNav = () => {
+
+  const fetchData = async () => {
+    const response = await axios.get("/api/");
+  }
 
   const HashtagArr = dummy.articles.map((item) => item.hashtag);
   const oneHashtag = HashtagArr.flat();
