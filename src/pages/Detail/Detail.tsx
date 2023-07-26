@@ -23,6 +23,8 @@ import {
   AuthorContainer,
   AuthorProfile,
   UserStateCircle,
+  CommentContainer,
+  HeartFillIcon,
 } from "./styled";
 import DOMPurify from "dompurify";
 import axios from "axios";
@@ -131,7 +133,7 @@ export const Detail = () => {
               <AuthorContainer>
                 <AuthorProfile>딩동</AuthorProfile>
                 <UserStateCircle />
-                <Typo>15</Typo>
+                <Typo>{currentQuestion?.votes}</Typo>
               </AuthorContainer>
             </AuthorBox>
           </QuestionBottomRightContainer>
@@ -141,6 +143,114 @@ export const Detail = () => {
         <p>Created: {currentQuestion?.createdAt}</p> */}
         {/* <p>Updated: {currentQuestion?.updatedAt}</p> */}
       </QuestionBodySection>
+      <CommentContainer>
+        <ItemContainer style={{ margin: "0 10px" }}>
+          <HeartFillIcon style={{ marginBottom: "0px" }} />
+          <ItemTypo>10</ItemTypo>
+        </ItemContainer>
+        <Typo color="black" left="10px">
+          간단한 세면도구, 환전할 때 필요한 현금들 .. 근데 유럽 서부. 동부 중
+          어디로 가세요?
+        </Typo>
+        <Typo style={{ marginLeft: "auto", justifySelf: "flex-end" }}>
+          김딩동 2023.07.20 16:20
+        </Typo>
+      </CommentContainer>
+      <CommentContainer>
+        <ItemContainer style={{ margin: "0 10px" }}>
+          <HeartIcon style={{ marginBottom: "0px" }} />
+          <ItemTypo>10</ItemTypo>
+        </ItemContainer>
+        <Typo color="black" left="10px">
+          유럽 동부 쪽으로 갑니다!
+        </Typo>
+        <Typo style={{ marginLeft: "auto", justifySelf: "flex-end" }}>
+          딩동 2023.07.20 17:30
+        </Typo>
+      </CommentContainer>
+
+      {/* 가짜답변 */}
+      <QuestionTitleSection style={{ marginTop: "45px" }}>
+        <QuestionTypo>A</QuestionTypo>
+        <QuestionTitle style={{ color: "#475569" }}>1개의 답변</QuestionTitle>
+      </QuestionTitleSection>
+      <QuestionBodySection>
+        <QuestionTopContainer>
+          <ItemContainer>
+            <HeartIcon />
+            <ItemTypo>{currentQuestion?.votes}</ItemTypo>
+            <SaveIcon />
+            <ItemTypo>10</ItemTypo>
+          </ItemContainer>
+          <ItemContainer>
+            <ViewDateContainer>
+              {/* <Typo>조회수 {currentQuestion?.views}</Typo> */}
+              <Typo>
+                {currentQuestion?.createdAt.substring(
+                  0,
+                  currentQuestion?.createdAt.indexOf("T")
+                )}
+              </Typo>
+            </ViewDateContainer>
+            <ContentTypo>
+              제 경우에는 유럽 동부 물가가 생각보다 저렴해서 환전을 하고 가는
+              것보다 직접 가서 환전하는 것을 추천드립니다.
+            </ContentTypo>
+          </ItemContainer>
+        </QuestionTopContainer>
+        <QuestionBottomContainer>
+          <QuestionBottomLeftContainer>
+            <Typo underline pointer>
+              공유
+            </Typo>
+            {/*             <Typo underline pointer>
+              수정
+            </Typo>
+            <Typo underline pointer onClick={deleteQuestion}>
+              삭제
+            </Typo> */}
+          </QuestionBottomLeftContainer>
+          <QuestionBottomRightContainer>
+            <AuthorBox>
+              <AskedTypo>Answered</AskedTypo>
+              <AuthorContainer>
+                <AuthorProfile>이슬</AuthorProfile>
+                <UserStateCircle />
+                <Typo>999+</Typo>
+              </AuthorContainer>
+            </AuthorBox>
+          </QuestionBottomRightContainer>
+        </QuestionBottomContainer>
+        {/* <p>Answers: {currentQuestion?.answers}</p> */}
+        {/*         <p>Hashtags: {currentQuestion?.hashtags}</p>
+        <p>Created: {currentQuestion?.createdAt}</p> */}
+        {/* <p>Updated: {currentQuestion?.updatedAt}</p> */}
+      </QuestionBodySection>
+      <CommentContainer>
+        <ItemContainer style={{ margin: "0 10px" }}>
+          <HeartFillIcon style={{ marginBottom: "0px" }} />
+          <ItemTypo>10</ItemTypo>
+        </ItemContainer>
+        <Typo color="black" left="10px">
+          간단한 세면도구, 환전할 때 필요한 현금들 .. 근데 유럽 서부. 동부 중
+          어디로 가세요?
+        </Typo>
+        <Typo style={{ marginLeft: "auto", justifySelf: "flex-end" }}>
+          김딩동 2023.07.20 16:20
+        </Typo>
+      </CommentContainer>
+      <CommentContainer>
+        <ItemContainer style={{ margin: "0 10px" }}>
+          <HeartIcon style={{ marginBottom: "0px" }} />
+          <ItemTypo>10</ItemTypo>
+        </ItemContainer>
+        <Typo color="black" left="10px">
+          유럽 동부 쪽으로 갑니다!
+        </Typo>
+        <Typo style={{ marginLeft: "auto", justifySelf: "flex-end" }}>
+          딩동 2023.07.20 17:30
+        </Typo>
+      </CommentContainer>
     </Root>
   );
 };

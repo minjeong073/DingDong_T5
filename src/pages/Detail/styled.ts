@@ -1,15 +1,29 @@
-import { styled } from "styled-components";
+import { styled, css } from "styled-components";
 import heartImg from "../../assets/icon/heart.svg";
 import heartFillImg from "../../assets/icon/heart_fill.svg";
 import saveImg from "../../assets/icon/save.svg";
 import saveFillImg from "../../assets/icon/save_fill.svg";
 
+interface ICommonMargin {
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+}
+
+const commonMargin = css<ICommonMargin>`
+  margin: ${(props) =>
+    `${props.top || "0px"} ${props.right || "0px"} ${props.bottom || "0px"} ${
+      props.left || "0px"
+    }`};
+`;
+
 export const Root = styled.div`
   display: flex;
   flex-direction: column;
   width: 683px;
-  height: 800px;
   margin-right: 240px;
+  margin-bottom: 80px;
 `;
 
 export const QuestionTitleSection = styled.div`
@@ -73,24 +87,24 @@ export const ItemTypo = styled.div`
 export const HeartIcon = styled.img.attrs({
   src: heartImg,
 })`
-  width: 18px;
-  height: 18px;
+  width: ${(props) => (props.width ? props.width : "18px")};
+  height: ${(props) => (props.width ? props.width : "18px")};
   margin-bottom: 2px;
 `;
 
 export const HeartFillIcon = styled.img.attrs({
   src: heartFillImg,
 })`
-  width: 18px;
-  height: 18px;
+  width: ${(props) => (props.width ? props.width : "18px")};
+  height: ${(props) => (props.width ? props.width : "18px")};
   margin-bottom: 2px;
 `;
 
 export const SaveIcon = styled.img.attrs({
   src: saveImg,
 })`
-  width: 18px;
-  height: 15px;
+  width: ${(props) => (props.width ? props.width : "18px")};
+  height: ${(props) => (props.width ? props.width : "15px")};
   margin-top: 10px;
   margin-bottom: 2px;
 `;
@@ -98,8 +112,8 @@ export const SaveIcon = styled.img.attrs({
 export const SaveFillIcon = styled.img.attrs({
   src: saveFillImg,
 })`
-  width: 18px;
-  height: 15px;
+  width: ${(props) => (props.width ? props.width : "18px")};
+  height: ${(props) => (props.width ? props.width : "15px")};
   margin-top: 10px;
   margin-bottom: 2px;
 `;
@@ -150,7 +164,7 @@ export const AuthorBox = styled.div`
   padding: 11px;
 `;
 
-interface ITypo {
+interface ITypo extends ICommonMargin {
   color?: string;
   underline?: boolean;
   pointer?: boolean;
@@ -166,6 +180,7 @@ export const Typo = styled.span<ITypo>`
   &:not(:first-child) {
     margin-left: 8px;
   }
+  ${commonMargin}
 `;
 
 export const AskedTypo = styled.div`
@@ -208,4 +223,12 @@ export const UserStateCircle = styled.div<IUserStateCircle>`
   height: 15px;
   background: ${(props) => props.color || "#ffd700"};
   border-radius: 50%;
+`;
+
+export const CommentContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 41px;
+  border-top: 1px solid #e2e8f0;
+  background: #fff;
 `;
