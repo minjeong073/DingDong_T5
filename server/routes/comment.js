@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-//GET ALL Comment
+//GET ALL Comment!
 router.get('/', async (req, res) => {
     try {
         const comment = await Comment.find({});
