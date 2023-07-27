@@ -117,13 +117,13 @@ export const Detail = () => {
         </QuestionTopContainer>
         <QuestionBottomContainer>
           <QuestionBottomLeftContainer>
-            <Typo underline pointer>
+            <Typo underline="true" pointer="true">
               공유
             </Typo>
-            <Typo underline pointer>
+            <Typo underline="true" pointer="true">
               <Link to={`/articles/modify/${id}`}>수정</Link>
             </Typo>
-            <Typo underline pointer onClick={deleteQuestion}>
+            <Typo underline="true" pointer="true" onClick={deleteQuestion}>
               삭제
             </Typo>
           </QuestionBottomLeftContainer>
@@ -202,10 +202,10 @@ export const Detail = () => {
         </QuestionTopContainer>
         <QuestionBottomContainer>
           <QuestionBottomLeftContainer>
-            <Typo underline pointer>
+            <Typo underline="true" pointer="true">
               공유
             </Typo>
-            {/*             <Typo underline pointer>
+            {/*             <Typo underline="true" pointer>
               수정
             </Typo>
             <Typo underline pointer onClick={deleteQuestion}>
@@ -217,7 +217,7 @@ export const Detail = () => {
               <AskedTypo>Answered</AskedTypo>
               <AuthorContainer>
                 <AuthorProfile>이슬</AuthorProfile>
-                <UserStateCircle />
+                <UserStateCircle color="#ffd700" />
                 <Typo>999+</Typo>
               </AuthorContainer>
             </AuthorBox>

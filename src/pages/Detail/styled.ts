@@ -167,8 +167,8 @@ export const AuthorBox = styled.div`
 interface ITypo extends ICommonMargin {
   color?: string;
   size?: string;
-  underline?: boolean;
-  pointer?: boolean;
+  underline?: string;
+  pointer?: string;
 }
 
 export const Typo = styled.span<ITypo>`
