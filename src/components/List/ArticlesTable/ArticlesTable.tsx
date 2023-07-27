@@ -1,4 +1,4 @@
-import React ,{ useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import axios from "axios";
 // import { allArticles } from "../../../api/url";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -25,28 +25,35 @@ import {
 import { Pagination } from "../Pagination";
 
 export const ArticlesTable = () => {
-  const [page, setPage] = useState(1);  
-  const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [page, setPage] = useState(1);
+  const [QuestionData, setQuestionData] =
+    useRecoilState<QuestionDataType[]>(QuestionListState);
   const itemsPerPage = 5;
-  const totalPages = Math.ceil(questionData.length / itemsPerPage); 
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("/api/articles");
+      setQuestionData(response.data);
+      let mutableData = [...response.data].reverse();
+      response.data = mutableData;
+      setQuestionData(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("게시판 정보 가져오기 실패!");
+    }
+  };
 
   //데이터 가져오기
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/api/articles");
-        setQuestionData(response.data);
-      } catch (error) {
-        console.error(error);
-        alert("게시판 정보 가져오기 실패!");
-      }
-    };
     fetchData();
   }, [setQuestionData]);
 
-  const handlePaginationChange = ( e: React.ChangeEvent<unknown>, value: number) => {
+  const handlePaginationChange = (
+    e: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     setPage(value);
-  }
+  };
 
   //api 이용해서
   // useEffect(() => {
@@ -62,9 +69,9 @@ export const ArticlesTable = () => {
   //   fetchData();
   // }, [setArticles]);
 
-    const startIndex = (page -1 ) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentQuestion = questionData.slice(startIndex, endIndex);
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentQuestion = QuestionData.slice(startIndex, endIndex);
 
   //해시태그 클릭하면 그 기능을 확인할 수 있음
   const onClickHashtag = () => {};
@@ -73,8 +80,7 @@ export const ArticlesTable = () => {
     <div>
       <Table>
         <tbody>
-          {currentQuestion
-          .map((item, idx) => (
+          {currentQuestion.map((item, idx) => (
             <TableRow key={`${item.id}_${idx}`}>
               <TableCell>
                 <Info>
@@ -96,11 +102,16 @@ export const ArticlesTable = () => {
                   <Addition>
                     <HashTagWrapper>
                       {item.hashtags.map((content, index) => (
-                      <HashTag onClick={onClickHashtag} key={content}>{content}</HashTag>
-                    ))}                  
+                        <HashTag onClick={onClickHashtag} key={content}>
+                          {content}
+                        </HashTag>
+                      ))}
                     </HashTagWrapper>
                     <Author>{item.author}</Author>
-                    <Date>{item.createdAt}</Date>
+                    <Date>{item.createdAt.substring(
+                  0,
+                  item.createdAt.indexOf("T"))}
+                    </Date>
                   </Addition>
                 </Context>
               </TableCell>
@@ -109,11 +120,11 @@ export const ArticlesTable = () => {
         </tbody>
       </Table>
       <Pagination
-          page={page}
-          itemList={questionData}
-          itemsPerPage={itemsPerPage}
-          handlePaginationChange={handlePaginationChange}
-        />  
+        page={page}
+        itemList={QuestionData}
+        itemsPerPage={itemsPerPage}
+        handlePaginationChange={handlePaginationChange}
+      />
     </div>
   );
 };

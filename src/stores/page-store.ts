@@ -30,9 +30,24 @@ export interface QuestionDataType {
   views: number;
 }
 
+const defaultQuestionData: QuestionDataType[] = [ 
+  {  _id: "",
+  id: 0,
+  title: "",
+  content: "",
+  createdAt: "",
+  updatedAt: "",
+  userId: 0,
+  author: "",
+  hashtags: [],
+  votes: 0,
+  answers: 0,
+  views: 0,}
+];
+
 export const QuestionData = atom<QuestionDataType[]>({
   key: "QuestionData",
-  default: [],
+  default: defaultQuestionData,
 });
 
 // 전체 글 리스트

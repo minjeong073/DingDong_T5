@@ -28,7 +28,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: transparent;
   }
 
-  a {
+  a, p {
     all: unset;
   }
 
@@ -46,6 +46,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   button {
+    background: transparent;
+    margin: 0;
+    padding: 0;
     border: none;
     outline: none;
     cursor: pointer;
