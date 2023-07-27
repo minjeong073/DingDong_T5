@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import type { QuestionDataType } from "../../stores/page-store";
 import {
@@ -121,7 +121,7 @@ export const Detail = () => {
               공유
             </Typo>
             <Typo underline pointer>
-              수정
+              <Link to={`/articles/modify/${id}`}>수정</Link>
             </Typo>
             <Typo underline pointer onClick={deleteQuestion}>
               삭제
@@ -150,7 +150,7 @@ export const Detail = () => {
           <HeartFillIcon style={{ marginBottom: "0px" }} />
           <ItemTypo>10</ItemTypo>
         </ItemContainer>
-        <Typo color="black" left="10px">
+        <Typo size="14px" color="black" left="10px">
           간단한 세면도구, 환전할 때 필요한 현금들 .. 근데 유럽 서부. 동부 중
           어디로 가세요?
         </Typo>
@@ -163,7 +163,7 @@ export const Detail = () => {
           <HeartIcon style={{ marginBottom: "0px" }} />
           <ItemTypo>10</ItemTypo>
         </ItemContainer>
-        <Typo color="black" left="10px">
+        <Typo size="14px" color="black" left="10px">
           유럽 동부 쪽으로 갑니다!
         </Typo>
         <Typo style={{ marginLeft: "auto", justifySelf: "flex-end" }}>
@@ -174,7 +174,7 @@ export const Detail = () => {
       {/* 가짜답변 */}
       <QuestionTitleSection style={{ marginTop: "45px" }}>
         <QuestionTypo>A</QuestionTypo>
-        <QuestionTitle style={{ color: "#475569" }}>1개의 답변</QuestionTitle>
+        <QuestionTitle style={{ color: "#525458" }}>1개의 답변</QuestionTitle>
       </QuestionTitleSection>
       <QuestionBodySection>
         <QuestionTopContainer>
@@ -233,7 +233,7 @@ export const Detail = () => {
           <HeartFillIcon style={{ marginBottom: "0px" }} />
           <ItemTypo>10</ItemTypo>
         </ItemContainer>
-        <Typo color="black" left="10px">
+        <Typo size="14px" color="black" left="10px">
           간단한 세면도구, 환전할 때 필요한 현금들 .. 근데 유럽 서부. 동부 중
           어디로 가세요?
         </Typo>
@@ -246,7 +246,7 @@ export const Detail = () => {
           <HeartIcon style={{ marginBottom: "0px" }} />
           <ItemTypo>10</ItemTypo>
         </ItemContainer>
-        <Typo color="black" left="10px">
+        <Typo size="14px" color="black" left="10px">
           유럽 동부 쪽으로 갑니다!
         </Typo>
         <Typo style={{ marginLeft: "auto", justifySelf: "flex-end" }}>

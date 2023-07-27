@@ -166,6 +166,7 @@ export const AuthorBox = styled.div`
 
 interface ITypo extends ICommonMargin {
   color?: string;
+  size?: string;
   underline?: boolean;
   pointer?: boolean;
 }
@@ -173,7 +174,7 @@ interface ITypo extends ICommonMargin {
 export const Typo = styled.span<ITypo>`
   display: inline-block;
   color: ${(props) => (props.color ? props.color : "#64748b")};
-  font-size: 12px;
+  font-size: ${(props) => (props.size ? props.size : "12px")};
   font-weight: 400;
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
   cursor: ${(props) => (props.pointer ? "pointer" : "default")};
