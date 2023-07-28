@@ -86,7 +86,6 @@ export const ArticlesTable = () => {
               <TableCell>
                 <Info>
                   <Box>
-                    {" "}
                     <Div>{item.votes}</Div> <Span>투표수</Span>
                   </Box>
                   <Box>

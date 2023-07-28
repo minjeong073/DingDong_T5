@@ -61,7 +61,13 @@ export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
   const handleVote = useCallback(async () => {
     try {
       if (isClicked) {
-        alert("이미 투표하셨습니다.");
+        await axios.put(`/api/articles/${id}`, {
+          ...currentQuestion,
+          _id: id, // Ensure _id is included in the payload for the backend update
+          votes: votes! - 1,
+        });
+        setVotes((prev) => prev! - 1);
+        setIsClicked(false);
         return;
       }
       await axios.put(`/api/articles/${id}`, {
