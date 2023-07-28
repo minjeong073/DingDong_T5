@@ -26,12 +26,16 @@ const AnswerSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    saves: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
 
 // Date 객체로 변환
-AnswerSchema.methods.convertDate = () => {
+AnswerSchema.methods.convertDate = function () {
   this.createdAt = new Date(this.createdAt);
   this.updatedAt = new Date(this.updatedAt);
   return this;

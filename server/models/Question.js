@@ -26,6 +26,10 @@ const QuestionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    saves: {
+      type: Number,
+      default: 0,
+    },
     // Login 구현 후 수정 예정 : 작성자는 User의 id를 참조
     // userId: {
     //   type: Number,
@@ -49,7 +53,7 @@ const QuestionSchema = new mongoose.Schema(
 );
 
 // Date 객체로 변환
-QuestionSchema.methods.convertDate = () => {
+QuestionSchema.methods.convertDate = function () {
   this.createdAt = new Date(this.createdAt);
   this.updatedAt = new Date(this.updatedAt);
   return this;
