@@ -13,24 +13,6 @@ export const Detail = () => {
 
   let { id } = useParams<{ id?: string }>();
 
-  const updateViews = useCallback(async () => {
-    try {
-      if (currentQuestion) {
-        setCurrentQuestion({
-          ...currentQuestion,
-          views: currentQuestion?.views! + 1,
-        });
-
-        await axios.patch(`/api/articles/${id}`, {
-          views: currentQuestion.views + 1,
-        });
-      }
-    } catch (error) {
-      console.error("Error updating views:", error);
-      alert("조회수 업데이트 실패!");
-    }
-  }, [id, currentQuestion]);
-
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`/api/articles/${id}`);
@@ -44,6 +26,21 @@ export const Detail = () => {
     }
   }, [id]);
 
+  const updateViews = useCallback(async () => {
+    try {
+      if (currentQuestion) {
+        await axios.put(`/api/articles/${id}`, {
+          ...currentQuestion,
+          _id: id, // Ensure _id is included in the payload for the backend update
+          views: currentQuestion.views + 1,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating views:", error);
+      alert("조회수 업데이트 실패!");
+    }
+  }, [id, currentQuestion]);
+
   useEffect(() => {
     // Find the question with the matching ID
     /* const foundQuestion = questionData.find((item) => item._id === id);
@@ -51,7 +48,13 @@ export const Detail = () => {
     setCurrentQuestion(foundQuestion);
   } */
     fetchData();
-  }, [id]);
+  }, []);
+
+  useEffect(() => {
+    if (currentQuestion) {
+      updateViews();
+    }
+  }, [currentQuestion]);
 
   /*   if (!currentQuestion) {
     return <div>Loading...</div>; // Add a loading state while data is being fetched
@@ -59,11 +62,7 @@ export const Detail = () => {
 
   return (
     <Root>
-      <QuestionForm
-        id={id}
-        currentQuestion={currentQuestion}
-        updateViews={updateViews}
-      />
+      <QuestionForm id={id} currentQuestion={currentQuestion} />
     </Root>
   );
 };
