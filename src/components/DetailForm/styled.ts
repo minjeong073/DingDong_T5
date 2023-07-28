@@ -120,7 +120,7 @@ export const ContentTypo = styled.div`
   flex: 1;
   color: #0f172a;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   margin-left: 27px;
 `;
 
