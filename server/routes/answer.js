@@ -29,6 +29,7 @@ router.post('/:qId', async (req, res) => {
 router.get('/all/:qId', async (req, res) => {
   try {
     const answers = await Answer.find({ questionId: req.params.qId });
+    answers.forEach((answer) => answer.convertDate());
     res.status(200).json(answers);
   } catch (err) {
     res.status(500).json(err);
@@ -42,6 +43,7 @@ router.get('/:id', async (req, res) => {
     if (!answer) {
       res.status(404).json('Answer not found!');
     }
+    answer.convertDate();
     res.status(200).json(answer);
   } catch (err) {
     res.status(500).json(err);
