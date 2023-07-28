@@ -17,8 +17,20 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const questions = await Question.find();
-    questions.forEach((question) => question.convertDate());
-    res.status(200).json(questions);
+    const updatedQuestions = questions.map((question) => {
+      return {
+        ...question._doc,
+        createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+        updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+      };
+    });
+    updatedQuestions.forEach((question) => console.log(question.createdAt));
+
+    res.status(200).json(updatedQuestions);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -28,8 +40,19 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
-    question.convertDate();
-    res.status(200).json(question);
+    const questionInKST = {
+      ...question._doc,
+      createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+      updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+    };
+    // console.log('test : ' + questionInKST.createdAt);
+    // console.log('locale : ' + question.createdAt.toLocaleString());
+    // console.log('locale time : ' + question.createdAt.toLocaleTimeString());
+    res.status(200).json(questionInKST);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -39,15 +62,25 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
-    if (question.username === req.body.username) {
+    if (question.author === req.body.author) {
       try {
         const updatedQuestion = await Question.findByIdAndUpdate(
           req.params.id,
           {
             $set: req.body,
+            updatedAt: new Date().toLocaleString('ko-KR', {
+              timeZone: 'Asia/Seoul',
+            }),
           },
           { new: true }
         );
+        // console.log('test' + updatedQuestion.updatedAt);
+
+        // console.log('iso : ' + updatedQuestion.updatedAt.toISOString());
+        // console.log('locale : ' + updatedQuestion.updatedAt.toLocaleString());
+        // console.log(
+        //   'locale time : ' + updatedQuestion.updatedAt.toLocaleTimeString()
+        // );
         res.status(200).json(updatedQuestion);
       } catch (err) {
         res.status(500).json(err);
@@ -64,7 +97,7 @@ router.put('/:id', async (req, res) => {
 router.put('/delete/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
-    if (question.username === req.body.username) {
+    if (question.author === req.body.author) {
       try {
         // isDeleted 를 true 로 변경
         question.isDeleted = true;

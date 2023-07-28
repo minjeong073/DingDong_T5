@@ -1,11 +1,8 @@
 const mongoose = require('mongoose');
 
-// id, 제목, 내용, 투표수, 답변수, 조회수, 작성자, 해시태그
+// 제목, 내용, 투표수, 답변수, 조회수, 저장수, 작성자, 해시태그
 const QuestionSchema = new mongoose.Schema(
   {
-    id: {
-      type: Number,
-    },
     title: {
       type: String,
       required: true,
@@ -48,15 +45,16 @@ const QuestionSchema = new mongoose.Schema(
       default: false,
     },
   },
-  // 생성일(createdAt)과 수정일(updatedAt)을 자동으로 관리
   { timestamps: true }
 );
 
-// Date 객체로 변환
-QuestionSchema.methods.convertDate = function () {
-  this.createdAt = new Date(this.createdAt);
-  this.updatedAt = new Date(this.updatedAt);
-  return this;
-};
+// 현재 UTC 시간을 기준으로 한국 시간으로 변환
+QuestionSchema.pre('save', function (next) {
+  const seoulTime = new Date(this.createdAt).toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+  });
+  this.createdAt = new Date(seoulTime);
+  next();
+});
 
 module.exports = mongoose.model('Question', QuestionSchema);
