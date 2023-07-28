@@ -34,6 +34,9 @@ type Props = {
 };
 
 export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
+  const [isClicked, setIsClicked] = useState(false);
+  const [votes, setVotes] = useState(currentQuestion?.votes);
+
   const navigate = useNavigate();
 
   const deleteQuestion = useCallback(async () => {
@@ -54,6 +57,31 @@ export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
     }
   }, [id]);
 
+  // 투표기능 구현
+  const handleVote = useCallback(async () => {
+    try {
+      if (isClicked) {
+        alert("이미 투표하셨습니다.");
+        return;
+      }
+      await axios.put(`/api/articles/${id}`, {
+        ...currentQuestion,
+        _id: id, // Ensure _id is included in the payload for the backend update
+        votes: votes! + 1,
+      });
+      setVotes((prev) => prev! + 1);
+      setIsClicked(true);
+    } catch (error) {
+      console.error("Error updating votes:", error);
+      alert("투표 실패!");
+    }
+  }, [id, currentQuestion, isClicked, votes]);
+
+  // votes 값이 갱신될떄 마다 votes를 리렌더링
+  useEffect(() => {
+    setVotes(currentQuestion?.votes);
+  }, [currentQuestion?.votes]);
+
   return (
     <>
       <QuestionTitleSection>
@@ -63,8 +91,14 @@ export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
       <QuestionBodySection>
         <QuestionTopContainer>
           <ItemContainer>
-            <HeartIcon />
-            <ItemTypo>{currentQuestion?.votes}</ItemTypo>
+            {/* 투표 */}
+            {isClicked ? (
+              <HeartFillIcon onClick={handleVote} />
+            ) : (
+              <HeartIcon onClick={handleVote} />
+            )}
+            {/* 저장 */}
+            <ItemTypo>{votes}</ItemTypo>
             <SaveIcon />
             <ItemTypo>10</ItemTypo>
           </ItemContainer>

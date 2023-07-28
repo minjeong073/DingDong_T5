@@ -82,6 +82,7 @@ export const HeartIcon = styled.img.attrs({
   width: ${(props) => (props.width ? props.width : "18px")};
   height: ${(props) => (props.width ? props.width : "18px")};
   margin-bottom: 2px;
+  cursor: pointer;
 `;
 
 export const HeartFillIcon = styled.img.attrs({
@@ -90,6 +91,7 @@ export const HeartFillIcon = styled.img.attrs({
   width: ${(props) => (props.width ? props.width : "18px")};
   height: ${(props) => (props.width ? props.width : "18px")};
   margin-bottom: 2px;
+  cursor: pointer;
 `;
 
 export const SaveIcon = styled.img.attrs({
@@ -99,6 +101,7 @@ export const SaveIcon = styled.img.attrs({
   height: ${(props) => (props.width ? props.width : "15px")};
   margin-top: 10px;
   margin-bottom: 2px;
+  cursor: pointer;
 `;
 
 export const SaveFillIcon = styled.img.attrs({
@@ -108,6 +111,7 @@ export const SaveFillIcon = styled.img.attrs({
   height: ${(props) => (props.width ? props.width : "15px")};
   margin-top: 10px;
   margin-bottom: 2px;
+  cursor: pointer;
 `;
 
 export const ViewDateContainer = styled.div`
