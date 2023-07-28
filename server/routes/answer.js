@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Answer = require('../models/Answer');
 const Question = require('../models/Question');
+const Vote = require('../models/Vote');
 
 // Answer CRUD
 // CREATE
@@ -93,6 +94,39 @@ router.delete('/:id', async (req, res) => {
     } else {
       res.status(401).json('You can delete only your Answer!');
     }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// VOTE
+router.put('/:id/vote', async (req, res) => {
+  const answerId = req.params.id;
+  const author = req.body.author;
+
+  try {
+    const answer = await Answer.findById(answerId);
+
+    if (!answer) {
+      res.status(404).json('Answer not found!');
+    }
+    const existingVote = await Vote.findOne({
+      answerId,
+      username: author,
+    });
+
+    if (!existingVote) {
+      await Vote.create({
+        answerId,
+        username: author,
+      });
+      answer.votes += 1;
+    } else {
+      await Vote.deleteOne({ _id: existingVote._id });
+      answer.votes -= 1;
+    }
+    await answer.save();
+    res.status(200).json(answer);
   } catch (err) {
     res.status(500).json(err);
   }
