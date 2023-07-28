@@ -46,6 +46,7 @@ export const ArticlesTable = () => {
   //데이터 가져오기
   useEffect(() => {
     fetchData();
+    console.log(QuestionData);
   }, [setQuestionData]);
 
   const handlePaginationChange = (
@@ -108,9 +109,8 @@ export const ArticlesTable = () => {
                       ))}
                     </HashTagWrapper>
                     <Author>{item.author}</Author>
-                    <Date>{item.createdAt.substring(
-                  0,
-                  item.createdAt.indexOf("T"))}
+                    <Date>
+                      {item.createdAt.substring(0, item.createdAt.indexOf("T"))}
                     </Date>
                   </Addition>
                 </Context>

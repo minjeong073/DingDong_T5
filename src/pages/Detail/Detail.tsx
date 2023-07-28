@@ -13,13 +13,28 @@ export const Detail = () => {
 
   let { id } = useParams<{ id?: string }>();
 
+  const updateViews = useCallback(async () => {
+    try {
+      if (currentQuestion) {
+        setCurrentQuestion({
+          ...currentQuestion,
+          views: currentQuestion?.views! + 1,
+        });
+
+        await axios.patch(`/api/articles/${id}`, {
+          views: currentQuestion.views + 1,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating views:", error);
+      alert("조회수 업데이트 실패!");
+    }
+  }, [id, currentQuestion]);
+
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get("/api/articles");
-      // id와 일치하는 데이터를 찾아서 setCurrentQuestion에 넣어준다.
-      const foundQuestion = response.data.find(
-        (item: QuestionDataType) => item._id === id
-      );
+      const response = await axios.get(`/api/articles/${id}`);
+      const foundQuestion = response.data;
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
       }
@@ -44,7 +59,11 @@ export const Detail = () => {
 
   return (
     <Root>
-      <QuestionForm id={id} currentQuestion={currentQuestion} />
+      <QuestionForm
+        id={id}
+        currentQuestion={currentQuestion}
+        updateViews={updateViews}
+      />
     </Root>
   );
 };

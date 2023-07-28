@@ -31,9 +31,14 @@ import axios from "axios";
 type Props = {
   id?: string | null;
   currentQuestion?: QuestionDataType | null;
+  updateViews: () => void;
 };
 
-export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
+export const QuestionForm: React.FC<Props> = ({
+  id,
+  currentQuestion,
+  updateViews,
+}) => {
   const navigate = useNavigate();
 
   const deleteQuestion = useCallback(async () => {
@@ -53,6 +58,10 @@ export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
       alert("질문 삭제 실패!");
     }
   }, [id]);
+
+  useEffect(() => {
+    updateViews();
+  }, []);
 
   return (
     <>
