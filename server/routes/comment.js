@@ -13,11 +13,11 @@ router.post('/', async (req, res) => {
   }
 });
 
-//GET ALL Comment!
+//GET ALL Comment
 router.get('/', async (req, res) => {
   try {
-    const comment = await Comment.find({});
-    res.status(200).json(comment);
+    const comments = await Comment.find({});
+    res.status(200).json(comments);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -58,27 +58,26 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-//DELETE Comment
+// DELETE Comment
 router.delete('/:id', async (req, res) => {
   const commentId = req.params.id;
   const userId = req.body.userId;
-  const commentIdsToDelete = req.body.commentIds;
+  const commentIds = req.body.commentIds;
 
   try {
-    // commentIdsToDelete이 request body에 존재하면,여러개 comments들을 삭제.
-
-    if (commentIdsToDelete && Array.isArray(commentIdsToDelete)) {
-      //삭제 전 모든 댓글이 존재하는지 확인
-      const commentIdsToDelete = await Comment.find({
-        _id: { $in: commentIdsToDelete },
+    // commentIds가 request body에 존재하면, 여러개 comment 삭제
+    if (commentIds && Array.isArray(commentIds)) {
+      // 삭제 전 모든 댓글이 존재하는지 확인
+      const commentsToDelete = await Comment.find({
+        _id: { $in: commentIds },
         userId: userId,
       });
 
-      if (commentIdsToDelete.length == commentIdsToDelete.length) {
+      if (commentsToDelete.length === commentIds.length) {
         try {
-          //d여러개 댓글 삭제
-          await Comment.deleteMany({ _id: { $in: commentIdsToDelete } });
-          res.status(200).json('Comments has been deleted successfully');
+          // 여러 개 댓글 삭제
+          await Comment.deleteMany({ _id: { $in: commentIds } });
+          res.status(200).json('Comments have been deleted successfully');
         } catch (err) {
           res.status(500).json(err);
         }
@@ -86,12 +85,12 @@ router.delete('/:id', async (req, res) => {
         res.status(401).json('You can delete only your Comments!');
       }
     } else {
-      // commentIdsToDelete 이 존재하지 않으면, comment 하나를 삭제.
+      // commentIds가 존재하지 않으면, comment 하나를 삭제
       try {
         const comment = await Comment.findById(commentId);
         if (comment && comment.userId === userId) {
           try {
-            //댓글 하나 삭제
+            // 댓글 하나 삭제
             await comment.deleteOne();
             res.status(200).json('Comment has been deleted successfully');
           } catch (err) {
