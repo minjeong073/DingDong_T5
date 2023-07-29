@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+
 export const NavBar = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -23,7 +24,6 @@ export const Tr = styled.tr`
 `;
 
 export const HashTag = styled.button`
-  width: 80px;
   height: 40px;
   margin-left: 10px;
   margin-bottom: 5px;
