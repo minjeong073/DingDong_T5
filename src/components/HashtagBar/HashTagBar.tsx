@@ -10,8 +10,8 @@ export const HashTagBar = () => {
 
   const HashtagArr = dummy.articles.map((item) => item.hashtag);
   const oneHashtag = HashtagArr.flat();
-  const onlyHashtag = Array.from(new Set(oneHashtag));
-  console.log(onlyHashtag);
+  const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0,9);
+
   
   return(
     <>
