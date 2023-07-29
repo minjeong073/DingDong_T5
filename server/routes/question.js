@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Question = require('../models/Question');
+const Vote = require('../models/Vote');
 
 // Question CRUD
 // CREATE
@@ -16,8 +17,9 @@ router.post('/', async (req, res) => {
 // GET ALL
 router.get('/', async (req, res) => {
   try {
-    const question = await Question.find();
-    res.status(200).json(question);
+    const questions = await Question.find();
+    questions.forEach((question) => question.convertDate());
+    res.status(200).json(questions);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -27,6 +29,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
+    question.convertDate();
     res.status(200).json(question);
   } catch (err) {
     res.status(500).json(err);
@@ -37,7 +40,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
-    if (question.username === req.body.username) {
+    if (question.author === req.body.author) {
       try {
         const updatedQuestion = await Question.findByIdAndUpdate(
           req.params.id,
@@ -62,7 +65,7 @@ router.put('/:id', async (req, res) => {
 router.put('/delete/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
-    if (question.username === req.body.username) {
+    if (question.author === req.body.author) {
       try {
         // isDeleted 를 true 로 변경
         question.isDeleted = true;
@@ -74,6 +77,38 @@ router.put('/delete/:id', async (req, res) => {
     } else {
       res.status(401).json('You can delete only your Question!');
     }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// UPDATE Votes
+router.put('/:id/vote', async (req, res) => {
+  const questionId = req.params.id;
+  const author = req.body.author;
+  try {
+    const question = await Question.findById(questionId);
+
+    if (!question) {
+      res.status(404).json('Question not found!');
+    }
+    const existingVote = await Vote.findOne({
+      questionId,
+      username: author,
+    });
+
+    if (!existingVote) {
+      await Vote.create({
+        questionId,
+        username: author,
+      });
+      question.votes += 1;
+    } else {
+      await Vote.deleteOne({ _id: existingVote._id });
+      question.votes -= 1;
+    }
+    await question.save();
+    res.status(200).json(question);
   } catch (err) {
     res.status(500).json(err);
   }

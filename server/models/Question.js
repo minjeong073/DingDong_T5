@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-// const AutoIncrement = require('mongoose-sequence')(mongoose);
-// const autoIdSetter = require('../utils/auto-id-setter');
 
 // id, 제목, 내용, 투표수, 답변수, 조회수, 작성자, 해시태그
 const QuestionSchema = new mongoose.Schema(
@@ -28,6 +26,10 @@ const QuestionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    saves: {
+      type: Number,
+      default: 0,
+    },
     // Login 구현 후 수정 예정 : 작성자는 User의 id를 참조
     // userId: {
     //   type: Number,
@@ -50,6 +52,11 @@ const QuestionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// autoIdSetter(QuestionSchema, mongoose, 'Question', 'id');
+// Date 객체로 변환
+QuestionSchema.methods.convertDate = function () {
+  this.createdAt = new Date(this.createdAt);
+  this.updatedAt = new Date(this.updatedAt);
+  return this;
+};
 
 module.exports = mongoose.model('Question', QuestionSchema);
