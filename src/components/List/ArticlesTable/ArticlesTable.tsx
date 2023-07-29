@@ -108,9 +108,7 @@ export const ArticlesTable = () => {
                       ))}
                     </HashTagWrapper>
                     <Author>{item.author}</Author>
-                    <Date>
-                      {item.createdAt.substring(0, item.createdAt.indexOf("T"))}
-                    </Date>
+                    <Date>{item.createdAt}</Date>
                   </Addition>
                 </Context>
               </TableCell>

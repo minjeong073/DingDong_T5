@@ -111,12 +111,7 @@ export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
           <ItemContainer>
             <ViewDateContainer>
               <Typo>조회수 {currentQuestion?.views}</Typo>
-              <Typo>
-                {currentQuestion?.createdAt.substring(
-                  0,
-                  currentQuestion?.createdAt.indexOf("T")
-                )}
-              </Typo>
+              <Typo>{currentQuestion?.createdAt}</Typo>
             </ViewDateContainer>
             <ContentTypo
               dangerouslySetInnerHTML={{
