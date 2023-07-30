@@ -22,14 +22,14 @@ export const ModifyQuestion = () => {
   const [contents, setContents] = useState("");
   const [modifiedArticle, setModifiedArticle] =
     useState<QuestionDataType | null>(null);
-  const { id } = useParams<{ id: string }>();
+  const { _id } = useParams<{ _id: string }>();
   const navigate = useNavigate();
 
   const setQuestionData = useSetRecoilState(QuestionData); // Recoil setter
 
   const fetchArticleData = async () => {
     try {
-      const response = await axios.get(`/api/articles/${id}`);
+      const response = await axios.get(`/api/articles/${_id}`);
       setModifiedArticle(response.data);
       setContents(response.data.content);
     } catch (error) {
@@ -40,7 +40,7 @@ export const ModifyQuestion = () => {
 
   useEffect(() => {
     fetchArticleData();
-  }, [id]);
+  }, [_id]);
 
   const updateQuestion = async () => {
     try {
@@ -51,21 +51,20 @@ export const ModifyQuestion = () => {
         alert("제목과 내용을 모두 입력해주세요.");
         return;
       }
-      await axios.put(`/api/articles/${id}`, {
+      await axios.put(`/api/articles/${_id}`, {
         ...modifiedArticle,
-        _id: id, // Ensure _id is included in the payload for the backend update
         content: contents,
       });
       setQuestionData((prevQuestionData: QuestionDataType[]) => {
         const updatedData = prevQuestionData.map((item) =>
-          item._id === id
+          item._id === _id
             ? { ...item, title: modifiedArticle.title, content: contents }
             : item
         );
         return updatedData;
       });
       alert("질문 수정 성공!");
-      navigate(`/articles/${id}`);
+      navigate(`/articles/${_id}`);
     } catch (error) {
       console.error(error);
       alert("질문 수정 실패!");

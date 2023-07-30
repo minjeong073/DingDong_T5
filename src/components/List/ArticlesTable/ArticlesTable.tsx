@@ -72,7 +72,10 @@ export const ArticlesTable = () => {
 
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentQuestion = QuestionData.slice(startIndex, endIndex);
+  const filteredQuestionData = QuestionData.filter(
+    (item) => item.isDeleted === false
+  );
+  const currentQuestion = filteredQuestionData.slice(startIndex, endIndex);
 
   //해시태그 클릭하면 그 기능을 확인할 수 있음
   const onClickHashtag = () => {};
