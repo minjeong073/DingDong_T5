@@ -22,14 +22,15 @@ export const WriteQuestion = () => {
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState("");
   const [newArticle, setNewArticle] = useState({
-    id: 0,
     title: "",
     content: "",
     votes: 0,
     answers: 0,
     views: 0,
-    author: "soy",
+    saves: 0,
+    author: "so",
     hashtags: [],
+    isDeleted: false,
   });
   const navigate = useNavigate();
 

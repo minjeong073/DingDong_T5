@@ -29,50 +29,51 @@ import DOMPurify from "dompurify";
 import axios from "axios";
 
 type Props = {
-  id?: string | null;
+  _id?: string | null;
   currentQuestion?: QuestionDataType | null;
 };
 
-export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
+export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [votes, setVotes] = useState(currentQuestion?.votes);
 
   const navigate = useNavigate();
 
-  const deleteQuestion = useCallback(async () => {
+  const deleteQuestion = async () => {
     try {
       //삭제할건지 확인
       if (!window.confirm("정말 삭제하시겠습니까?")) {
         return;
       }
       //삭제
-      await axios.delete(`/api/articles/${id}`).then((res) => {
-        console.log(res);
-        alert("질문 삭제 성공!");
-        navigate("/articles");
-      });
+      await axios
+        .put(`/api/articles/delete/${_id}`, {
+          ...currentQuestion,
+        })
+        .then(() => {
+          alert("질문 삭제 성공!");
+          navigate("/articles");
+        });
     } catch (error) {
       console.error(error);
       alert("질문 삭제 실패!");
     }
-  }, [id]);
+  };
 
   // 투표기능 구현
   const handleVote = useCallback(async () => {
     try {
       if (isClicked) {
-        await axios.put(`/api/articles/${id}`, {
+        await axios.put(`/api/articles/${_id}`, {
           ...currentQuestion,
-          _id: id, // Ensure _id is included in the payload for the backend update
           votes: votes! - 1,
         });
         setVotes((prev) => prev! - 1);
         setIsClicked(false);
         return;
       }
-      await axios.put(`/api/articles/${id}`, {
+      await axios.put(`/api/articles/${_id}`, {
         ...currentQuestion,
-        _id: id, // Ensure _id is included in the payload for the backend update
         votes: votes! + 1,
       });
       setVotes((prev) => prev! + 1);
@@ -81,7 +82,7 @@ export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
       console.error("Error updating votes:", error);
       alert("투표 실패!");
     }
-  }, [id, currentQuestion, isClicked, votes]);
+  }, [_id, currentQuestion, isClicked, votes]);
 
   // votes 값이 갱신될떄 마다 votes를 리렌더링
   useEffect(() => {
@@ -111,12 +112,7 @@ export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
           <ItemContainer>
             <ViewDateContainer>
               <Typo>조회수 {currentQuestion?.views}</Typo>
-              <Typo>
-                {currentQuestion?.createdAt.substring(
-                  0,
-                  currentQuestion?.createdAt.indexOf("T")
-                )}
-              </Typo>
+              <Typo>{currentQuestion?.createdAt}</Typo>
             </ViewDateContainer>
             <ContentTypo
               dangerouslySetInnerHTML={{
@@ -131,7 +127,7 @@ export const QuestionForm: React.FC<Props> = ({ id, currentQuestion }) => {
               공유
             </Typo>
             <Typo underline="true" pointer="true">
-              <Link to={`/articles/modify/${id}`}>수정</Link>
+              <Link to={`/articles/modify/${_id}`}>수정</Link>
             </Typo>
             <Typo underline="true" pointer="true" onClick={deleteQuestion}>
               삭제

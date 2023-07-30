@@ -34,6 +34,7 @@ const AnswerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
 // Date 객체로 변환
 AnswerSchema.methods.convertDate = function () {
   this.createdAt = new Date(this.createdAt);
