@@ -38,7 +38,7 @@ export const HashTagNav = () => {
 
   return(
     <NavBar>
-      <Table expanded={expanded}>
+      <Table $expanded={expanded? true : undefined}>
         <Tbody >
             {onlyHashtag.map((item, index) => (
               index % 2 === 0 ? (

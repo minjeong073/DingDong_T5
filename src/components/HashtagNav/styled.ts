@@ -12,11 +12,11 @@ export const NavBar = styled.div`
   overflow: auto;
 `;
 
-export const Table = styled.table<{expanded?: boolean}>`
+export const Table = styled.table<{$expanded?: boolean}>`
 display: flex;
 flex-direction: column;
 align-items: center;
-max-height: ${(props) => (props.expanded ? "auto" : "200px")};
+max-height: ${(props) => (props.$expanded ? "auto" : "200px")};
 &::-webkit-scrollbar {
   display: none;
 }
