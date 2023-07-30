@@ -85,7 +85,7 @@ export const ArticlesTable = () => {
       <Table>
         <tbody>
           {currentQuestion.map((item, idx) => (
-            <TableRow key={`${item.id}_${idx}`}>
+            <TableRow key={`${item._id}`}>
               <TableCell>
                 <Info>
                   <Box>
