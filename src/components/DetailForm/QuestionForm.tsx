@@ -39,7 +39,7 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
 
   const navigate = useNavigate();
 
-  const deleteQuestion = useCallback(async () => {
+  const deleteQuestion = async () => {
     try {
       //삭제할건지 확인
       if (!window.confirm("정말 삭제하시겠습니까?")) {
@@ -49,7 +49,6 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
       await axios
         .put(`/api/articles/delete/${_id}`, {
           ...currentQuestion,
-          author: currentQuestion?.author, // Make sure to include the 'author' field in the request body
         })
         .then(() => {
           alert("질문 삭제 성공!");
@@ -59,7 +58,7 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
       console.error(error);
       alert("질문 삭제 실패!");
     }
-  }, [_id]);
+  };
 
   // 투표기능 구현
   const handleVote = useCallback(async () => {
