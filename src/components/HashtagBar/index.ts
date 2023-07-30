@@ -1,1 +1,0 @@
-export { HashTagBar } from "./HashTagBar";
