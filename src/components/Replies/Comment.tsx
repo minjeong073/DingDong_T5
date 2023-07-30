@@ -1,8 +1,6 @@
-
-
 export const Comment = () => {
   return(
     <>
     </>
-  )
+  );
 };
