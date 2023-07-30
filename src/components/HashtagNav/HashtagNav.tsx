@@ -4,6 +4,7 @@ import {
   Tbody,
   Tr,
   Td,
+  Special,
   HashTag,
   Button,
   Img
@@ -49,14 +50,32 @@ export const HashTagNav = () => {
       <Table $expanded={expanded? true : undefined}>
         <Tbody >
             {onlyHashtag.map((item, index) => (
-              index % 2 === 0 ? (
-                <Tr key={index}>
+              <Tr key={index}>               
+                {index === 0 ? (
                   <Td>
-                  <HashTag key={item}>{item}</HashTag>
-                  {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> : null}
-                  </Td>
-                </Tr>
-              ) : null
+                    <Special>{item}</Special>
+                    <Special>{onlyHashtag[index+1]}</Special>
+                  </Td>                    
+                  ) : (
+                    index % 2 === 0 ? (
+                      <Td>            
+                        <HashTag key={index}>{item}</HashTag>
+                          {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> 
+                          : null}
+                      </Td>                      
+                    ) : null
+                  )}                
+              </Tr>
+              
+              // index % 2 === 0 ? (
+              //   <Tr key={index}>
+              //     <Td>            
+              //       <HashTag key={index}>{item}</HashTag>
+              //       {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> 
+              //       : null}
+              //     </Td>
+              //   </Tr>
+              // ) : null
             ))}
       </Tbody>
     </Table>
@@ -67,3 +86,9 @@ export const HashTagNav = () => {
   </NavBar>  
   )
 }
+
+/*
+                    <Special key={index}>{item}</Special>
+                    {index + 1 < onlyHashtag.length ? <Special>{onlyHashtag[index + 1]}</Special> 
+                    : null}
+ */

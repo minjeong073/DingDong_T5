@@ -41,6 +41,20 @@ export const Tr = styled.tr`
 export const Td = styled.td`
 `;
 
+export const Special = styled.button`
+  margin-left: 10px;
+  margin-bottom: 5px;
+  padding: 5px 15px;
+  background-color: #8B5CF6;
+  color: #FFFFFF;
+  border: 1px solid #8B5CF6;
+  border-radius: 20px;
+  font-size: 15px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 export const HashTag = styled.button`
   margin-left: 10px;
   margin-bottom: 5px;
