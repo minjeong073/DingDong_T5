@@ -17,7 +17,6 @@ export const ItemsState = atom({
 
 export interface QuestionDataType {
   _id?: string;
-  id?: number | undefined;
   title: string;
   content: string;
   createdAt: string;
@@ -35,7 +34,6 @@ export interface QuestionDataType {
 const defaultQuestionData: QuestionDataType[] = [
   {
     _id: "",
-    id: 0,
     title: "",
     content: "",
     createdAt: "",
