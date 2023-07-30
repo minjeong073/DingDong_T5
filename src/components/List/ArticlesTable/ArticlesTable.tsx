@@ -46,7 +46,7 @@ export const ArticlesTable = () => {
   //데이터 가져오기
   useEffect(() => {
     fetchData();
-    console.log(QuestionData);
+    // console.log(QuestionData);
   }, [setQuestionData]);
 
   const handlePaginationChange = (

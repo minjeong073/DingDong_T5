@@ -1,4 +1,3 @@
-import dummy from "../../db/articles.json";
 import {
   NavBar,
   Table,
@@ -22,13 +21,22 @@ export const HashTagNav = () => {
   const [QuestionData, setQuestionData] =
   useRecoilState<QuestionDataType[]>(QuestionListState);
 
-  // console.log(typeof{QuestionData});
-  // const Values = useRecoilValue<QuestionDataType[]>(QuestionData).hashtags;
-  // console.log(QuestionData[10].hashtags);
-
-  const HashtagArr = dummy.articles.map((item) => item.hashtag);
-  const oneHashtag = HashtagArr.flat();
-  const onlyHashtag = Array.from(new Set(oneHashtag));
+  let getHashtags: string[]= [];
+  Array(QuestionData.length).fill(0).map((item, index) => {
+    const values = QuestionData[index]?.hashtags.join(',');
+    getHashtags.push(values); 
+  })
+  const oneHashtag = getHashtags.flatMap((item) => item.split(',').map((part) => part.trim()));
+  const realHash = oneHashtag.filter((item) => item.trim() !== '');
+  const sortByFrequency = (arr:any[]) =>{
+    const frequencyMap = arr.reduce((map,item) => {
+      map.set(item, (map.get(item || 0) + 1));
+      return map;
+    }, new Map());
+    return arr.sort((a,b) => frequencyMap.get(b) - frequencyMap.get(a));
+  }
+  const forHash = sortByFrequency(realHash);
+  const onlyHashtag = Array.from(new Set(forHash));
 
   const onClickExpanded = () =>{
     setExpanded( !expanded );
