@@ -20,23 +20,26 @@ import {
 import dummy from "../../db/comment.json";
 
 export const CommentList = () =>{
-  const [QuestionData, setQuestionData] =
-  useRecoilState<QuestionDataType[]>(QuestionListState);
+  // const [QuestionData, setQuestionData] =
+  // useRecoilState<QuestionDataType[]>(QuestionListState);
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get("/api/articles");
-      setQuestionData(response.data);
-    } catch (error) {
-      console.error(error);
-      alert("게시판 정보 가져오기 실패!");
-    }
-  };
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await axios.get("/api/articles");
+  //     setQuestionData(response.data);
+  //     let mutableData = [...response.data].reverse();
+  //     response.data = mutableData;
+  //     setQuestionData(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("게시판 정보 가져오기 실패!");
+  //   }
+  // };
 
-  //데이터 가져오기
-  useEffect(() => {
-    fetchData();
-  }, [setQuestionData]);
+  // //데이터 가져오기
+  // useEffect(() => {
+  //   fetchData();
+  // }, [setQuestionData]);
 
   const Comments = dummy.comment.sort((a, b) => parseInt(b.votes) - parseInt(a.votes));
   //console.log(Comments);

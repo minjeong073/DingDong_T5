@@ -12,15 +12,32 @@ import {
 import { useRecoilState, useRecoilValue } from "recoil";
 import { QuestionData, QuestionListState } from "../../stores/page-store";
 import type { QuestionDataType } from "../../stores/page-store";
-import React , { useState } from "react";
+import React , { useState, useEffect } from "react";
 import unfold from "../../assets/icon/unfold.svg";
 import fold from "../../assets/icon/fold.svg";
-
+import axios from "axios";
 
 export const HashTagNav = () => {
   const [ expanded, setExpanded ] = useState(false);
   const [QuestionData, setQuestionData] =
   useRecoilState<QuestionDataType[]>(QuestionListState);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("/api/articles");
+      setQuestionData(response.data);
+      let mutableData = [...response.data].reverse();
+      response.data = mutableData;
+      setQuestionData(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("게시판 정보 가져오기 실패!");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [setQuestionData]);
 
   let getHashtags: string[]= [];
   Array(QuestionData.length).fill(0).map((item, index) => {
