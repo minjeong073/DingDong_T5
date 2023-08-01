@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Question = require('../models/Question');
+const User = require('../models/User');
 const Vote = require('../models/Vote');
 
 // Question CRUD
@@ -97,7 +98,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE
-router.put('/delete/:id', async (req, res) => {
+router.put('/:id/delete', async (req, res) => {
   try {
     await Question.findByIdAndUpdate(
       req.params.id,
@@ -145,6 +146,26 @@ router.put('/:id/vote', async (req, res) => {
     }
     await question.save();
     res.status(200).json(question);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// bookmark 추가
+// login 구현 후에 userId 수정 예정
+router.post('/:id/bookmark', async (req, res) => {
+  const questionId = req.params.id;
+
+  try {
+    const question = await Question.findById(questionId);
+
+    if (question) {
+      question.saves++;
+      await question.save();
+    } else {
+      res.status(404).json('Question not found!');
+    }
+    res.status(200).json('Question has been bookmarked');
   } catch (err) {
     res.status(500).json(err);
   }
