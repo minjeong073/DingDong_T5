@@ -20,6 +20,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    bookmarkedQuestions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Question',
+      },
+    ],
   },
   // 생성일(createdAt)과 수정일(updatedAt)을 자동으로 관리
   { timestamps: true }
