@@ -37,6 +37,7 @@ export const ArticlesTable = () => {
       let mutableData = [...response.data].reverse();
       response.data = mutableData;
       setQuestionData(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error(error);
       alert("게시판 정보 가져오기 실패!");
