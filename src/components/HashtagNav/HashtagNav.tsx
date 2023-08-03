@@ -98,7 +98,7 @@ export const HashTagNav = () => {
     </Table>
     <Button onClick={onClickExpanded}>
         {expanded ? "접기"  : "펼치기" }
-        <Img />
+        <Img src={expanded? fold : unfold }/>
     </Button>
   </NavBar>  
   )
