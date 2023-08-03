@@ -1,4 +1,11 @@
 import styled from "styled-components";
+import { Table } from "../List/ArticlesTable/styled";
+
+export const ReplyTable = styled(Table)`
+  td{
+    height : 110px;
+  }
+`;
 
 
 export const TableCell = styled.td`
