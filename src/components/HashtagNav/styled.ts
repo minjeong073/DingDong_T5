@@ -70,4 +70,5 @@ export const HashTag = styled.button`
 `;
 
 export const Img = styled.img`
+  margin-left: 7px;
 `;

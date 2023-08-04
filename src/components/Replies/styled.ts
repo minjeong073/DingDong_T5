@@ -1,4 +1,11 @@
 import styled from "styled-components";
+import { Table } from "../List/ArticlesTable/styled";
+
+export const ReplyTable = styled(Table)`
+  td{
+    height : 110px;
+  }
+`;
 
 
 export const TableCell = styled.td`
@@ -14,6 +21,7 @@ export const TableCell = styled.td`
 export const Title = styled.div`
   display: flex;
   width: 100%;
+  margin: 5px 10px 0 10px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space:nowrap;

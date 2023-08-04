@@ -12,15 +12,32 @@ import {
 import { useRecoilState, useRecoilValue } from "recoil";
 import { QuestionData, QuestionListState } from "../../stores/page-store";
 import type { QuestionDataType } from "../../stores/page-store";
-import React , { useState } from "react";
+import React , { useState, useEffect } from "react";
 import unfold from "../../assets/icon/unfold.svg";
 import fold from "../../assets/icon/fold.svg";
-
+import axios from "axios";
 
 export const HashTagNav = () => {
   const [ expanded, setExpanded ] = useState(false);
   const [QuestionData, setQuestionData] =
   useRecoilState<QuestionDataType[]>(QuestionListState);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("/api/articles");
+      setQuestionData(response.data);
+      let mutableData = [...response.data].reverse();
+      response.data = mutableData;
+      setQuestionData(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("게시판 정보 가져오기 실패!");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [setQuestionData]);
 
   let getHashtags: string[]= [];
   Array(QuestionData.length).fill(0).map((item, index) => {
@@ -66,29 +83,13 @@ export const HashTagNav = () => {
                     ) : null
                   )}                
               </Tr>
-              
-              // index % 2 === 0 ? (
-              //   <Tr key={index}>
-              //     <Td>            
-              //       <HashTag key={index}>{item}</HashTag>
-              //       {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> 
-              //       : null}
-              //     </Td>
-              //   </Tr>
-              // ) : null
             ))}
       </Tbody>
     </Table>
     <Button onClick={onClickExpanded}>
         {expanded ? "접기"  : "펼치기" }
-        <Img />
+        <Img src={expanded? fold : unfold }/>
     </Button>
   </NavBar>  
   )
 }
-
-/*
-                    <Special key={index}>{item}</Special>
-                    {index + 1 < onlyHashtag.length ? <Special>{onlyHashtag[index + 1]}</Special> 
-                    : null}
- */

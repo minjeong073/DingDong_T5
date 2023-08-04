@@ -1,6 +1,6 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
-import type { QuestionDataType } from '../../stores/page-store';
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import type { QuestionDataType } from "../../stores/page-store";
 import {
   HeartIcon,
   ItemContainer,
@@ -22,11 +22,10 @@ import {
   AuthorContainer,
   AuthorProfile,
   UserStateCircle,
-  CommentContainer,
   HeartFillIcon,
-} from './styled';
-import DOMPurify from 'dompurify';
-import axios from 'axios';
+} from "./styled";
+import DOMPurify from "dompurify";
+import axios from "axios";
 
 type Props = {
   _id?: string | null;
@@ -42,21 +41,21 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
   const deleteQuestion = async () => {
     try {
       //삭제할건지 확인
-      if (!window.confirm('정말 삭제하시겠습니까?')) {
+      if (!window.confirm("정말 삭제하시겠습니까?")) {
         return;
       }
       //삭제
       await axios
-        .put(`/api/articles/delete/${_id}`, {
+        .put(`/api/articles/${_id}/delete`, {
           ...currentQuestion,
         })
         .then(() => {
-          alert('질문 삭제 성공!');
-          navigate('/articles');
+          alert("질문 삭제 성공!");
+          navigate("/articles");
         });
     } catch (error) {
       console.error(error);
-      alert('질문 삭제 실패!');
+      alert("질문 삭제 실패!");
     }
   };
 
@@ -79,8 +78,8 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
       setVotes((prev) => prev! + 1);
       setIsClicked(true);
     } catch (error) {
-      console.error('Error updating votes:', error);
-      alert('투표 실패!');
+      console.error("Error updating votes:", error);
+      alert("투표 실패!");
     }
   }, [_id, currentQuestion, isClicked, votes]);
 
@@ -123,23 +122,13 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
         </QuestionTopContainer>
         <QuestionBottomContainer>
           <QuestionBottomLeftContainer>
-            <Typo
-              underline='true'
-              pointer='true'
-            >
+            <Typo underline="true" pointer="true">
               공유
             </Typo>
-            <Typo
-              underline='true'
-              pointer='true'
-            >
+            <Typo underline="true" pointer="true">
               <Link to={`/articles/modify/${_id}`}>수정</Link>
             </Typo>
-            <Typo
-              underline='true'
-              pointer='true'
-              onClick={deleteQuestion}
-            >
+            <Typo underline="true" pointer="true" onClick={deleteQuestion}>
               삭제
             </Typo>
           </QuestionBottomLeftContainer>
@@ -151,7 +140,7 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
                   {currentQuestion?.author.slice(0, 3)}
                 </AuthorProfile>
                 <UserStateCircle
-                  color={currentQuestion?.votes! < 15 ? '#D1D5DB' : '#ffd700'}
+                  color={currentQuestion?.votes! < 15 ? "#D1D5DB" : "#ffd700"}
                 />
                 <Typo>{currentQuestion?.votes}</Typo>
               </AuthorContainer>

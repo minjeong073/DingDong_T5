@@ -106,6 +106,7 @@ router.put('/:id', async (req, res) => {
 
 // DELETE
 router.put('/:id/delete', async (req, res) => {
+  console.log(req.params.id);
   try {
     await Question.findByIdAndUpdate(
       req.params.id,
