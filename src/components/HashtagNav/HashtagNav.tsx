@@ -16,6 +16,7 @@ import React , { useState, useEffect } from "react";
 import unfold from "../../assets/icon/unfold.svg";
 import fold from "../../assets/icon/fold.svg";
 import axios from "axios";
+import { type } from "os";
 
 export const HashTagNav = () => {
   const [ expanded, setExpanded ] = useState(false);
@@ -55,6 +56,7 @@ export const HashTagNav = () => {
   }
   const forHash = sortByFrequency(realHash);
   const onlyHashtag = Array.from(new Set(forHash));
+  onlyHashtag.unshift('ALL');
 
   const onClickExpanded = () =>{
     setExpanded( !expanded );

@@ -5,7 +5,7 @@ export const NavBar = styled.div`
   flex-direction: column;
   margin-top: 23px;
   margin-right: 40px;
-  width: 185px;
+
   height: 400px;
   overflow: auto;
 `;
