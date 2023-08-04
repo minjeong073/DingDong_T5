@@ -1,31 +1,32 @@
 import styled from "styled-components";
 import { Table } from "../List/ArticlesTable/styled";
 
-export const Holder = styled.div`
+export const LButton = styled.div`
   display: flex;
   flex-direction: row;
-  margin-bottom: 15px;
 `;
 
-export const Button1 = styled.button`
+export const Button1 = styled.button<{$result?: string}>`
   display: flex;
   width: 80px;
   height: 39px;
   border: 1px solid #E2E8F0;
   border-radius: 10px 0 0 10px;
+  background-color: ${props => (props.$result === "댓글" ? '#F1F5F9' : '#FFFFFF')};
   color: #0F172A;
   font-size: 15px;
   padding: 7px 0;
   font-weight: 400;
   justify-content: center;
 `;
-export const Button2 = styled.button`
+export const Button2 = styled.button<{$result?: string}>`
   display: flex;
   width: 80px;
   height: 39px;
   border: 1px solid #E2E8F0;
   padding: 7px 0;
   border-radius: 0 10px 10px 0;
+  background-color: ${props => (props.$result === "답변글" ? '#F1F5F9' : '#FFFFFF')};
   color: #0F172A;
   font-size: 15px;
   font-weight: 400;

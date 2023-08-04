@@ -4,11 +4,9 @@ import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { QuestionListState } from "../../stores/page-store";
 import type { QuestionDataType } from "../../stores/page-store";
- import{
-  TableRow
- } from "../List/ArticlesTable/styled";
+ import{ TableRow } from "../List/ArticlesTable/styled";
  import {
-  Holder,
+  LButton,
   Button1,
   Button2,
   ReplyTable,
@@ -16,7 +14,11 @@ import type { QuestionDataType } from "../../stores/page-store";
   Comment,
   TableCell 
 } from "./styled";
+import { useNavigate } from "react-router-dom";
 import dummy from "../../db/comment.json";
+import WhiteLogo from "../../assets/icon/white_logo.svg";
+import { Holder, Img, Span} from "../List/ArticleList/styled";
+import { Button } from "../Button";
 
 export const CommentList = () =>{
   // const [QuestionData, setQuestionData] =
@@ -40,20 +42,36 @@ export const CommentList = () =>{
   //   fetchData();
   // }, [setQuestionData]);
 
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState("댓글");
 
   const ButtonClick = (buttonNumber : number) => {
-
+    if(buttonNumber === 1){
+      setResult("댓글");
+    }else if(buttonNumber === 2){
+      setResult("답변글");
+    }
   }
+  const navigate = useNavigate();
+  const onClickWrite = () => {
+    navigate("/articles/write");
+  };
 
+
+  // console.log(result);
+  
   const Comments = dummy.comment.sort((a, b) => parseInt(b.votes) - parseInt(a.votes));
-  //console.log(Comments);
 
   return(
     <>
       <Holder>
-        <Button1>댓글</Button1>
-        <Button2>답변글</Button2>
+        <LButton>
+          <Button1 onClick={()=>ButtonClick(1)} $result={result} >댓글</Button1>
+          <Button2 onClick={()=>ButtonClick(2)} $result={result}>답변글</Button2>
+        </LButton>        
+        <Button width="123px" margin="0 0 10px 0" onClick={onClickWrite}>
+          <Img src={WhiteLogo} />
+          <Span>질문하기</Span>
+        </Button>
       </Holder>
       <ReplyTable>
         <tbody>

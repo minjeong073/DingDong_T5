@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import unfold from "../../assets/icon/unfold.svg";
-import fold from "../../assets/icon/fold.svg";
 
 export const NavBar = styled.div`
   display: flex;
