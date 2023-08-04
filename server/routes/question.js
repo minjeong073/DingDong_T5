@@ -17,8 +17,16 @@ router.post('/', async (req, res) => {
 
 // GET ALL
 router.get('/', async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5;
+  const startIndex = (page - 1) * pageSize;
   try {
-    const questions = await Question.find();
+    const totalQuestions = await Question.countDocuments({ isDeleted: false });
+    const questions = await Question.find({ isDeleted: false })
+      .sort({ createdAt: -1 }) // 최신순으로 정렬 (내림차순 : -1)
+      .skip(startIndex)
+      .limit(pageSize)
+      .exec();
     const updatedQuestions = questions.map((question) => {
       return {
         ...question._doc,
@@ -30,9 +38,8 @@ router.get('/', async (req, res) => {
         }),
       };
     });
-    // updatedQuestions.forEach((question) => console.log(question.createdAt));
 
-    res.status(200).json(updatedQuestions);
+    res.status(200).json({ updatedQuestions, totalQuestions });
   } catch (err) {
     res.status(500).json(err);
   }
