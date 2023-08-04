@@ -1,10 +1,10 @@
-import React, { useState, useEffect, Fragment } from "react";
-import axios from "axios";
+import React, { useState, useEffect, Fragment } from 'react';
+import axios from 'axios';
 // import { allArticles } from "../../../api/url";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { QuestionListState } from "../../../stores/page-store";
-import type { QuestionDataType } from "../../../stores/page-store";
-import { Link } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { QuestionListState } from '../../../stores/page-store';
+import type { QuestionDataType } from '../../../stores/page-store';
+import { Link } from 'react-router-dom';
 import {
   Table,
   TableCell,
@@ -21,34 +21,32 @@ import {
   Author,
   Date,
   ForPage,
-} from "./styled";
-import { Pagination } from "../Pagination";
+} from './styled';
+import { Pagination } from '../Pagination';
 
 export const ArticlesTable = () => {
   const [page, setPage] = useState(1);
   const [QuestionData, setQuestionData] =
     useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [totalQuestions, setTotalQuestions] = useState(0);
   const itemsPerPage = 5;
 
-  const fetchData = async () => {
+  const fetchData = async (page: number) => {
     try {
-      const response = await axios.get("/api/articles");
-      setQuestionData(response.data);
-      let mutableData = [...response.data].reverse();
-      response.data = mutableData;
-      setQuestionData(response.data);
-      console.log(response.data);
+      const response = await axios.get(`/api/articles?page=${page}`);
+      setPage(response.data.page);
+      setQuestionData(response.data.updatedQuestions);
+      setTotalQuestions(response.data.totalQuestions);
     } catch (error) {
       console.error(error);
-      alert("게시판 정보 가져오기 실패!");
+      alert('게시판 정보 가져오기 실패!');
     }
   };
-
   //데이터 가져오기
   useEffect(() => {
-    fetchData();
+    fetchData(page);
     // console.log(QuestionData);
-  }, [setQuestionData]);
+  }, [page]);
 
   const handlePaginationChange = (
     e: React.ChangeEvent<unknown>,
@@ -71,13 +69,6 @@ export const ArticlesTable = () => {
   //   fetchData();
   // }, [setArticles]);
 
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const filteredQuestionData = QuestionData.filter(
-    (item) => item.isDeleted === false
-  );
-  const currentQuestion = filteredQuestionData.slice(startIndex, endIndex);
-
   //해시태그 클릭하면 그 기능을 확인할 수 있음
   const onClickHashtag = () => {};
 
@@ -85,7 +76,7 @@ export const ArticlesTable = () => {
     <div>
       <Table>
         <tbody>
-          {currentQuestion.map((item, idx) => (
+          {QuestionData.map((item, idx) => (
             <TableRow key={`${item._id}`}>
               <TableCell>
                 <Info>
@@ -106,7 +97,10 @@ export const ArticlesTable = () => {
                   <Addition>
                     <HashTagWrapper>
                       {item.hashtags.map((content, index) => (
-                        <HashTag onClick={onClickHashtag} key={content}>
+                        <HashTag
+                          onClick={onClickHashtag}
+                          key={content}
+                        >
                           {content}
                         </HashTag>
                       ))}
@@ -122,7 +116,7 @@ export const ArticlesTable = () => {
       </Table>
       <Pagination
         page={page}
-        itemList={QuestionData}
+        totalQuestions={totalQuestions}
         itemsPerPage={itemsPerPage}
         handlePaginationChange={handlePaginationChange}
       />

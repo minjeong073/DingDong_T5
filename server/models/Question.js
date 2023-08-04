@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 // 제목, 내용, 투표수, 답변수, 조회수, 저장수, 작성자, 해시태그
 const QuestionSchema = new mongoose.Schema(
   {
@@ -57,5 +56,15 @@ QuestionSchema.pre('save', function (next) {
   this.createdAt = new Date(seoulTime);
   next();
 });
+
+QuestionSchema.methods.convertDate = function () {
+  this.createdAt = new Date(this.createdAt).toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+  });
+  this.updatedAt = new Date(this.updatedAt).toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+  });
+  return this;
+};
 
 module.exports = mongoose.model('Question', QuestionSchema);
