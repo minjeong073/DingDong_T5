@@ -1,5 +1,7 @@
+import { style } from "@mui/system";
 import styled from "styled-components";
 import { Table } from "../List/ArticlesTable/styled";
+import { HeartFillIcon } from "../DetailForm/styled";
 
 export const LButton = styled.div`
   display: flex;
@@ -50,10 +52,35 @@ export const TableCell = styled.td`
   /* white-space: nowrap;*/
 `;
 
+export const Upper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const Heart_FillIcon = styled(HeartFillIcon)`
+  width: 100%;
+  height: 35px;
+  border: none;
+`;
+
+export const Icon = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 35px;
+`;
+
+export const Text = styled.div`
+  border: none;
+  justify-content: center;
+  color: #64748B;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 400;
+`;
+
 export const Title = styled.div`
   display: flex;
-  width: 100%;
-  margin: 5px 10px 0 10px;
+  margin: 15px 0 0 22px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space:nowrap;
@@ -64,9 +91,30 @@ export const Title = styled.div`
 
 `;
 
+export const Addition = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+  flex-direction: row;
+
+`;
+
+export const Author = styled.div`
+  align-self: center;
+  width: 66px;
+  font-size: 14px;
+  margin-right: 10px;
+`;
+
+export const Date = styled.div`
+  color: #64748b;
+  align-self: center;
+  font-size: 13px;
+`;
+
 export const Comment = styled.div`
   display: flex;
-  margin-top: 40px;
+  margin-top: 7px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

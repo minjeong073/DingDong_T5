@@ -10,7 +10,14 @@ import type { QuestionDataType } from "../../stores/page-store";
   Button1,
   Button2,
   ReplyTable,
-  Title, 
+  Upper,
+  Heart_FillIcon,
+  Icon,
+  Text,
+  Title,
+  Addition, 
+  Author,
+  Date,
   Comment,
   TableCell 
 } from "./styled";
@@ -78,7 +85,18 @@ export const CommentList = () =>{
           {Comments.map((item, index) => (
             <TableRow key={item.id}>
               <TableCell>
-                <Title>{item.title}</Title>
+                <Upper>
+                  <Icon>
+                    <Heart_FillIcon />
+                    <Text>{item.votes}</Text>
+                  </Icon>
+                  <Title>{item.title}</Title>
+                  <Addition>
+                    <Author>{item.author}</Author>
+                    <Date>{item.createdAt}</Date>
+                  </Addition>
+                </Upper>
+                
                 <Comment>{item.comment}</Comment>
               </TableCell>
             </TableRow>
