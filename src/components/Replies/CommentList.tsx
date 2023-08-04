@@ -4,15 +4,14 @@ import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { QuestionListState } from "../../stores/page-store";
 import type { QuestionDataType } from "../../stores/page-store";
-import { 
-  Holder, 
-  Text,
- } from "../List/ArticleList/styled";
  import{
-  Table,
   TableRow
  } from "../List/ArticlesTable/styled";
  import {
+  Holder,
+  Button1,
+  Button2,
+  ReplyTable,
   Title, 
   Comment,
   TableCell 
@@ -41,17 +40,22 @@ export const CommentList = () =>{
   //   fetchData();
   // }, [setQuestionData]);
 
+  const [result, setResult] = useState('');
+
+  const ButtonClick = (buttonNumber : number) => {
+
+  }
+
   const Comments = dummy.comment.sort((a, b) => parseInt(b.votes) - parseInt(a.votes));
   //console.log(Comments);
 
   return(
     <>
       <Holder>
-        <Text>
-          Best Replies
-        </Text>
+        <Button1>댓글</Button1>
+        <Button2>답변글</Button2>
       </Holder>
-      <Table>
+      <ReplyTable>
         <tbody>
           {Comments.map((item, index) => (
             <TableRow key={item.id}>
@@ -62,7 +66,7 @@ export const CommentList = () =>{
             </TableRow>
           ))}
         </tbody>
-      </Table>
+      </ReplyTable>
     </>
   );
 };
