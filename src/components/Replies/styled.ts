@@ -1,4 +1,3 @@
-import { style } from "@mui/system";
 import styled from "styled-components";
 import { Table } from "../List/ArticlesTable/styled";
 import { HeartFillIcon } from "../DetailForm/styled";
@@ -14,7 +13,7 @@ export const Button1 = styled.button<{$result?: string}>`
   height: 39px;
   border: 1px solid #E2E8F0;
   border-radius: 10px 0 0 10px;
-  background-color: ${props => (props.$result === "댓글" ? '#F1F5F9' : '#FFFFFF')};
+  background-color: ${props => (props.$result === "comment" ? '#F1F5F9' : '#FFFFFF')};
   color: #0F172A;
   font-size: 15px;
   padding: 7px 0;
@@ -28,7 +27,7 @@ export const Button2 = styled.button<{$result?: string}>`
   border: 1px solid #E2E8F0;
   padding: 7px 0;
   border-radius: 0 10px 10px 0;
-  background-color: ${props => (props.$result === "답변글" ? '#F1F5F9' : '#FFFFFF')};
+  background-color: ${props => (props.$result === "answers" ? '#F1F5F9' : '#FFFFFF')};
   color: #0F172A;
   font-size: 15px;
   font-weight: 400;
@@ -45,11 +44,11 @@ export const ReplyTable = styled(Table)`
 export const TableCell = styled.td`
   flex: 1;
   display: flex;
+  width: 683px;
   flex-direction: column;
-  /* height: 180px; */
   overflow: hidden;
   text-overflow: ellipsis;
-  /* white-space: nowrap;*/
+  white-space: nowrap;
 `;
 
 export const Upper = styled.div`
@@ -81,9 +80,6 @@ export const Text = styled.div`
 export const Title = styled.div`
   display: flex;
   margin: 15px 0 0 22px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space:nowrap;
   &:hover{
     cursor: pointer;
     text-decoration: underline;
@@ -115,7 +111,4 @@ export const Date = styled.div`
 export const Comment = styled.div`
   display: flex;
   margin-top: 7px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;

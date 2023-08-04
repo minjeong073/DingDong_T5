@@ -49,13 +49,13 @@ export const CommentList = () =>{
   //   fetchData();
   // }, [setQuestionData]);
 
-  const [result, setResult] = useState("댓글");
+  const [result, setResult] = useState("comment");
 
   const ButtonClick = (buttonNumber : number) => {
     if(buttonNumber === 1){
-      setResult("댓글");
+      setResult("comment");
     }else if(buttonNumber === 2){
-      setResult("답변글");
+      setResult("answers");
     }
   }
   const navigate = useNavigate();
@@ -63,10 +63,8 @@ export const CommentList = () =>{
     navigate("/articles/write");
   };
 
-
-  // console.log(result);
-  
-  const Comments = dummy.comment.sort((a, b) => parseInt(b.votes) - parseInt(a.votes));
+  const dataArray =  (dummy as any)[result];
+  const Data = dataArray.sort((a:any, b:any):any => parseInt(b.votes) - parseInt(a.votes));
 
   return(
     <>
@@ -82,7 +80,7 @@ export const CommentList = () =>{
       </Holder>
       <ReplyTable>
         <tbody>
-          {Comments.map((item, index) => (
+          {Data.map((item:any) => (
             <TableRow key={item.id}>
               <TableCell>
                 <Upper>
@@ -95,9 +93,10 @@ export const CommentList = () =>{
                     <Author>{item.author}</Author>
                     <Date>{item.createdAt}</Date>
                   </Addition>
-                </Upper>
-                
-                <Comment>{item.comment}</Comment>
+                </Upper>                
+                <Comment>
+                  {(item as any)[result]}
+                </Comment>
               </TableCell>
             </TableRow>
           ))}
