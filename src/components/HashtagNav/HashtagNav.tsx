@@ -68,7 +68,7 @@ export const HashTagNav = () => {
         <Tbody >
             {onlyHashtag.map((item, index) => (
               <Tr key={index}>               
-                {index === 0 ? (
+                {/* {index === 0 ? (
                   <Td>
                     <Special>{item}</Special>
                     <Special>{onlyHashtag[index+1]}</Special>
@@ -81,7 +81,16 @@ export const HashTagNav = () => {
                           : null}
                       </Td>                      
                     ) : null
-                  )}                
+                  )}                 */}
+                  {
+                    index % 2 === 0 ? (
+                      <Td>            
+                        <HashTag key={index}>{item}</HashTag>
+                          {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> 
+                          : null}
+                      </Td>                      
+                    ) : null
+                  }
               </Tr>
             ))}
       </Tbody>

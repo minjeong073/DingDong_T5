@@ -64,6 +64,8 @@ export const HashTag = styled.button`
   font-size: 15px;
   &:hover {
     cursor: pointer;
+    background-color: #8B5CF6;
+    color: #FFFFFF;
   }
 `;
 
