@@ -4,14 +4,14 @@ import heartFillImg from "../../assets/icon/heart_fill.svg";
 import saveImg from "../../assets/icon/save.svg";
 import saveFillImg from "../../assets/icon/save_fill.svg";
 
-interface ICommonMargin {
+interface ICustomMargin {
   top?: string;
   right?: string;
   bottom?: string;
   left?: string;
 }
 
-const commonMargin = css<ICommonMargin>`
+const customMargin = css<ICustomMargin>`
   margin: ${(props) =>
     `${props.top || "0px"} ${props.right || "0px"} ${props.bottom || "0px"} ${
       props.left || "0px"
@@ -20,6 +20,7 @@ const commonMargin = css<ICommonMargin>`
 
 export const QuestionTitleSection = styled.div`
   display: flex;
+  ${customMargin}
 `;
 
 export const QuestionTypo = styled.div`
@@ -160,7 +161,7 @@ export const AuthorBox = styled.div`
   padding: 11px;
 `;
 
-interface ITypo extends ICommonMargin {
+interface ITypo extends ICustomMargin {
   color?: string;
   size?: string;
   underline?: string;
@@ -177,7 +178,7 @@ export const Typo = styled.span<ITypo>`
   &:not(:first-child) {
     margin-left: 8px;
   }
-  ${commonMargin}
+  ${customMargin}
 `;
 
 export const AskedTypo = styled.div`
