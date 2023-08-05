@@ -1,8 +1,8 @@
 import { styled, css } from "styled-components";
-import heartImg from "../../assets/icon/heart.svg";
-import heartFillImg from "../../assets/icon/heart_fill.svg";
-import saveImg from "../../assets/icon/save.svg";
-import saveFillImg from "../../assets/icon/save_fill.svg";
+import heartImg from "../../../assets/icon/heart.svg";
+import heartFillImg from "../../../assets/icon/heart_fill.svg";
+import saveImg from "../../../assets/icon/save.svg";
+import saveFillImg from "../../../assets/icon/save_fill.svg";
 
 interface ICustomMargin {
   top?: string;

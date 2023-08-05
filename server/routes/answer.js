@@ -7,8 +7,6 @@ const Vote = require("../models/Vote");
 // CREATE
 router.post("/:qId", async (req, res) => {
   const { content, author } = req.body;
-  console.log(req.body);
-  console.log(req.params);
 
   try {
     const question = await Question.findById(req.params.qId);

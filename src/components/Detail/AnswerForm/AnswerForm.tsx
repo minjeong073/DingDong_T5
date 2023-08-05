@@ -22,10 +22,12 @@ import {
   UserStateCircle,
   CommentContainer,
   HeartFillIcon,
+  Item,
 } from "../QuestionForm/styled";
 import DOMPurify from "dompurify";
 import axios from "axios";
 import { WriteAnswerForm } from "../WriteAnswerForm";
+import { SaveFillIcon } from "./styled";
 
 interface AnswerDataType {
   _id: string;
@@ -53,12 +55,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     content: "",
     questionTitle: "",
     questionId: _id,
-    author: "min",
+    author: "so",
     votes: 0,
     saves: 0,
   });
   // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
+  const [isVoteClicked, setIsVoteClicked] = useState(false);
+  const [isSaveClicked, setIsSaveClicked] = useState(false);
 
   // to get the reference of the Quill editor
   const writeAnswerFormRef = useRef<HTMLFormElement>(null);
@@ -148,6 +152,66 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     }
   };
 
+  // Function to handle voting
+  const handleVote = async (answerId: string) => {
+    try {
+      const answerResponse = await axios.get<AnswerDataType>(
+        `/api/answer/${answerId}`
+      );
+      const answerToUpdate = answerResponse.data;
+      if (!answerToUpdate) return;
+
+      if (isVoteClicked) {
+        await axios.put(`/api/answer/${answerId}`, {
+          ...answerToUpdate,
+          votes: answerToUpdate.votes! - 1,
+        });
+        // setVotes((prev) => prev! - 1);
+        // setIsVoteClicked(false);
+        return;
+      }
+      await axios.put(`/api/answer/${answerId}`, {
+        ...answerToUpdate,
+        votes: answerToUpdate.votes! + 1,
+      });
+      // setVotes((prev) => prev! + 1);
+      // setIsVoteClicked(true);
+    } catch (error) {
+      console.error("Error updating votes:", error);
+      alert("투표 실패!");
+    }
+  };
+
+  // Function to handle saving
+  const handleSave = async (answerId: string) => {
+    try {
+      const answerResponse = await axios.get<AnswerDataType>(
+        `/api/answer/${answerId}`
+      );
+      const answerToUpdate = answerResponse.data;
+      if (!answerToUpdate) return;
+
+      if (isSaveClicked) {
+        await axios.put(`/api/answer/${answerId}`, {
+          ...answerToUpdate,
+          saves: answerToUpdate.saves! - 1,
+        });
+        // setSaves((prev) => prev! - 1);
+        // setIsSaveClicked(false);
+        return;
+      }
+      await axios.put(`/api/answer/${answerId}`, {
+        ...answerToUpdate,
+        saves: answerToUpdate.saves! + 1,
+      });
+      // setSaves((prev) => prev! + 1);
+      // setIsSaveClicked(true);
+    } catch (error) {
+      console.error("Error updating saves:", error);
+      alert("저장 실패!");
+    }
+  };
+
   useEffect(() => {
     setNewAnswer({ ...newAnswer, content: contents });
   }, [contents]);
@@ -170,9 +234,19 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         <QuestionBodySection key={`${answer.questionId}_${index}`}>
           <QuestionTopContainer>
             <ItemContainer>
-              <HeartIcon />
+              {/* 투표 */}
+              {isVoteClicked ? (
+                <HeartFillIcon onClick={() => handleVote(answer._id)} />
+              ) : (
+                <HeartIcon onClick={() => handleVote(answer._id)} />
+              )}
               <ItemTypo>{answer.votes}</ItemTypo>
-              <SaveIcon />
+              {/* 저장 */}
+              {isSaveClicked ? (
+                <SaveFillIcon onClick={() => handleSave(answer._id)} />
+              ) : (
+                <SaveIcon onClick={() => handleSave(answer._id)} />
+              )}
               <ItemTypo>{answer.saves}</ItemTypo>
             </ItemContainer>
             <ItemContainer>

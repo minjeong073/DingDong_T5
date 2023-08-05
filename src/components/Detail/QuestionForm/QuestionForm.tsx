@@ -123,7 +123,6 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   // 저장수 업데이트
   const handleSave = async () => {
     try {
-      console.log(isSaveClicked);
       if (isSaveClicked) {
         await axios.put(`/api/articles/${_id}`, {
           ...currentQuestion,
