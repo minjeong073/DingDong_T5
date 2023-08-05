@@ -1,17 +1,17 @@
-const router = require('express').Router();
-const Answer = require('../models/Answer');
-const Question = require('../models/Question');
-const Vote = require('../models/Vote');
+const router = require("express").Router();
+const Answer = require("../models/Answer");
+const Question = require("../models/Question");
+const Vote = require("../models/Vote");
 
 // Answer CRUD
 // CREATE
-router.post('/:qId', async (req, res) => {
+router.post("/:qId", async (req, res) => {
   const { content, author } = req.body;
 
   try {
     const question = await Question.findById(req.params.qId);
     if (!question) {
-      res.status(404).json('Question not found!');
+      res.status(404).json("Question not found!");
     }
     const newAnswer = new Answer({
       questionId: req.params.qId,
@@ -27,7 +27,7 @@ router.post('/:qId', async (req, res) => {
 });
 
 // GET ALL
-router.get('/all/:qId', async (req, res) => {
+router.get("/all/:qId", async (req, res) => {
   try {
     const answers = await Answer.find({ questionId: req.params.qId });
 
@@ -39,11 +39,11 @@ router.get('/all/:qId', async (req, res) => {
 });
 
 // GET
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const answer = await Answer.findById(req.params.id);
     if (!answer) {
-      res.status(404).json('Answer not found!');
+      res.status(404).json("Answer not found!");
     }
 
     answer.convertDate();
@@ -54,7 +54,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const answer = await Answer.findById(req.params.id);
     if (answer.author === req.body.author) {
@@ -75,7 +75,7 @@ router.put('/:id', async (req, res) => {
         res.status(500).json(err);
       }
     } else {
-      res.status(401).json('You can update only your Answer!');
+      res.status(401).json("You can update only your Answer!");
     }
   } catch (err) {
     res.status(500).json(err);
@@ -83,18 +83,18 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const answer = await Answer.findById(req.params.id);
 
     if (!answer) {
-      res.status(404).json('Answer not found!');
+      res.status(404).json("Answer not found!");
     }
 
     try {
       await Answer.findByIdAndDelete(req.params.id);
       await Vote.deleteMany({ answerId: req.params.id });
-      res.status(200).json('Answer has been deleted');
+      res.status(200).json("Answer has been deleted");
     } catch (err) {
       res.status(500).json(err);
     }
@@ -104,7 +104,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // VOTE
-router.put('/:id/vote', async (req, res) => {
+router.put("/:id/vote", async (req, res) => {
   const answerId = req.params.id;
   const author = req.body.author;
 
@@ -112,7 +112,7 @@ router.put('/:id/vote', async (req, res) => {
     const answer = await Answer.findById(answerId);
 
     if (!answer) {
-      res.status(404).json('Answer not found!');
+      res.status(404).json("Answer not found!");
     }
     const existingVote = await Vote.findOne({
       answerId,

@@ -1,6 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import type { QuestionDataType } from "../../stores/page-store";
 import {
   HeartIcon,
   ItemContainer,
@@ -23,20 +22,59 @@ import {
   AuthorProfile,
   UserStateCircle,
   HeartFillIcon,
+  SaveFillIcon,
 } from "./styled";
 import DOMPurify from "dompurify";
 import axios from "axios";
+import type { QuestionDataType } from "../../../stores/page-store";
 
 type Props = {
   _id?: string | null;
-  currentQuestion?: QuestionDataType | null;
 };
 
-export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
-  const [isClicked, setIsClicked] = useState(false);
-  const [votes, setVotes] = useState(currentQuestion?.votes);
+export const QuestionForm: React.FC<Props> = ({ _id }) => {
+  const [currentQuestion, setCurrentQuestion] =
+    useState<QuestionDataType | null>(null); // Change initial state to null
+  const [isVoteClicked, setIsVoteClicked] = useState(false); // Local state for vote button (로그인 구현 전까지 임시로 사용)
+  const [isSaveClicked, setIsSaveClicked] = useState(false); // Local state for save button (로그인 구현 전까지 임시로 사용)
+  const [votes, setVotes] = useState<number | null>(null); // Local state for vote count
+  const [saves, setSaves] = useState<number | null>(null); // Local state for save count
+  const [views, setViews] = useState<number | null>(null); // Local state for view count
 
   const navigate = useNavigate();
+
+  const fetchQuestionData = useCallback(async () => {
+    try {
+      const response = await axios.get(`/api/articles/${_id}`);
+      const foundQuestion = response.data;
+      if (foundQuestion) {
+        setCurrentQuestion(foundQuestion);
+        setViews(foundQuestion.views); // Update the local state with the current view count
+        setVotes(foundQuestion.votes); // Set the votes value when fetching the question data
+        setSaves(foundQuestion.saves); // Set the saves value when fetching the question data
+      }
+    } catch (error) {
+      console.error(error);
+      alert("게시판 정보 가져오기 실패!");
+    }
+  }, [_id]);
+
+  // Function to update the view count locally and on the server
+  const updateViews = async () => {
+    try {
+      if (currentQuestion) {
+        const updatedViews = currentQuestion.views + 1;
+        setViews(updatedViews); // Update the local state immediately
+        await axios.put(`/api/articles/${_id}`, {
+          ...currentQuestion,
+          views: updatedViews, // Update the view count on the server
+        });
+      }
+    } catch (error) {
+      console.error("Error updating views:", error);
+      alert("조회수 업데이트 실패!");
+    }
+  };
 
   const deleteQuestion = async () => {
     try {
@@ -59,16 +97,16 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
     }
   };
 
-  // 투표기능 구현
-  const handleVote = useCallback(async () => {
+  // 투표수 업데이트
+  const handleVote = async () => {
     try {
-      if (isClicked) {
+      if (isVoteClicked) {
         await axios.put(`/api/articles/${_id}`, {
           ...currentQuestion,
           votes: votes! - 1,
         });
         setVotes((prev) => prev! - 1);
-        setIsClicked(false);
+        setIsVoteClicked(false);
         return;
       }
       await axios.put(`/api/articles/${_id}`, {
@@ -76,17 +114,44 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
         votes: votes! + 1,
       });
       setVotes((prev) => prev! + 1);
-      setIsClicked(true);
+      setIsVoteClicked(true);
     } catch (error) {
       console.error("Error updating votes:", error);
       alert("투표 실패!");
     }
-  }, [_id, currentQuestion, isClicked, votes]);
+  };
 
-  // votes 값이 갱신될떄 마다 votes를 리렌더링
+  // 저장수 업데이트
+  const handleSave = async () => {
+    try {
+      if (isSaveClicked) {
+        await axios.put(`/api/articles/${_id}`, {
+          ...currentQuestion,
+          saves: saves! - 1,
+        });
+        setSaves((prev) => prev! - 1);
+        setIsSaveClicked(false);
+        return;
+      }
+      await axios.put(`/api/articles/${_id}`, {
+        ...currentQuestion,
+        saves: saves! + 1,
+      });
+      setSaves((prev) => prev! + 1);
+      setIsSaveClicked(true);
+    } catch (error) {
+      console.error("Error updating saves:", error);
+      alert("저장 실패!");
+    }
+  };
+
   useEffect(() => {
-    setVotes(currentQuestion?.votes);
-  }, [currentQuestion?.votes]);
+    fetchQuestionData();
+  }, []);
+
+  useEffect(() => {
+    updateViews();
+  }, [currentQuestion]);
 
   return (
     <>
@@ -98,19 +163,23 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
         <QuestionTopContainer>
           <ItemContainer>
             {/* 투표 */}
-            {isClicked ? (
+            {isVoteClicked ? (
               <HeartFillIcon onClick={handleVote} />
             ) : (
               <HeartIcon onClick={handleVote} />
             )}
-            {/* 저장 */}
             <ItemTypo>{votes}</ItemTypo>
-            <SaveIcon />
-            <ItemTypo>{currentQuestion?.saves}</ItemTypo>
+            {/* 저장 */}
+            {isSaveClicked ? (
+              <SaveFillIcon onClick={handleSave} />
+            ) : (
+              <SaveIcon onClick={handleSave} />
+            )}
+            <ItemTypo>{saves}</ItemTypo>
           </ItemContainer>
           <ItemContainer>
             <ViewDateContainer>
-              <Typo>조회수 {currentQuestion?.views}</Typo>
+              <Typo>조회수 {views}</Typo>
               <Typo>{currentQuestion?.createdAt}</Typo>
             </ViewDateContainer>
             <ContentTypo
