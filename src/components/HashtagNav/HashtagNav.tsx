@@ -19,41 +19,46 @@ import axios from "axios";
 import { type } from "os";
 
 export const HashTagNav = () => {
-  const [ expanded, setExpanded ] = useState(false);
+  const [page, setPage] = useState(1);
+  const [expanded, setExpanded] = useState(false);
   const [QuestionData, setQuestionData] =
-  useRecoilState<QuestionDataType[]>(QuestionListState);
+    useRecoilState<QuestionDataType[]>(QuestionListState);
 
-  const fetchData = async () => {
+  const fetchData = async (page: number) => {
     try {
-      const response = await axios.get("/api/articles");
-      setQuestionData(response.data);
-      let mutableData = [...response.data].reverse();
-      response.data = mutableData;
-      setQuestionData(response.data);
+      const response = await axios.get(`/api/articles?page=${page}`);
+      setQuestionData(response.data.updatedQuestions);
+      // let mutableData = [...response.data].reverse();
+      // response.data = mutableData;
+      setQuestionData(response.data.updatedQuestions);
     } catch (error) {
       console.error(error);
-      alert("게시판 정보 가져오기 실패!");
+      alert('게시판 정보 가져오기 실패!');
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [setQuestionData]);
+    fetchData(page);
+  }, [page]);
 
-  let getHashtags: string[]= [];
-  Array(QuestionData.length).fill(0).map((item, index) => {
-    const values = QuestionData[index]?.hashtags.join(',');
-    getHashtags.push(values); 
-  })
-  const oneHashtag = getHashtags.flatMap((item) => item.split(',').map((part) => part.trim()));
+  let getHashtags: string[] = [];
+  Array(QuestionData.length)
+    .fill(0)
+    .map((item, index) => {
+      const values = QuestionData[index]?.hashtags.join(',');
+      getHashtags.push(values);
+    });
+  const oneHashtag = getHashtags.flatMap((item) =>
+    item.split(',').map((part) => part.trim())
+  );
   const realHash = oneHashtag.filter((item) => item.trim() !== '');
-  const sortByFrequency = (arr:any[]) =>{
-    const frequencyMap = arr.reduce((map,item) => {
-      map.set(item, (map.get(item || 0) + 1));
+  const sortByFrequency = (arr: any[]) => {
+    const frequencyMap = arr.reduce((map, item) => {
+      map.set(item, map.get(item || 0) + 1);
       return map;
     }, new Map());
-    return arr.sort((a,b) => frequencyMap.get(b) - frequencyMap.get(a));
-  }
+    return arr.sort((a, b) => frequencyMap.get(b) - frequencyMap.get(a));
+  };
   const forHash = sortByFrequency(realHash);
   const onlyHashtag = Array.from(new Set(forHash));
   onlyHashtag.unshift('ALL');

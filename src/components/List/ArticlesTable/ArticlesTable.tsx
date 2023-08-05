@@ -116,6 +116,7 @@ export const ArticlesTable = () => {
       </Table>
       <Pagination
         page={page}
+        itemList={QuestionData}
         totalQuestions={totalQuestions}
         itemsPerPage={itemsPerPage}
         handlePaginationChange={handlePaginationChange}
