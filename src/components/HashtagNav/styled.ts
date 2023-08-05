@@ -53,19 +53,19 @@ export const Special = styled.button`
   }
 `;
 
-export const HashTag = styled.button`
+export const HashTag = styled.button<{$click?: boolean}>`
   margin-left: 10px;
   margin-bottom: 5px;
   padding: 5px 15px;
-  background-color: #f1f5f9;
-  color: #64748b;
+  background-color: ${props => (props.$click ? '#8B5CF6' : '#f1f5f9')};
+  color: ${props => (props.$click ? '#FFFFFF' : '#64748b')};
   border: 1px solid #f1f5f9;
   border-radius: 20px;
   font-size: 15px;
   &:hover {
     cursor: pointer;
-    background-color: #8B5CF6;
-    color: #FFFFFF;
+    background-color: ${props => (props.$click ? '#8B5CF6' : '')};
+    color: ${props => (props.$click ? '#FFFFFF' : '')};
   }
 `;
 
