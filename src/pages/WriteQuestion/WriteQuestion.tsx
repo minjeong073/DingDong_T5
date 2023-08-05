@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { QuestionData } from "../../stores/page-store";
 import type { QuestionDataType } from "../../stores/page-store";
+import modules from "../../utils/quillModules";
 
 export const WriteQuestion = () => {
   const QuillRef = useRef<ReactQuill>();
@@ -59,29 +60,6 @@ export const WriteQuestion = () => {
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewArticle({ ...newArticle, title: e.target.value });
   };
-
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ align: [] }],
-          ["bold", "italic", "underline", "strike"],
-          [{ color: [] }],
-          ["image", "video", "link"],
-        ],
-        history: {
-          delay: 500,
-          maxStack: 100,
-          userOnly: true,
-        },
-        // handlers: {
-        //   image: imageHandler,
-        // },
-      },
-    }),
-    []
-  );
 
   useEffect(() => {
     // console.log(contents);

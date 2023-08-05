@@ -22,13 +22,10 @@ import {
   UserStateCircle,
   CommentContainer,
   HeartFillIcon,
-  WriteAnswerForm,
-  Title,
-} from "./styled";
+} from "../QuestionForm/styled";
 import DOMPurify from "dompurify";
 import axios from "axios";
-import { Button } from "../Button";
-import ReactQuill from "react-quill";
+import { WriteAnswerForm } from "../WriteAnswerForm";
 
 interface AnswerDataType {
   _id: string;
@@ -47,11 +44,11 @@ type Props = {
 };
 
 export const AnswerForm: React.FC<Props> = ({ _id }) => {
-  const QuillRef = useRef<ReactQuill>();
-
+  // 답변 내용
   const [contents, setContents] = useState("");
   // 답변게시글 배열
   const [answerData, setAnswerData] = useState<AnswerDataType[]>([]);
+  // State to keep track of the new answer being created
   const [newAnswer, setNewAnswer] = useState({
     content: "",
     questionTitle: "",
@@ -60,6 +57,11 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     votes: 0,
     saves: 0,
   });
+  // State to keep track of the answer being edited
+  const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
+
+  // to get the reference of the Quill editor
+  const writeAnswerFormRef = useRef<HTMLDivElement>(null);
 
   const postAnswer = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
@@ -68,30 +70,39 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         alert("내용을 입력해주세요.");
         return;
       }
-      await axios.post(`/api/answer/${_id}`, newAnswer).then((res) => {
-        setAnswerData((prevAnswerData: AnswerDataType[]) => [
-          ...prevAnswerData,
-          res.data,
-        ]);
-        alert("답변 등록 성공!");
-        setContents("");
-      });
-    } catch (error) {
-      console.error(error);
-      alert("답변 등록 실패!");
-    }
-  };
 
-  const fetchAnswerData = async () => {
-    try {
-      const answerResponse = await axios.get(`/api/answer/all/${_id}`);
-      const foundAnswer = answerResponse.data;
-      if (foundAnswer) {
-        setAnswerData(foundAnswer);
+      if (editingAnswerId) {
+        // If editingAnswerId is not null, it means we are editing an existing answer
+        await axios
+          .put(`/api/answer/${editingAnswerId}`, {
+            ...newAnswer,
+            content: contents,
+          })
+          .then((res) => {
+            // Update the answerData array with the updated answer
+            setAnswerData((prevAnswerData: AnswerDataType[]) =>
+              prevAnswerData.map((item) =>
+                item._id === editingAnswerId ? res.data : item
+              )
+            );
+            alert("답변 수정 성공!");
+            setContents("");
+            setEditingAnswerId(null);
+          });
+      } else {
+        // If editingAnswerId is null, it means we are creating a new answer
+        await axios.post(`/api/answer/${_id}`, newAnswer).then((res) => {
+          setAnswerData((prevAnswerData: AnswerDataType[]) => [
+            ...prevAnswerData,
+            res.data,
+          ]);
+          alert("답변 등록 성공!");
+          setContents("");
+        });
       }
     } catch (error) {
       console.error(error);
-      alert("답변 정보 가져오기 실패!");
+      alert("답변 등록 또는 수정 실패!");
     }
   };
 
@@ -110,28 +121,32 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     }
   };
 
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ align: [] }],
-          ["bold", "italic", "underline", "strike"],
-          [{ color: [] }],
-          ["image", "video", "link"],
-        ],
-        history: {
-          delay: 500,
-          maxStack: 100,
-          userOnly: true,
-        },
-        // handlers: {
-        //   image: imageHandler,
-        // },
-      },
-    }),
-    []
-  );
+  // Function to handle the editing of an answer
+  const editAnswer = (answerId: string) => {
+    // Find the answer to edit in the answerData array
+    const editedAnswer = answerData.find((answer) => answer._id === answerId);
+    if (editedAnswer) {
+      setContents(editedAnswer.content);
+      setEditingAnswerId(answerId);
+
+      if (writeAnswerFormRef.current) {
+        writeAnswerFormRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
+  const fetchAnswerData = async () => {
+    try {
+      const answerResponse = await axios.get(`/api/answer/all/${_id}`);
+      const foundAnswer = answerResponse.data;
+      if (foundAnswer) {
+        setAnswerData(foundAnswer);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("답변 정보 가져오기 실패!");
+    }
+  };
 
   useEffect(() => {
     setNewAnswer({ ...newAnswer, content: contents });
@@ -177,7 +192,11 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               <Typo underline="true" pointer="true">
                 공유
               </Typo>
-              <Typo underline="true" pointer="true">
+              <Typo
+                underline="true"
+                pointer="true"
+                onClick={() => editAnswer(answer._id)}
+              >
                 수정
               </Typo>
               <Typo
@@ -199,31 +218,15 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               </AuthorBox>
             </QuestionBottomRightContainer>
           </QuestionBottomContainer>
-          {/* <p>Answers: {currentQuestion?.answers}</p> */}
-          {/*         <p>Hashtags: {currentQuestion?.hashtags}</p>
-        <p>Created: {currentQuestion?.createdAt}</p> */}
-          {/* <p>Updated: {currentQuestion?.updatedAt}</p> */}
         </QuestionBodySection>
       ))}
-      <WriteAnswerForm>
-        <Title>답변 작성하기</Title>
-        <ReactQuill
-          ref={(element) => {
-            if (element !== null) {
-              QuillRef.current = element;
-            }
-          }}
-          value={contents}
-          onChange={setContents}
-          modules={modules}
-          theme="snow"
-          placeholder="내용을 입력해주세요."
-          style={{ height: "300px" }}
-        />
-        <Button alignself="flex-end" height="44px" onClick={postAnswer}>
-          답변등록
-        </Button>
-      </WriteAnswerForm>
+      <WriteAnswerForm
+        ref={writeAnswerFormRef}
+        contents={contents}
+        setContents={setContents}
+        postAnswer={postAnswer}
+        editingAnswerId={editingAnswerId}
+      />
     </>
   );
 };

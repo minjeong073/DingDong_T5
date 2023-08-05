@@ -230,17 +230,3 @@ export const CommentContainer = styled.div`
   border-top: 1px solid #e2e8f0;
   background: #fff;
 `;
-
-export const WriteAnswerForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  width: 683px;
-  /* height: 400px; */
-  margin-top: 40px;
-`;
-
-export const Title = styled.div`
-  font-size: 18px;
-  color: #475569;
-  margin-left: 10px;
-`;

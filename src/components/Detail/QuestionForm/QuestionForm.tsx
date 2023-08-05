@@ -25,7 +25,7 @@ import {
 } from "./styled";
 import DOMPurify from "dompurify";
 import axios from "axios";
-import type { QuestionDataType } from "../../stores/page-store";
+import type { QuestionDataType } from "../../../stores/page-store";
 
 type Props = {
   _id?: string | null;

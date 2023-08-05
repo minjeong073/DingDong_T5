@@ -16,6 +16,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { QuestionData } from "../../stores/page-store";
 import type { QuestionDataType } from "../../stores/page-store";
 import { useSetRecoilState } from "recoil";
+import modules from "../../utils/quillModules";
 
 export const ModifyQuestion = () => {
   const QuillRef = useRef<ReactQuill>();
@@ -37,10 +38,6 @@ export const ModifyQuestion = () => {
       alert("게시글 정보 가져오기 실패!");
     }
   };
-
-  useEffect(() => {
-    fetchArticleData();
-  }, [_id]);
 
   const updateQuestion = async () => {
     try {
@@ -81,25 +78,9 @@ export const ModifyQuestion = () => {
     );
   };
 
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ align: [] }],
-          ["bold", "italic", "underline", "strike"],
-          [{ color: [] }],
-          ["image", "video", "link"],
-        ],
-        history: {
-          delay: 500,
-          maxStack: 100,
-          userOnly: true,
-        },
-      },
-    }),
-    []
-  );
+  useEffect(() => {
+    fetchArticleData();
+  }, [_id]);
 
   useEffect(() => {
     setModifiedArticle(
