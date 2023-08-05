@@ -39,29 +39,34 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [isSaveClicked, setIsSaveClicked] = useState(false);
   const [votes, setVotes] = useState(currentQuestion?.votes);
   const [saves, setSaves] = useState(currentQuestion?.saves);
+  const [views, setViews] = useState<number | null>(null); // Local state for view count
 
   const navigate = useNavigate();
 
-  const fetchQuestionData = async () => {
+  const fetchQuestionData = useCallback(async () => {
     try {
       const response = await axios.get(`/api/articles/${_id}`);
       const foundQuestion = response.data;
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
+        setViews(foundQuestion.views); // Update the local state with the current view count
+        // No need to update the view count here
       }
     } catch (error) {
       console.error(error);
       alert("게시판 정보 가져오기 실패!");
     }
-  };
+  }, [_id]);
 
+  // Function to update the view count locally and on the server
   const updateViews = async () => {
     try {
       if (currentQuestion) {
+        const updatedViews = currentQuestion.views + 1;
+        setViews(updatedViews); // Update the local state immediately
         await axios.put(`/api/articles/${_id}`, {
           ...currentQuestion,
-          _id: _id, // Ensure _id is included in the payload for the backend update
-          views: currentQuestion.views + 1,
+          views: updatedViews, // Update the view count on the server
         });
       }
     } catch (error) {
@@ -186,7 +191,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
           </ItemContainer>
           <ItemContainer>
             <ViewDateContainer>
-              <Typo>조회수 {currentQuestion?.views}</Typo>
+              <Typo>조회수 {views}</Typo>
               <Typo>{currentQuestion?.createdAt}</Typo>
             </ViewDateContainer>
             <ContentTypo
