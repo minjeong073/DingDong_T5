@@ -36,6 +36,7 @@ export const ArticlesTable = () => {
       const response = await axios.get(`/api/articles?page=${page}`);
       setQuestionData(response.data.updatedQuestions);
       setTotalQuestions(response.data.totalQuestions);
+      console.log(response.data.updatedQuestions.hashtags);
     } catch (error) {
       console.error(error);
       alert('게시판 정보 가져오기 실패!');

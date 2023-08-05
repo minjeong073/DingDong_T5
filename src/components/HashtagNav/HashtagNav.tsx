@@ -16,7 +16,6 @@ import React , { useState, useEffect } from "react";
 import unfold from "../../assets/icon/unfold.svg";
 import fold from "../../assets/icon/fold.svg";
 import axios from "axios";
-import { type } from "os";
 
 export const HashTagNav = () => {
   const [page, setPage] = useState(1);
@@ -24,22 +23,20 @@ export const HashTagNav = () => {
   const [QuestionData, setQuestionData] =
     useRecoilState<QuestionDataType[]>(QuestionListState);
 
-  const fetchData = async (page: number) => {
-    try {
-      const response = await axios.get(`/api/articles?page=${page}`);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/articles?page=${page}`);
       setQuestionData(response.data.updatedQuestions);
-      // let mutableData = [...response.data].reverse();
-      // response.data = mutableData;
-      setQuestionData(response.data.updatedQuestions);
-    } catch (error) {
-      console.error(error);
-      alert('게시판 정보 가져오기 실패!');
-    }
-  };
-
-  useEffect(() => {
-    fetchData(page);
-  }, [page]);
+      } catch (error) {
+        console.error(error);
+        alert("게시판 정보 가져오기 실패!");
+      }
+    };
+  
+    useEffect(() => {
+      fetchData();
+    }, [setQuestionData]);
+  
 
   let getHashtags: string[] = [];
   Array(QuestionData.length)
