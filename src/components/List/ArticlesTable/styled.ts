@@ -33,26 +33,43 @@ export const Info = styled.div`
   flex-direction: column;
   align-items: center;
   color: #475569;
-  margin: 24px 0;
+  margin: 22px 0;
+  margin-left: 28px;
   /* padding-left: 46px; */
 `;
 
 export const Box = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin: 5px 0;
-  width: 115px;
-  height: 32px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1px 0;
+  min-width: 95px;
+  height: 31px;
+  flex-shrink: 0;
+  padding: 0 11px;
   /* border-radius: 5px; */
+`;
+
+export const PurpleBox = styled(Box)`
+  border-radius: 8px;
+  border: 1px solid #8b5cf6;
 `;
 
 export const Div = styled.div`
   font-size: 15px;
-  padding-right: 10px;
+  margin-right: 15px;
+`;
+
+export const PurpleDiv = styled(Div)`
+  color: #8b5cf6;
 `;
 
 export const Span = styled.div`
   font-size: 15px;
+`;
+
+export const PurpleSpan = styled(Span)`
+  color: #8b5cf6;
 `;
 
 export const Context = styled.div`
