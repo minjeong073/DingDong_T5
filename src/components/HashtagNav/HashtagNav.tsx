@@ -22,6 +22,7 @@ export const HashTagNav = () => {
   const [expanded, setExpanded] = useState(false);
   const [QuestionData, setQuestionData] =
     useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [click, setClick] = useState(false);
 
     const fetchData = async () => {
       try {
@@ -63,6 +64,10 @@ export const HashTagNav = () => {
   const onClickExpanded = () =>{
     setExpanded( !expanded );
   }
+
+  const handleClick = () => {
+    setClick( !click );
+  }
   
   return(
     <NavBar>
@@ -87,8 +92,13 @@ export const HashTagNav = () => {
                   {
                     index % 2 === 0 ? (
                       <Td>            
-                        <HashTag key={index}>{item}</HashTag>
-                          {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> 
+                        <HashTag $click={click} onClick={handleClick} key={index}>
+                          {item}
+                        </HashTag>
+                          {index + 1 < onlyHashtag.length ? 
+                            <HashTag $click={click} onClick={handleClick}>
+                              {onlyHashtag[index + 1]}
+                            </HashTag> 
                           : null}
                       </Td>                      
                     ) : null
