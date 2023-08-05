@@ -34,7 +34,6 @@ export const ArticlesTable = () => {
   const fetchData = async (page: number) => {
     try {
       const response = await axios.get(`/api/articles?page=${page}`);
-      setPage(response.data.page);
       setQuestionData(response.data.updatedQuestions);
       setTotalQuestions(response.data.totalQuestions);
     } catch (error) {
