@@ -1,13 +1,11 @@
 import styled from "styled-components";
-import unfold from "../../assets/icon/unfold.svg";
-import fold from "../../assets/icon/fold.svg";
 
 export const NavBar = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 23px;
   margin-right: 40px;
-  width: 185px;
+
   height: 400px;
   overflow: auto;
 `;
@@ -66,6 +64,8 @@ export const HashTag = styled.button`
   font-size: 15px;
   &:hover {
     cursor: pointer;
+    background-color: #8B5CF6;
+    color: #FFFFFF;
   }
 `;
 

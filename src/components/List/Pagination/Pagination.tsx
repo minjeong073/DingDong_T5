@@ -6,6 +6,7 @@ import { Div } from './styled';
 interface PaginationProps {
   page: number;
   totalQuestions: number;
+  itemList: QuestionDataType[];
   itemsPerPage: number;
   handlePaginationChange: (
     e: React.ChangeEvent<unknown>,
@@ -15,6 +16,7 @@ interface PaginationProps {
 
 export const Pagination = ({
   page,
+  itemList,
   totalQuestions,
   itemsPerPage,
   handlePaginationChange,

@@ -4,20 +4,28 @@ import axios from "axios";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { QuestionListState } from "../../stores/page-store";
 import type { QuestionDataType } from "../../stores/page-store";
-import { 
-  Holder, 
-  Text,
- } from "../List/ArticleList/styled";
- import{
-  Table,
-  TableRow
- } from "../List/ArticlesTable/styled";
+ import{ TableRow } from "../List/ArticlesTable/styled";
  import {
-  Title, 
+  LButton,
+  Button1,
+  Button2,
+  ReplyTable,
+  Upper,
+  Heart_FillIcon,
+  Icon,
+  Text,
+  Title,
+  Addition, 
+  Author,
+  Date,
   Comment,
   TableCell 
 } from "./styled";
+import { useNavigate } from "react-router-dom";
 import dummy from "../../db/comment.json";
+import WhiteLogo from "../../assets/icon/white_logo.svg";
+import { Holder, Img, Span} from "../List/ArticleList/styled";
+import { Button } from "../Button";
 
 export const CommentList = () =>{
   // const [QuestionData, setQuestionData] =
@@ -41,28 +49,59 @@ export const CommentList = () =>{
   //   fetchData();
   // }, [setQuestionData]);
 
-  const Comments = dummy.comment.sort((a, b) => parseInt(b.votes) - parseInt(a.votes));
-  //console.log(Comments);
+  const [result, setResult] = useState("comment");
+
+  const ButtonClick = (buttonNumber : number) => {
+    if(buttonNumber === 1){
+      setResult("comment");
+    }else if(buttonNumber === 2){
+      setResult("answers");
+    }
+  }
+  const navigate = useNavigate();
+  const onClickWrite = () => {
+    navigate("/articles/write");
+  };
+
+  const dataArray =  (dummy as any)[result];
+  const Data = dataArray.sort((a:any, b:any):any => parseInt(b.votes) - parseInt(a.votes));
 
   return(
     <>
       <Holder>
-        <Text>
-          Best Replies
-        </Text>
+        <LButton>
+          <Button1 onClick={()=>ButtonClick(1)} $result={result} >댓글</Button1>
+          <Button2 onClick={()=>ButtonClick(2)} $result={result}>답변글</Button2>
+        </LButton>        
+        <Button width="123px" margin="0 0 10px 0" onClick={onClickWrite}>
+          <Img src={WhiteLogo} />
+          <Span>질문하기</Span>
+        </Button>
       </Holder>
-      <Table>
+      <ReplyTable>
         <tbody>
-          {Comments.map((item, index) => (
+          {Data.map((item:any) => (
             <TableRow key={item.id}>
               <TableCell>
-                <Title>{item.title}</Title>
-                <Comment>{item.comment}</Comment>
+                <Upper>
+                  <Icon>
+                    <Heart_FillIcon />
+                    <Text>{item.votes}</Text>
+                  </Icon>
+                  <Title>{item.title}</Title>
+                  <Addition>
+                    <Author>{item.author}</Author>
+                    <Date>{item.createdAt}</Date>
+                  </Addition>
+                </Upper>                
+                <Comment>
+                  {(item as any)[result]}
+                </Comment>
               </TableCell>
             </TableRow>
           ))}
         </tbody>
-      </Table>
+      </ReplyTable>
     </>
   );
 };
