@@ -85,18 +85,23 @@ export const Detail = () => {
     }
   };
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     try {
       const response = await axios.get(`/api/articles/${_id}`);
       const foundQuestion = response.data;
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
       }
+      const answerResponse = await axios.get(`/api/answer/all/${_id}`);
+      const foundAnswer = answerResponse.data;
+      if (foundAnswer) {
+        setAnswerData(foundAnswer);
+      }
     } catch (error) {
       console.error(error);
       alert("게시판 정보 가져오기 실패!");
     }
-  }, [_id]);
+  };
 
   const updateViews = useCallback(async () => {
     try {
@@ -114,27 +119,8 @@ export const Detail = () => {
   }, [_id, currentQuestion]);
 
   useEffect(() => {
-    // Find the question with the matching ID
-    /* const foundQuestion = questionData.find((item) => item._id === id);
-  if (foundQuestion) {
-    setCurrentQuestion(foundQuestion);
-  } */
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (currentQuestion) {
-      updateViews();
-    }
-  }, [currentQuestion]);
-
-  useEffect(() => {
     setNewAnswer({ ...newAnswer, content: contents });
   }, [contents]);
-
-  /*   if (!currentQuestion) {
-    return <div>Loading...</div>; // Add a loading state while data is being fetched
-  } */
 
   const modules = useMemo(
     () => ({
@@ -158,6 +144,16 @@ export const Detail = () => {
     }),
     []
   );
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (currentQuestion) {
+      updateViews();
+    }
+  }, [currentQuestion]);
 
   return (
     <Root>
