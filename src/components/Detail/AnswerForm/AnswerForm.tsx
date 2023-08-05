@@ -343,9 +343,9 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
                 <AuthorContainer>
                   <AuthorProfile>{answer.author}</AuthorProfile>
                   <UserStateCircle
-                    color={answer.votes < 15 ? "#D1D5DB" : "#ffd700"}
+                    color={answerVotes[answer._id] < 15 ? "#D1D5DB" : "#ffd700"}
                   />
-                  <Typo>{answer.votes}</Typo>
+                  <Typo>{answerVotes[answer._id]}</Typo>
                 </AuthorContainer>
               </AuthorBox>
             </QuestionBottomRightContainer>
