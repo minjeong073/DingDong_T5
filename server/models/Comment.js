@@ -24,6 +24,7 @@ const CommentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
 // Date 객체로 변환
 CommentSchema.pre('save', function (next) {
   const seoulTime = new Date(this.createdAt).toLocaleString('ko-KR', {

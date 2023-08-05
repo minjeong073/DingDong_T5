@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Question = require('../models/Question');
+const User = require('../models/User');
 const Vote = require('../models/Vote');
 
 // Question CRUD
@@ -16,10 +17,29 @@ router.post('/', async (req, res) => {
 
 // GET ALL
 router.get('/', async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5;
+  const startIndex = (page - 1) * pageSize;
   try {
-    const questions = await Question.find();
-    questions.forEach((question) => question.convertDate());
-    res.status(200).json(questions);
+    const totalQuestions = await Question.countDocuments({ isDeleted: false });
+    const questions = await Question.find({ isDeleted: false })
+      .sort({ createdAt: -1 }) // 최신순으로 정렬 (내림차순 : -1)
+      .skip(startIndex)
+      .limit(pageSize)
+      .exec();
+    const updatedQuestions = questions.map((question) => {
+      return {
+        ...question._doc,
+        createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+        updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+      };
+    });
+
+    res.status(200).json({ updatedQuestions, totalQuestions });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -29,8 +49,20 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
-    question.convertDate();
-    res.status(200).json(question);
+
+    const questionInKST = {
+      ...question._doc,
+      createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+      updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+    };
+    // console.log('test : ' + questionInKST.createdAt);
+    // console.log('locale : ' + question.createdAt.toLocaleString());
+    // console.log('locale time : ' + question.createdAt.toLocaleTimeString());
+    res.status(200).json(questionInKST);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -40,15 +72,26 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
+
     if (question.author === req.body.author) {
       try {
         const updatedQuestion = await Question.findByIdAndUpdate(
           req.params.id,
           {
             $set: req.body,
+            updatedAt: new Date().toLocaleString('ko-KR', {
+              timeZone: 'Asia/Seoul',
+            }),
           },
           { new: true }
         );
+        // console.log('test' + updatedQuestion.updatedAt);
+
+        // console.log('iso : ' + updatedQuestion.updatedAt.toISOString());
+        // console.log('locale : ' + updatedQuestion.updatedAt.toLocaleString());
+        // console.log(
+        //   'locale time : ' + updatedQuestion.updatedAt.toLocaleTimeString()
+        // );
         res.status(200).json(updatedQuestion);
       } catch (err) {
         res.status(500).json(err);
@@ -62,21 +105,23 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE
-router.put('/delete/:id', async (req, res) => {
+router.put('/:id/delete', async (req, res) => {
+  console.log(req.params.id);
   try {
-    const question = await Question.findById(req.params.id);
-    if (question.author === req.body.author) {
-      try {
-        // isDeleted 를 true 로 변경
-        question.isDeleted = true;
-        await question.save();
-        res.status(200).json('Question has been deleted');
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json('You can delete only your Question!');
-    }
+    await Question.findByIdAndUpdate(
+      req.params.id,
+      {
+        content: '',
+        isDeleted: true,
+        updatedAt: new Date().toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+      },
+      { new: true }
+    );
+    await Vote.deleteMany({ questionId: req.params.id });
+
+    res.status(200).json('Question has been deleted');
   } catch (err) {
     res.status(500).json(err);
   }
@@ -109,6 +154,26 @@ router.put('/:id/vote', async (req, res) => {
     }
     await question.save();
     res.status(200).json(question);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// bookmark 추가
+// login 구현 후에 userId 수정 예정
+router.post('/:id/bookmark', async (req, res) => {
+  const questionId = req.params.id;
+
+  try {
+    const question = await Question.findById(questionId);
+
+    if (question) {
+      question.saves++;
+      await question.save();
+    } else {
+      res.status(404).json('Question not found!');
+    }
+    res.status(200).json('Question has been bookmarked');
   } catch (err) {
     res.status(500).json(err);
   }

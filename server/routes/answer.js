@@ -14,7 +14,7 @@ router.post('/:qId', async (req, res) => {
       res.status(404).json('Question not found!');
     }
     const newAnswer = new Answer({
-      questionId: req.params.id,
+      questionId: req.params.qId,
       questionTitle: question.title,
       content,
       author,
@@ -30,6 +30,7 @@ router.post('/:qId', async (req, res) => {
 router.get('/all/:qId', async (req, res) => {
   try {
     const answers = await Answer.find({ questionId: req.params.qId });
+
     answers.forEach((answer) => answer.convertDate());
     res.status(200).json(answers);
   } catch (err) {
@@ -44,6 +45,7 @@ router.get('/:id', async (req, res) => {
     if (!answer) {
       res.status(404).json('Answer not found!');
     }
+
     answer.convertDate();
     res.status(200).json(answer);
   } catch (err) {
@@ -84,15 +86,17 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const answer = await Answer.findById(req.params.id);
-    if (answer.author === req.body.author) {
-      try {
-        await answer.delete();
-        res.status(200).json('Answer has been deleted!');
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json('You can delete only your Answer!');
+
+    if (!answer) {
+      res.status(404).json('Answer not found!');
+    }
+
+    try {
+      await Answer.findByIdAndDelete(req.params.id);
+      await Vote.deleteMany({ answerId: req.params.id });
+      res.status(200).json('Answer has been deleted');
+    } catch (err) {
+      res.status(500).json(err);
     }
   } catch (err) {
     res.status(500).json(err);
