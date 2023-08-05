@@ -95,6 +95,21 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     }
   };
 
+  // 특정 answer를 삭제하는 함수
+  const deleteAnswer = async (answerId: string) => {
+    try {
+      await axios.delete(`/api/answer/${answerId}`).then((res) => {
+        setAnswerData((prevAnswerData: AnswerDataType[]) =>
+          prevAnswerData.filter((item) => item._id !== answerId)
+        );
+        alert("답변 삭제 성공!");
+      });
+    } catch (error) {
+      console.error(error);
+      alert("답변 삭제 실패!");
+    }
+  };
+
   const modules = useMemo(
     () => ({
       toolbar: {
@@ -162,12 +177,16 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               <Typo underline="true" pointer="true">
                 공유
               </Typo>
-              {/*             <Typo underline="true" pointer>
-              수정
-            </Typo>
-            <Typo underline pointer onClick={deleteQuestion}>
-              삭제
-            </Typo> */}
+              <Typo underline="true" pointer="true">
+                수정
+              </Typo>
+              <Typo
+                underline="true"
+                pointer="true"
+                onClick={() => deleteAnswer(answer._id)}
+              >
+                삭제
+              </Typo>
             </QuestionBottomLeftContainer>
             <QuestionBottomRightContainer>
               <AuthorBox>
