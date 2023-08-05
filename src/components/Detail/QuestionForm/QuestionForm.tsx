@@ -35,10 +35,10 @@ type Props = {
 export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [currentQuestion, setCurrentQuestion] =
     useState<QuestionDataType | null>(null); // Change initial state to null
-  const [isVoteClicked, setIsVoteClicked] = useState(false);
-  const [isSaveClicked, setIsSaveClicked] = useState(false);
-  const [votes, setVotes] = useState<number | null>(null);
-  const [saves, setSaves] = useState<number | null>(null);
+  const [isVoteClicked, setIsVoteClicked] = useState(false); // Local state for vote button (로그인 구현 전까지 임시로 사용)
+  const [isSaveClicked, setIsSaveClicked] = useState(false); // Local state for save button (로그인 구현 전까지 임시로 사용)
+  const [votes, setVotes] = useState<number | null>(null); // Local state for vote count
+  const [saves, setSaves] = useState<number | null>(null); // Local state for save count
   const [views, setViews] = useState<number | null>(null); // Local state for view count
 
   const navigate = useNavigate();
