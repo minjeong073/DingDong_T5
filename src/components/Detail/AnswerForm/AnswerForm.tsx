@@ -63,6 +63,9 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
   const [isVoteClicked, setIsVoteClicked] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  // State to keep track of vote and save counts for each answer
+  const [answerVotes, setAnswerVotes] = useState<{ [key: string]: number }>({});
+  const [answerSaves, setAnswerSaves] = useState<{ [key: string]: number }>({});
 
   // to get the reference of the Quill editor
   const writeAnswerFormRef = useRef<HTMLFormElement>(null);
@@ -166,16 +169,20 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           ...answerToUpdate,
           votes: answerToUpdate.votes! - 1,
         });
-        // setVotes((prev) => prev! - 1);
-        // setIsVoteClicked(false);
+        setAnswerVotes((prevVotes) => ({
+          ...prevVotes,
+          [answerId]: prevVotes[answerId] - 1,
+        }));
         return;
       }
       await axios.put(`/api/answer/${answerId}`, {
         ...answerToUpdate,
         votes: answerToUpdate.votes! + 1,
       });
-      // setVotes((prev) => prev! + 1);
-      // setIsVoteClicked(true);
+      setAnswerVotes((prevVotes) => ({
+        ...prevVotes,
+        [answerId]: prevVotes[answerId] + 1,
+      }));
     } catch (error) {
       console.error("Error updating votes:", error);
       alert("투표 실패!");
@@ -198,6 +205,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         });
         // setSaves((prev) => prev! - 1);
         // setIsSaveClicked(false);
+        setAnswerSaves((prevSaves) => ({
+          ...prevSaves,
+          [answerId]: prevSaves[answerId] - 1,
+        }));
         return;
       }
       await axios.put(`/api/answer/${answerId}`, {
@@ -206,6 +217,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       });
       // setSaves((prev) => prev! + 1);
       // setIsSaveClicked(true);
+      setAnswerSaves((prevSaves) => ({
+        ...prevSaves,
+        [answerId]: prevSaves[answerId] + 1,
+      }));
     } catch (error) {
       console.error("Error updating saves:", error);
       alert("저장 실패!");
@@ -219,6 +234,20 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   useEffect(() => {
     fetchAnswerData();
   }, []);
+
+  useEffect(() => {
+    // Update vote and save counts when answerData changes
+    answerData.forEach((answer) => {
+      setAnswerVotes((prevVotes) => ({
+        ...prevVotes,
+        [answer._id]: answer.votes,
+      }));
+      setAnswerSaves((prevSaves) => ({
+        ...prevSaves,
+        [answer._id]: answer.saves,
+      }));
+    });
+  }, [answerData]);
 
   return (
     <>
@@ -240,14 +269,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               ) : (
                 <HeartIcon onClick={() => handleVote(answer._id)} />
               )}
-              <ItemTypo>{answer.votes}</ItemTypo>
+              <ItemTypo>{answerVotes[answer._id]}</ItemTypo>
               {/* 저장 */}
               {isSaveClicked ? (
                 <SaveFillIcon onClick={() => handleSave(answer._id)} />
               ) : (
                 <SaveIcon onClick={() => handleSave(answer._id)} />
               )}
-              <ItemTypo>{answer.saves}</ItemTypo>
+              <ItemTypo>{answerSaves[answer._id]}</ItemTypo>
             </ItemContainer>
             <ItemContainer>
               <ViewDateContainer>
