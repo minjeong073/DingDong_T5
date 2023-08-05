@@ -37,7 +37,7 @@ export const QuestionTitleInput = styled.input`
   border-bottom: 1px solid #e2e8f0;
   background: #fff;
   font-size: 17px;
-  font-weight: 500;
+  /* font-weight: 500; */
   padding-left: 10px;
   margin-left: 15px;
 `;
