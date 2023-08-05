@@ -37,8 +37,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     useState<QuestionDataType | null>(null); // Change initial state to null
   const [isVoteClicked, setIsVoteClicked] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
-  const [votes, setVotes] = useState(currentQuestion?.votes);
-  const [saves, setSaves] = useState(currentQuestion?.saves);
+  const [votes, setVotes] = useState<number | null>(null);
+  const [saves, setSaves] = useState<number | null>(null);
   const [views, setViews] = useState<number | null>(null); // Local state for view count
 
   const navigate = useNavigate();
@@ -50,7 +50,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
         setViews(foundQuestion.views); // Update the local state with the current view count
-        // No need to update the view count here
+        setVotes(foundQuestion.votes); // Set the votes value when fetching the question data
+        setSaves(foundQuestion.saves); // Set the saves value when fetching the question data
       }
     } catch (error) {
       console.error(error);
@@ -148,20 +149,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     fetchQuestionData();
   }, []);
 
-  // votes 값이 갱신될떄 마다 votes를 리렌더링
   useEffect(() => {
-    setVotes(currentQuestion?.votes);
-  }, [currentQuestion?.votes]);
-
-  // saves 값이 갱신될떄 마다 saves를 리렌더링
-  useEffect(() => {
-    setSaves(currentQuestion?.saves);
-  }, [currentQuestion?.saves]);
-
-  useEffect(() => {
-    if (currentQuestion) {
-      updateViews();
-    }
+    updateViews();
   }, [currentQuestion]);
 
   return (
