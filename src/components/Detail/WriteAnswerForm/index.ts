@@ -1,1 +1,1 @@
-export { WriteAnswerForm } from "./WriteAnswerForm";
+export { default as WriteAnswerForm } from "./WriteAnswerForm";

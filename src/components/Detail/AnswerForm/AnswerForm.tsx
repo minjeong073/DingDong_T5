@@ -61,7 +61,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
 
   // to get the reference of the Quill editor
-  const writeAnswerFormRef = useRef<HTMLDivElement>(null);
+  const writeAnswerFormRef = useRef<HTMLFormElement>(null);
 
   const postAnswer = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
@@ -223,7 +223,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       <WriteAnswerForm
         ref={writeAnswerFormRef}
         contents={contents}
-        setContents={setContents}
+        onContentsChange={setContents}
         postAnswer={postAnswer}
         editingAnswerId={editingAnswerId}
       />

@@ -22,6 +22,7 @@ import {
   AuthorProfile,
   UserStateCircle,
   HeartFillIcon,
+  SaveFillIcon,
 } from "./styled";
 import DOMPurify from "dompurify";
 import axios from "axios";
@@ -35,7 +36,9 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [currentQuestion, setCurrentQuestion] =
     useState<QuestionDataType | null>(null); // Change initial state to null
   const [isVoteClicked, setIsVoteClicked] = useState(false);
+  const [isSaveClicked, setIsSaveClicked] = useState(false);
   const [votes, setVotes] = useState(currentQuestion?.votes);
+  const [saves, setSaves] = useState(currentQuestion?.saves);
 
   const navigate = useNavigate();
 
@@ -88,7 +91,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     }
   };
 
-  // 투표기능 구현
+  // 투표수 업데이트
   const handleVote = async () => {
     try {
       if (isVoteClicked) {
@@ -112,6 +115,31 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     }
   };
 
+  // 저장수 업데이트
+  const handleSave = async () => {
+    try {
+      console.log(isSaveClicked);
+      if (isSaveClicked) {
+        await axios.put(`/api/articles/${_id}`, {
+          ...currentQuestion,
+          saves: saves! - 1,
+        });
+        setSaves((prev) => prev! - 1);
+        setIsSaveClicked(false);
+        return;
+      }
+      await axios.put(`/api/articles/${_id}`, {
+        ...currentQuestion,
+        saves: saves! + 1,
+      });
+      setSaves((prev) => prev! + 1);
+      setIsSaveClicked(true);
+    } catch (error) {
+      console.error("Error updating saves:", error);
+      alert("저장 실패!");
+    }
+  };
+
   useEffect(() => {
     fetchQuestionData();
   }, []);
@@ -120,6 +148,11 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   useEffect(() => {
     setVotes(currentQuestion?.votes);
   }, [currentQuestion?.votes]);
+
+  // saves 값이 갱신될떄 마다 saves를 리렌더링
+  useEffect(() => {
+    setSaves(currentQuestion?.saves);
+  }, [currentQuestion?.saves]);
 
   useEffect(() => {
     if (currentQuestion) {
@@ -142,10 +175,14 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             ) : (
               <HeartIcon onClick={handleVote} />
             )}
-            {/* 저장 */}
             <ItemTypo>{votes}</ItemTypo>
-            <SaveIcon />
-            <ItemTypo>{currentQuestion?.saves}</ItemTypo>
+            {/* 저장 */}
+            {isSaveClicked ? (
+              <SaveFillIcon onClick={handleSave} />
+            ) : (
+              <SaveIcon onClick={handleSave} />
+            )}
+            <ItemTypo>{saves}</ItemTypo>
           </ItemContainer>
           <ItemContainer>
             <ViewDateContainer>
