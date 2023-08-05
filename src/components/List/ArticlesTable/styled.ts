@@ -100,9 +100,6 @@ export const Author = styled.div`
   display: flex;
   justify-content: flex-end;
   flex: 1;
-  align-self: center;
-  /* margin-top: 30px; */
-  /* margin-left: 500px; */
   font-size: 14px;
 `;
 
@@ -110,7 +107,6 @@ export const Date = styled.div`
   color: #64748b;
   align-self: center;
   margin: 0 45px 0 20px;
-  /* margin-top: 30px; */
   font-size: 13px;
 `;
 

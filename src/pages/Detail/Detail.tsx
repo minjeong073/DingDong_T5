@@ -11,11 +11,11 @@ export const Detail = () => {
   const [currentQuestion, setCurrentQuestion] =
     useState<QuestionDataType | null>(null); // Change initial state to null
 
-  let { id } = useParams<{ id?: string }>();
+  let { _id } = useParams<{ _id?: string }>();
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get(`/api/articles/${id}`);
+      const response = await axios.get(`/api/articles/${_id}`);
       const foundQuestion = response.data;
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
@@ -24,14 +24,14 @@ export const Detail = () => {
       console.error(error);
       alert("게시판 정보 가져오기 실패!");
     }
-  }, [id]);
+  }, [_id]);
 
   const updateViews = useCallback(async () => {
     try {
       if (currentQuestion) {
-        await axios.put(`/api/articles/${id}`, {
+        await axios.put(`/api/articles/${_id}`, {
           ...currentQuestion,
-          _id: id, // Ensure _id is included in the payload for the backend update
+          _id: _id, // Ensure _id is included in the payload for the backend update
           views: currentQuestion.views + 1,
         });
       }
@@ -39,7 +39,7 @@ export const Detail = () => {
       console.error("Error updating views:", error);
       alert("조회수 업데이트 실패!");
     }
-  }, [id, currentQuestion]);
+  }, [_id, currentQuestion]);
 
   useEffect(() => {
     // Find the question with the matching ID
@@ -62,7 +62,7 @@ export const Detail = () => {
 
   return (
     <Root>
-      <QuestionForm id={id} currentQuestion={currentQuestion} />
+      <QuestionForm _id={_id} currentQuestion={currentQuestion} />
     </Root>
   );
 };
