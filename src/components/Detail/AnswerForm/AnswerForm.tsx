@@ -286,7 +286,9 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
                 <AskedTypo>Answered</AskedTypo>
                 <AuthorContainer>
                   <AuthorProfile>{answer.author}</AuthorProfile>
-                  <UserStateCircle color="#ffd700" />
+                  <UserStateCircle
+                    color={answer.votes < 15 ? "#D1D5DB" : "#ffd700"}
+                  />
                   <Typo>{answer.votes}</Typo>
                 </AuthorContainer>
               </AuthorBox>
