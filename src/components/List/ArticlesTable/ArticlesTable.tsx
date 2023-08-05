@@ -24,6 +24,7 @@ import {
   PurpleBox,
   PurpleDiv,
   PurpleSpan,
+  Tbody,
 } from "./styled";
 import { Pagination } from "../Pagination";
 
@@ -87,9 +88,9 @@ export const ArticlesTable = () => {
   const onClickHashtag = () => {};
 
   return (
-    <div>
+    <>
       <Table>
-        <tbody>
+        <Tbody>
           {QuestionData.map((item, idx) => (
             <TableRow key={`${item._id}`}>
               <TableCell>
@@ -133,7 +134,7 @@ export const ArticlesTable = () => {
               </TableCell>
             </TableRow>
           ))}
-        </tbody>
+        </Tbody>
       </Table>
       <Pagination
         page={page}
@@ -142,6 +143,6 @@ export const ArticlesTable = () => {
         itemsPerPage={itemsPerPage}
         handlePaginationChange={handlePaginationChange}
       />
-    </div>
+    </>
   );
 };
