@@ -18,9 +18,9 @@ const customMargin = css<ICustomMargin>`
     }`};
 `;
 
-export const QuestionTitleSection = styled.div`
+export const QuestionTitleSection = styled.div<ICustomMargin>`
   display: flex;
-  ${customMargin}
+  ${customMargin};
 `;
 
 export const QuestionTypo = styled.div`
@@ -229,4 +229,18 @@ export const CommentContainer = styled.div`
   height: 41px;
   border-top: 1px solid #e2e8f0;
   background: #fff;
+`;
+
+export const WriteAnswerForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 683px;
+  /* height: 400px; */
+  margin-top: 40px;
+`;
+
+export const Title = styled.div`
+  font-size: 18px;
+  color: #475569;
+  margin-left: 10px;
 `;

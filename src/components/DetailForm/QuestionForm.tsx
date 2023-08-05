@@ -1,6 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import type { QuestionDataType } from "../../stores/page-store";
 import {
   HeartIcon,
   ItemContainer,
@@ -26,17 +25,47 @@ import {
 } from "./styled";
 import DOMPurify from "dompurify";
 import axios from "axios";
+import type { QuestionDataType } from "../../stores/page-store";
 
 type Props = {
   _id?: string | null;
-  currentQuestion?: QuestionDataType | null;
 };
 
-export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
-  const [isClicked, setIsClicked] = useState(false);
+export const QuestionForm: React.FC<Props> = ({ _id }) => {
+  const [currentQuestion, setCurrentQuestion] =
+    useState<QuestionDataType | null>(null); // Change initial state to null
+  const [isVoteClicked, setIsVoteClicked] = useState(false);
   const [votes, setVotes] = useState(currentQuestion?.votes);
 
   const navigate = useNavigate();
+
+  const fetchQuestionData = async () => {
+    try {
+      const response = await axios.get(`/api/articles/${_id}`);
+      const foundQuestion = response.data;
+      if (foundQuestion) {
+        setCurrentQuestion(foundQuestion);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("게시판 정보 가져오기 실패!");
+    }
+  };
+
+  const updateViews = async () => {
+    try {
+      if (currentQuestion) {
+        await axios.put(`/api/articles/${_id}`, {
+          ...currentQuestion,
+          _id: _id, // Ensure _id is included in the payload for the backend update
+          views: currentQuestion.views + 1,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating views:", error);
+      alert("조회수 업데이트 실패!");
+    }
+  };
 
   const deleteQuestion = async () => {
     try {
@@ -60,15 +89,15 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
   };
 
   // 투표기능 구현
-  const handleVote = useCallback(async () => {
+  const handleVote = async () => {
     try {
-      if (isClicked) {
+      if (isVoteClicked) {
         await axios.put(`/api/articles/${_id}`, {
           ...currentQuestion,
           votes: votes! - 1,
         });
         setVotes((prev) => prev! - 1);
-        setIsClicked(false);
+        setIsVoteClicked(false);
         return;
       }
       await axios.put(`/api/articles/${_id}`, {
@@ -76,17 +105,27 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
         votes: votes! + 1,
       });
       setVotes((prev) => prev! + 1);
-      setIsClicked(true);
+      setIsVoteClicked(true);
     } catch (error) {
       console.error("Error updating votes:", error);
       alert("투표 실패!");
     }
-  }, [_id, currentQuestion, isClicked, votes]);
+  };
+
+  useEffect(() => {
+    fetchQuestionData();
+  }, []);
 
   // votes 값이 갱신될떄 마다 votes를 리렌더링
   useEffect(() => {
     setVotes(currentQuestion?.votes);
   }, [currentQuestion?.votes]);
+
+  useEffect(() => {
+    if (currentQuestion) {
+      updateViews();
+    }
+  }, [currentQuestion]);
 
   return (
     <>
@@ -98,7 +137,7 @@ export const QuestionForm: React.FC<Props> = ({ _id, currentQuestion }) => {
         <QuestionTopContainer>
           <ItemContainer>
             {/* 투표 */}
-            {isClicked ? (
+            {isVoteClicked ? (
               <HeartFillIcon onClick={handleVote} />
             ) : (
               <HeartIcon onClick={handleVote} />
