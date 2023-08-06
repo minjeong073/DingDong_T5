@@ -68,6 +68,13 @@ export const WriteQuestion = () => {
     setNewArticle({ ...newArticle, content: contents });
   }, [contents]);
 
+  // selected 배열의 길이를 5로 제한
+  useEffect(() => {
+    if (selected.length > 3) {
+      alert('키워드는 최대 3개까지 입력가능합니다');
+      setSelected(selected.slice(0, 3));
+    }
+  }, [selected]);
   return (
     <QuestionForm>
       <QuestionTitleSection>
@@ -93,12 +100,7 @@ export const WriteQuestion = () => {
       {/* </QuestionContentSection> */}
       <QuestionKeywordSection>
         <HashtagIcon />
-        <TagsInput
-          value={selected}
-          onChange={setSelected}
-          name="hashtags"
-          placeHolder="질문내용의 키워드를 입력해주세요."
-        />
+        <TagsInput value={selected} onChange={setSelected} name="hashtags" placeHolder="키워드를 입력해주세요." />
       </QuestionKeywordSection>
       <Button alignself="flex-end" type="button" onClick={postQuestion}>
         질문등록
