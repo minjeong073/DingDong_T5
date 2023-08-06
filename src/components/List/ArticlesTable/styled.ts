@@ -1,5 +1,5 @@
-import { style } from "@mui/system";
-import styled from "styled-components";
+import { style } from '@mui/system';
+import styled from 'styled-components';
 
 export const Table = styled.table`
   width: 100%;
@@ -98,6 +98,7 @@ export const Title = styled.div`
 
 export const Addition = styled.div`
   display: flex;
+  align-items: center;
   width: 100%;
   margin: 38px 0 30px 0;
 `;
