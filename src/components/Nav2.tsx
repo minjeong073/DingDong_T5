@@ -1,16 +1,13 @@
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 export const Nav2 = () => {
-  const navItems = useMemo<string[]>(
-    () => ["Home", "Questions", "Replies"],
-    []
-  );
+  const navItems = useMemo<string[]>(() => ['Home', 'Questions', 'Replies'], []);
   return (
     <Container>
       <NavContainer>
-        {navItems.map((item) => (
+        {navItems.map(item => (
           <Link to={`/${item.toLowerCase()}`} key={item}>
             <NavItem>{item}</NavItem>
           </Link>

@@ -1,5 +1,5 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import {
   HeartIcon,
   ItemContainer,
@@ -23,18 +23,17 @@ import {
   UserStateCircle,
   HeartFillIcon,
   SaveFillIcon,
-} from "./styled";
-import DOMPurify from "dompurify";
-import axios from "axios";
-import type { QuestionDataType } from "../../../stores/page-store";
+} from './styled';
+import DOMPurify from 'dompurify';
+import axios from 'axios';
+import type { QuestionDataType } from '../../../stores/page-store';
 
 type Props = {
   _id?: string | null;
 };
 
 export const QuestionForm: React.FC<Props> = ({ _id }) => {
-  const [currentQuestion, setCurrentQuestion] =
-    useState<QuestionDataType | null>(null); // Change initial state to null
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null); // Change initial state to null
   const [isVoteClicked, setIsVoteClicked] = useState(false); // Local state for vote button (로그인 구현 전까지 임시로 사용)
   const [isSaveClicked, setIsSaveClicked] = useState(false); // Local state for save button (로그인 구현 전까지 임시로 사용)
   const [votes, setVotes] = useState<number | null>(null); // Local state for vote count
@@ -55,7 +54,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       }
     } catch (error) {
       console.error(error);
-      alert("게시판 정보 가져오기 실패!");
+      alert('게시판 정보 가져오기 실패!');
     }
   }, [_id]);
 
@@ -71,15 +70,15 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         });
       }
     } catch (error) {
-      console.error("Error updating views:", error);
-      alert("조회수 업데이트 실패!");
+      console.error('Error updating views:', error);
+      alert('조회수 업데이트 실패!');
     }
   };
 
   const deleteQuestion = async () => {
     try {
       //삭제할건지 확인
-      if (!window.confirm("정말 삭제하시겠습니까?")) {
+      if (!window.confirm('정말 삭제하시겠습니까?')) {
         return;
       }
       //삭제
@@ -88,12 +87,12 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
           ...currentQuestion,
         })
         .then(() => {
-          alert("질문 삭제 성공!");
-          navigate("/articles");
+          alert('질문 삭제 성공!');
+          navigate('/articles');
         });
     } catch (error) {
       console.error(error);
-      alert("질문 삭제 실패!");
+      alert('질문 삭제 실패!');
     }
   };
 
@@ -105,7 +104,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
           ...currentQuestion,
           votes: votes! - 1,
         });
-        setVotes((prev) => prev! - 1);
+        setVotes(prev => prev! - 1);
         setIsVoteClicked(false);
         return;
       }
@@ -113,11 +112,11 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         ...currentQuestion,
         votes: votes! + 1,
       });
-      setVotes((prev) => prev! + 1);
+      setVotes(prev => prev! + 1);
       setIsVoteClicked(true);
     } catch (error) {
-      console.error("Error updating votes:", error);
-      alert("투표 실패!");
+      console.error('Error updating votes:', error);
+      alert('투표 실패!');
     }
   };
 
@@ -129,7 +128,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
           ...currentQuestion,
           saves: saves! - 1,
         });
-        setSaves((prev) => prev! - 1);
+        setSaves(prev => prev! - 1);
         setIsSaveClicked(false);
         return;
       }
@@ -137,11 +136,11 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         ...currentQuestion,
         saves: saves! + 1,
       });
-      setSaves((prev) => prev! + 1);
+      setSaves(prev => prev! + 1);
       setIsSaveClicked(true);
     } catch (error) {
-      console.error("Error updating saves:", error);
-      alert("저장 실패!");
+      console.error('Error updating saves:', error);
+      alert('저장 실패!');
     }
   };
 
@@ -163,18 +162,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         <QuestionTopContainer>
           <ItemContainer>
             {/* 투표 */}
-            {isVoteClicked ? (
-              <HeartFillIcon onClick={handleVote} />
-            ) : (
-              <HeartIcon onClick={handleVote} />
-            )}
+            {isVoteClicked ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
             <ItemTypo>{votes}</ItemTypo>
             {/* 저장 */}
-            {isSaveClicked ? (
-              <SaveFillIcon onClick={handleSave} />
-            ) : (
-              <SaveIcon onClick={handleSave} />
-            )}
+            {isSaveClicked ? <SaveFillIcon onClick={handleSave} /> : <SaveIcon onClick={handleSave} />}
             <ItemTypo>{saves}</ItemTypo>
           </ItemContainer>
           <ItemContainer>
@@ -205,12 +196,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             <AuthorBox>
               <AskedTypo>Asked</AskedTypo>
               <AuthorContainer>
-                <AuthorProfile>
-                  {currentQuestion?.author.slice(0, 3)}
-                </AuthorProfile>
-                <UserStateCircle
-                  color={currentQuestion?.votes! < 15 ? "#D1D5DB" : "#ffd700"}
-                />
+                <AuthorProfile>{currentQuestion?.author.slice(0, 3)}</AuthorProfile>
+                <UserStateCircle color={currentQuestion?.votes! < 15 ? '#D1D5DB' : '#ffd700'} />
                 <Typo>{currentQuestion?.votes}</Typo>
               </AuthorContainer>
             </AuthorBox>

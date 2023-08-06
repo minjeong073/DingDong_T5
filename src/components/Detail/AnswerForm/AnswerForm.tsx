@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   HeartIcon,
   ItemContainer,
@@ -23,12 +23,12 @@ import {
   CommentContainer,
   HeartFillIcon,
   Item,
-} from "../QuestionForm/styled";
-import DOMPurify from "dompurify";
-import axios from "axios";
-import { WriteAnswerForm } from "../WriteAnswerForm";
-import { SaveFillIcon } from "./styled";
-import { set } from "mongoose";
+} from '../QuestionForm/styled';
+import DOMPurify from 'dompurify';
+import axios from 'axios';
+import { WriteAnswerForm } from '../WriteAnswerForm';
+import { SaveFillIcon } from './styled';
+import { set } from 'mongoose';
 
 interface AnswerDataType {
   _id: string;
@@ -48,15 +48,15 @@ type Props = {
 
 export const AnswerForm: React.FC<Props> = ({ _id }) => {
   // 답변 내용
-  const [contents, setContents] = useState("");
+  const [contents, setContents] = useState('');
   // 답변게시글 배열
   const [answerData, setAnswerData] = useState<AnswerDataType[]>([]);
   // State to keep track of the new answer being created
   const [newAnswer, setNewAnswer] = useState({
-    content: "",
-    questionTitle: "",
+    content: '',
+    questionTitle: '',
     questionId: _id,
-    author: "so",
+    author: 'so',
     votes: 0,
     saves: 0,
   });
@@ -80,8 +80,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   const postAnswer = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
       e.preventDefault();
-      if (newAnswer.content === "") {
-        alert("내용을 입력해주세요.");
+      if (newAnswer.content === '') {
+        alert('내용을 입력해주세요.');
         return;
       }
 
@@ -92,59 +92,50 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
             ...newAnswer,
             content: contents,
           })
-          .then((res) => {
+          .then(res => {
             // Update the answerData array with the updated answer
-            setAnswerData((prevAnswerData: AnswerDataType[]) =>
-              prevAnswerData.map((item) =>
-                item._id === editingAnswerId ? res.data : item
-              )
-            );
-            alert("답변 수정 성공!");
-            setContents("");
+            setAnswerData((prevAnswerData: AnswerDataType[]) => prevAnswerData.map(item => (item._id === editingAnswerId ? res.data : item)));
+            alert('답변 수정 성공!');
+            setContents('');
             setEditingAnswerId(null);
           });
         return;
       }
       // If editingAnswerId is null, it means we are creating a new answer
-      await axios.post(`/api/answer/${_id}`, newAnswer).then((res) => {
-        setAnswerData((prevAnswerData: AnswerDataType[]) => [
-          ...prevAnswerData,
-          res.data,
-        ]);
-        alert("답변 등록 성공!");
-        setContents("");
+      await axios.post(`/api/answer/${_id}`, newAnswer).then(res => {
+        setAnswerData((prevAnswerData: AnswerDataType[]) => [...prevAnswerData, res.data]);
+        alert('답변 등록 성공!');
+        setContents('');
       });
     } catch (error) {
       console.error(error);
-      alert("답변 등록 또는 수정 실패!");
+      alert('답변 등록 또는 수정 실패!');
     }
   };
 
   // 특정 answer를 삭제하는 함수
   const deleteAnswer = async (answerId: string) => {
     try {
-      await axios.delete(`/api/answer/${answerId}`).then((res) => {
-        setAnswerData((prevAnswerData: AnswerDataType[]) =>
-          prevAnswerData.filter((item) => item._id !== answerId)
-        );
-        alert("답변 삭제 성공!");
+      await axios.delete(`/api/answer/${answerId}`).then(res => {
+        setAnswerData((prevAnswerData: AnswerDataType[]) => prevAnswerData.filter(item => item._id !== answerId));
+        alert('답변 삭제 성공!');
       });
     } catch (error) {
       console.error(error);
-      alert("답변 삭제 실패!");
+      alert('답변 삭제 실패!');
     }
   };
 
   // Function to handle the editing of an answer
   const editAnswer = (answerId: string) => {
     // Find the answer to edit in the answerData array
-    const editedAnswer = answerData.find((answer) => answer._id === answerId);
+    const editedAnswer = answerData.find(answer => answer._id === answerId);
     if (editedAnswer) {
       setContents(editedAnswer.content);
       setEditingAnswerId(answerId);
 
       if (writeAnswerFormRef.current) {
-        writeAnswerFormRef.current.scrollIntoView({ behavior: "smooth" });
+        writeAnswerFormRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
   };
@@ -158,16 +149,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       }
     } catch (error) {
       console.error(error);
-      alert("답변 정보 가져오기 실패!");
+      alert('답변 정보 가져오기 실패!');
     }
   };
 
   // Function to handle voting
   const handleVote = async (answerId: string) => {
     try {
-      const answerResponse = await axios.get<AnswerDataType>(
-        `/api/answer/${answerId}`
-      );
+      const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
@@ -176,11 +165,11 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           ...answerToUpdate,
           votes: answerToUpdate.votes! - 1,
         });
-        setAnswerVotes((prevVotes) => ({
+        setAnswerVotes(prevVotes => ({
           ...prevVotes,
           [answerId]: prevVotes[answerId] - 1,
         }));
-        setIsVoteClicked((prevIsVoteClicked) => ({
+        setIsVoteClicked(prevIsVoteClicked => ({
           ...prevIsVoteClicked,
           [answerId]: false,
         }));
@@ -190,26 +179,24 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         ...answerToUpdate,
         votes: answerToUpdate.votes! + 1,
       });
-      setAnswerVotes((prevVotes) => ({
+      setAnswerVotes(prevVotes => ({
         ...prevVotes,
         [answerId]: prevVotes[answerId] + 1,
       }));
-      setIsVoteClicked((prevIsVoteClicked) => ({
+      setIsVoteClicked(prevIsVoteClicked => ({
         ...prevIsVoteClicked,
         [answerId]: true,
       }));
     } catch (error) {
-      console.error("Error updating votes:", error);
-      alert("투표 실패!");
+      console.error('Error updating votes:', error);
+      alert('투표 실패!');
     }
   };
 
   // Function to handle saving
   const handleSave = async (answerId: string) => {
     try {
-      const answerResponse = await axios.get<AnswerDataType>(
-        `/api/answer/${answerId}`
-      );
+      const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
@@ -218,11 +205,11 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           ...answerToUpdate,
           saves: answerToUpdate.saves! - 1,
         });
-        setAnswerSaves((prevSaves) => ({
+        setAnswerSaves(prevSaves => ({
           ...prevSaves,
           [answerId]: prevSaves[answerId] - 1,
         }));
-        setIsSaveClicked((prevIsSaveClicked) => ({
+        setIsSaveClicked(prevIsSaveClicked => ({
           ...prevIsSaveClicked,
           [answerId]: false,
         }));
@@ -232,17 +219,17 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         ...answerToUpdate,
         saves: answerToUpdate.saves! + 1,
       });
-      setAnswerSaves((prevSaves) => ({
+      setAnswerSaves(prevSaves => ({
         ...prevSaves,
         [answerId]: prevSaves[answerId] + 1,
       }));
-      setIsSaveClicked((prevIsSaveClicked) => ({
+      setIsSaveClicked(prevIsSaveClicked => ({
         ...prevIsSaveClicked,
         [answerId]: true,
       }));
     } catch (error) {
-      console.error("Error updating saves:", error);
-      alert("저장 실패!");
+      console.error('Error updating saves:', error);
+      alert('저장 실패!');
     }
   };
 
@@ -256,20 +243,20 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   useEffect(() => {
     // Update vote and save counts when answerData changes
-    answerData.forEach((answer) => {
-      setAnswerVotes((prevVotes) => ({
+    answerData.forEach(answer => {
+      setAnswerVotes(prevVotes => ({
         ...prevVotes,
         [answer._id]: answer.votes,
       }));
-      setAnswerSaves((prevSaves) => ({
+      setAnswerSaves(prevSaves => ({
         ...prevSaves,
         [answer._id]: answer.saves,
       }));
-      setIsVoteClicked((prevIsVoteClicked) => ({
+      setIsVoteClicked(prevIsVoteClicked => ({
         ...prevIsVoteClicked,
         [answer._id]: false,
       }));
-      setIsSaveClicked((prevIsSaveClicked) => ({
+      setIsSaveClicked(prevIsSaveClicked => ({
         ...prevIsSaveClicked,
         [answer._id]: false,
       }));
@@ -281,9 +268,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       {answerData.length > 0 && (
         <QuestionTitleSection top="45px">
           <QuestionTypo>A</QuestionTypo>
-          <QuestionTitle style={{ color: "#525458" }}>
-            {answerData.length}개의 답변
-          </QuestionTitle>
+          <QuestionTitle style={{ color: '#525458' }}>{answerData.length}개의 답변</QuestionTitle>
         </QuestionTitleSection>
       )}
       {answerData?.map((answer, index) => (
@@ -291,18 +276,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           <QuestionTopContainer>
             <ItemContainer>
               {/* 투표 */}
-              {isVoteClicked[answer._id] ? (
-                <HeartFillIcon onClick={() => handleVote(answer._id)} />
-              ) : (
-                <HeartIcon onClick={() => handleVote(answer._id)} />
-              )}
+              {isVoteClicked[answer._id] ? <HeartFillIcon onClick={() => handleVote(answer._id)} /> : <HeartIcon onClick={() => handleVote(answer._id)} />}
               <ItemTypo>{answerVotes[answer._id]}</ItemTypo>
               {/* 저장 */}
-              {isSaveClicked[answer._id] ? (
-                <SaveFillIcon onClick={() => handleSave(answer._id)} />
-              ) : (
-                <SaveIcon onClick={() => handleSave(answer._id)} />
-              )}
+              {isSaveClicked[answer._id] ? <SaveFillIcon onClick={() => handleSave(answer._id)} /> : <SaveIcon onClick={() => handleSave(answer._id)} />}
               <ItemTypo>{answerSaves[answer._id]}</ItemTypo>
             </ItemContainer>
             <ItemContainer>
@@ -322,18 +299,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               <Typo underline="true" pointer="true">
                 공유
               </Typo>
-              <Typo
-                underline="true"
-                pointer="true"
-                onClick={() => editAnswer(answer._id)}
-              >
+              <Typo underline="true" pointer="true" onClick={() => editAnswer(answer._id)}>
                 수정
               </Typo>
-              <Typo
-                underline="true"
-                pointer="true"
-                onClick={() => deleteAnswer(answer._id)}
-              >
+              <Typo underline="true" pointer="true" onClick={() => deleteAnswer(answer._id)}>
                 삭제
               </Typo>
             </QuestionBottomLeftContainer>
@@ -342,9 +311,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
                 <AskedTypo>Answered</AskedTypo>
                 <AuthorContainer>
                   <AuthorProfile>{answer.author}</AuthorProfile>
-                  <UserStateCircle
-                    color={answerVotes[answer._id] < 15 ? "#D1D5DB" : "#ffd700"}
-                  />
+                  <UserStateCircle color={answerVotes[answer._id] < 15 ? '#D1D5DB' : '#ffd700'} />
                   <Typo>{answerVotes[answer._id]}</Typo>
                 </AuthorContainer>
               </AuthorBox>
@@ -352,13 +319,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           </QuestionBottomContainer>
         </QuestionBodySection>
       ))}
-      <WriteAnswerForm
-        ref={writeAnswerFormRef}
-        contents={contents}
-        onContentsChange={setContents}
-        postAnswer={postAnswer}
-        editingAnswerId={editingAnswerId}
-      />
+      <WriteAnswerForm ref={writeAnswerFormRef} contents={contents} onContentsChange={setContents} postAnswer={postAnswer} editingAnswerId={editingAnswerId} />
     </>
   );
 };

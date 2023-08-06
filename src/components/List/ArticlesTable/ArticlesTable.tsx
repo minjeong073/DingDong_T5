@@ -1,37 +1,16 @@
-import React, { useState, useEffect, Fragment } from "react";
-import axios from "axios";
+import React, { useState, useEffect, Fragment } from 'react';
+import axios from 'axios';
 // import { allArticles } from "../../../api/url";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { QuestionListState } from "../../../stores/page-store";
-import type { QuestionDataType } from "../../../stores/page-store";
-import { Link } from "react-router-dom";
-import {
-  Table,
-  TableCell,
-  TableRow,
-  Info,
-  Box,
-  Div,
-  Span,
-  Context,
-  Title,
-  Addition,
-  HashTagWrapper,
-  HashTag,
-  Author,
-  Date,
-  ForPage,
-  PurpleBox,
-  PurpleDiv,
-  PurpleSpan,
-  Tbody,
-} from "./styled";
-import { Pagination } from "../Pagination";
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { QuestionListState } from '../../../stores/page-store';
+import type { QuestionDataType } from '../../../stores/page-store';
+import { Link } from 'react-router-dom';
+import { Table, TableCell, TableRow, Info, Box, Div, Span, Context, Title, Addition, HashTagWrapper, HashTag, Author, Date, ForPage, PurpleBox, PurpleDiv, PurpleSpan, Tbody } from './styled';
+import { Pagination } from '../Pagination';
 
 export const ArticlesTable = () => {
   const [page, setPage] = useState(1);
-  const [QuestionData, setQuestionData] =
-    useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [QuestionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const itemsPerPage = 5;
 
@@ -49,12 +28,12 @@ export const ArticlesTable = () => {
           const response = await axios.get(`/api/answer/all/${question._id}`);
           const answers = response.data;
           return { ...question, answers: answers.length };
-        })
+        }),
       );
       setQuestionData(updatedQuestionsWithAnswers);
     } catch (error) {
       console.error(error);
-      alert("게시판 정보 가져오기 실패!");
+      alert('게시판 정보 가져오기 실패!');
     }
   };
   //데이터 가져오기
@@ -63,10 +42,7 @@ export const ArticlesTable = () => {
     // console.log(QuestionData);
   }, [page]);
 
-  const handlePaginationChange = (
-    e: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePaginationChange = (e: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
@@ -136,13 +112,7 @@ export const ArticlesTable = () => {
           ))}
         </Tbody>
       </Table>
-      <Pagination
-        page={page}
-        itemList={QuestionData}
-        totalQuestions={totalQuestions}
-        itemsPerPage={itemsPerPage}
-        handlePaginationChange={handlePaginationChange}
-      />
+      <Pagination page={page} itemList={QuestionData} totalQuestions={totalQuestions} itemsPerPage={itemsPerPage} handlePaginationChange={handlePaginationChange} />
     </>
   );
 };

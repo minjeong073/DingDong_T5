@@ -1,18 +1,17 @@
-import { StringExpression } from "mongoose";
-import { atom, selector } from "recoil";
+import { atom, selector } from 'recoil';
 
 export const StartState = atom({
-  key: "StartState",
+  key: 'StartState',
   default: 1,
 });
 
 export const CurrentState = atom({
-  key: "CurrentState",
+  key: 'CurrentState',
   default: 1,
 });
 
 export const ItemsState = atom({
-  key: "ItemsState",
+  key: 'ItemsState',
   default: 5,
 });
 
@@ -34,13 +33,13 @@ export interface QuestionDataType {
 
 const defaultQuestionData: QuestionDataType[] = [
   {
-    _id: "",
-    title: "",
-    content: "",
-    createdAt: "",
-    updatedAt: "",
+    _id: '',
+    title: '',
+    content: '',
+    createdAt: '',
+    updatedAt: '',
     userId: 0,
-    author: "",
+    author: '',
     hashtags: [],
     votes: 0,
     saves: 0,
@@ -51,13 +50,13 @@ const defaultQuestionData: QuestionDataType[] = [
 ];
 
 export const QuestionData = atom<QuestionDataType[]>({
-  key: "QuestionData",
+  key: 'QuestionData',
   default: defaultQuestionData,
 });
 
 // 전체 글 리스트
 export const QuestionListState = selector({
-  key: "QuestionListState",
+  key: 'QuestionListState',
   get: ({ get }) => QuestionData,
   set: ({ set }, newValue) => set(QuestionData, newValue),
 });
