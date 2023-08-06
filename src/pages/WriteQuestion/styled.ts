@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import HashTagIcon from "../../assets/icon/hashtag.svg";
+import styled from 'styled-components';
+import HashTagIcon from '../../assets/icon/hashtag.svg';
 
 export const QuestionForm = styled.form`
   display: flex;
@@ -25,7 +25,7 @@ export const QuestionTypo = styled.div`
   height: 50px;
   background: #7c3aed;
   border-radius: 50%;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   color: #fff;
   font-size: 26px;
   font-weight: 600;
@@ -37,7 +37,7 @@ export const QuestionTitleInput = styled.input`
   border-bottom: 1px solid #e2e8f0;
   background: #fff;
   font-size: 17px;
-  font-weight: 500;
+  /* font-weight: 500; */
   padding-left: 10px;
   margin-left: 15px;
 `;

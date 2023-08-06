@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export const Root = styled.div`
+  padding-bottom: 40px;
+`;
+
 export const Holder = styled.div`
   display: flex;
   flex-direction: row;

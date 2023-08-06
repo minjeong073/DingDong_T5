@@ -6,10 +6,12 @@ const QuestionSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      index: true,
     },
     content: {
       type: String,
       required: true,
+      index: true,
     },
     votes: {
       type: Number,
@@ -37,15 +39,16 @@ const QuestionSchema = new mongoose.Schema(
       required: true,
     },
     hashtags: {
-      type: Array,
+      type: [String],
       required: false,
+      index: true,
     },
     isDeleted: {
       type: Boolean,
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 현재 UTC 시간을 기준으로 한국 시간으로 변환

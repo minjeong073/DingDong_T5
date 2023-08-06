@@ -21,22 +21,36 @@ import {
   Author,
   Date,
   ForPage,
+  PurpleBox,
+  PurpleDiv,
+  PurpleSpan,
+  Tbody,
 } from './styled';
 import { Pagination } from '../Pagination';
 
 export const ArticlesTable = () => {
   const [page, setPage] = useState(1);
-  const [QuestionData, setQuestionData] =
-    useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [QuestionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const itemsPerPage = 5;
 
   const fetchData = async (page: number) => {
     try {
       const response = await axios.get(`/api/articles?page=${page}`);
-      setQuestionData(response.data.updatedQuestions);
+      setPage(response.data.page);
+      // setQuestionData(response.data.updatedQuestions);
       setTotalQuestions(response.data.totalQuestions);
-      console.log(response.data.updatedQuestions.hashtags);
+
+      // /api/answer/all/${_id}에서 data의 length를 가져와서 답변수로 넣어주기
+      const updatedQuestions = response.data.updatedQuestions;
+      const updatedQuestionsWithAnswers = await Promise.all(
+        updatedQuestions.map(async (question: QuestionDataType) => {
+          const response = await axios.get(`/api/answer/all/${question._id}`);
+          const answers = response.data;
+          return { ...question, answers: answers.length };
+        }),
+      );
+      setQuestionData(updatedQuestionsWithAnswers);
     } catch (error) {
       console.error(error);
       alert('게시판 정보 가져오기 실패!');
@@ -45,13 +59,13 @@ export const ArticlesTable = () => {
   //데이터 가져오기
   useEffect(() => {
     fetchData(page);
-    // console.log(QuestionData);
   }, [page]);
 
-  const handlePaginationChange = (
-    e: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  useEffect(() => {
+    console.log(QuestionData);
+  }, [QuestionData]);
+
+  const handlePaginationChange = (e: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
@@ -73,21 +87,31 @@ export const ArticlesTable = () => {
   const onClickHashtag = () => {};
 
   return (
-    <div>
+    <>
       <Table>
-        <tbody>
-          {QuestionData.map((item, idx) => (
+        <Tbody>
+          {QuestionData?.map((item, idx) => (
             <TableRow key={`${item._id}`}>
               <TableCell>
                 <Info>
                   <Box>
-                    <Div>{item.votes}</Div> <Span>투표수</Span>
+                    <Div>{item.votes}</Div>
+                    <Span>투표수</Span>
                   </Box>
+                  {item.answers === 0 ? (
+                    <Box>
+                      <Div>{item.answers}</Div>
+                      <Span>답변수</Span>
+                    </Box>
+                  ) : (
+                    <PurpleBox>
+                      <PurpleDiv>{item.answers}</PurpleDiv>
+                      <PurpleSpan>답변수</PurpleSpan>
+                    </PurpleBox>
+                  )}
                   <Box>
-                    <Div>{item.answers}</Div> <Span>답변수</Span>
-                  </Box>
-                  <Box>
-                    <Div>{item.views}</Div> <Span>조회수</Span>
+                    <Div>{item.views}</Div>
+                    <Span>조회수</Span>
                   </Box>
                 </Info>
                 <Context>
@@ -97,10 +121,7 @@ export const ArticlesTable = () => {
                   <Addition>
                     <HashTagWrapper>
                       {item.hashtags.map((content, index) => (
-                        <HashTag
-                          onClick={onClickHashtag}
-                          key={content}
-                        >
+                        <HashTag onClick={onClickHashtag} key={content}>
                           {content}
                         </HashTag>
                       ))}
@@ -112,15 +133,9 @@ export const ArticlesTable = () => {
               </TableCell>
             </TableRow>
           ))}
-        </tbody>
+        </Tbody>
       </Table>
-      <Pagination
-        page={page}
-        itemList={QuestionData}
-        totalQuestions={totalQuestions}
-        itemsPerPage={itemsPerPage}
-        handlePaginationChange={handlePaginationChange}
-      />
-    </div>
+      <Pagination page={page} itemList={QuestionData} totalQuestions={totalQuestions} itemsPerPage={itemsPerPage} handlePaginationChange={handlePaginationChange} />
+    </>
   );
 };

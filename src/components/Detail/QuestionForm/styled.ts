@@ -1,8 +1,8 @@
 import { styled, css } from "styled-components";
-import heartImg from "../../assets/icon/heart.svg";
-import heartFillImg from "../../assets/icon/heart_fill.svg";
-import saveImg from "../../assets/icon/save.svg";
-import saveFillImg from "../../assets/icon/save_fill.svg";
+import heartImg from "../../../assets/icon/heart.svg";
+import heartFillImg from "../../../assets/icon/heart_fill.svg";
+import saveImg from "../../../assets/icon/save.svg";
+import saveFillImg from "../../../assets/icon/save_fill.svg";
 
 interface ICustomMargin {
   top?: string;
@@ -16,28 +16,6 @@ const customMargin = css<ICustomMargin>`
     `${props.top || "0px"} ${props.right || "0px"} ${props.bottom || "0px"} ${
       props.left || "0px"
     }`};
-`;
-
-export const Root = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 683px;
-  margin-right: 240px;
-  margin-bottom: 80px;
-`;
-
-export const WriteAnswerForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  width: 683px;
-  /* height: 400px; */
-  margin-top: 40px;
-`;
-
-export const Title = styled.div`
-  font-size: 18px;
-  color: #475569;
-  margin-left: 10px;
 `;
 
 export const QuestionTitleSection = styled.div<ICustomMargin>`

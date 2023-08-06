@@ -1,24 +1,23 @@
-import styled from "styled-components";
-import SearchIcon from "../assets/icon/search.svg";
-import Logo from "../assets/icon/logo.svg";
-import NotificationIcon from "../assets/icon/notification.svg";
-  
+import styled from 'styled-components';
+import SearchIcon from '../assets/icon/search.svg';
+import Logo from '../assets/icon/logo.svg';
+import NotificationIcon from '../assets/icon/notification.svg';
+
 export const Header2 = () => {
-    return (
-      <Root>
-        <LogoSection>
-          <LogoImg />
-          <LogoTypo>DINGDONG</LogoTypo>
-        </LogoSection>
-        <SearchInput />
-        <UserSection>딩동</UserSection>
-        <NotificationSection />
-      </Root>
-    );
-  };
+  return (
+    <Root>
+      <LogoSection>
+        <LogoImg />
+        <LogoTypo>DINGDONG</LogoTypo>
+      </LogoSection>
+      <SearchInput />
+      <UserSection>딩동</UserSection>
+      <NotificationSection />
+    </Root>
+  );
+};
 
-
-  export const Root = styled.div`
+export const Root = styled.div`
   padding-top: 32px;
   display: flex;
   align-items: center;

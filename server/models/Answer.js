@@ -9,9 +9,11 @@ const AnswerSchema = new mongoose.Schema(
     content: {
       type: String,
       required: true,
+      index: true,
     },
     questionTitle: {
       type: String,
+      index: true,
     },
     questionId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -31,7 +33,7 @@ const AnswerSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 현재 UTC 시간을 기준으로 한국 시간으로 변환

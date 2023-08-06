@@ -1,11 +1,10 @@
-import { Articles } from "../../components/List/ArticleList/Articles"
-import { ListContainer } from "./styled";
+import { Articles } from '../../components/List/ArticleList/Articles';
+import { ListContainer } from './styled';
 
 export const List = () => {
-    return (
-      <ListContainer>
-        <Articles />
-      </ListContainer>
-    );
-  };
-
+  return (
+    <ListContainer>
+      <Articles />
+    </ListContainer>
+  );
+};
