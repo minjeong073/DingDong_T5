@@ -2,7 +2,15 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Button } from '../../components/Button';
-import { HashtagIcon, KeywordInput, QuestionForm, QuestionKeywordSection, QuestionTitleInput, QuestionTitleSection, QuestionTypo } from './styled';
+import {
+  HashtagIcon,
+  KeywordInput,
+  QuestionForm,
+  QuestionKeywordSection,
+  QuestionTitleInput,
+  QuestionTitleSection,
+  QuestionTypo,
+} from './styled';
 import axios from 'axios';
 import e from 'express';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +18,7 @@ import { useSetRecoilState } from 'recoil';
 import { QuestionData } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import modules from '../../utils/quillModules';
+import { TagsInput } from 'react-tag-input-component';
 
 export const WriteQuestion = () => {
   const QuillRef = useRef<ReactQuill>();
@@ -25,6 +34,7 @@ export const WriteQuestion = () => {
     hashtags: [],
     isDeleted: false,
   });
+  const [selected, setSelected] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const setQuestionData = useSetRecoilState(QuestionData); // Recoil setter
@@ -62,7 +72,11 @@ export const WriteQuestion = () => {
     <QuestionForm>
       <QuestionTitleSection>
         <QuestionTypo>Q</QuestionTypo>
-        <QuestionTitleInput placeholder="질문 내용을 명확하게 요약하여 작성해주세요." value={newArticle.title} onChange={handleTitleChange} />
+        <QuestionTitleInput
+          placeholder="질문 내용을 명확하게 요약하여 작성해주세요."
+          value={newArticle.title}
+          onChange={handleTitleChange}
+        />
       </QuestionTitleSection>
       <ReactQuill
         ref={element => {
@@ -79,7 +93,12 @@ export const WriteQuestion = () => {
       {/* </QuestionContentSection> */}
       <QuestionKeywordSection>
         <HashtagIcon />
-        <KeywordInput placeholder="질문 내용의 키워드를 선택해주세요." />
+        <TagsInput
+          value={selected}
+          onChange={setSelected}
+          name="hashtags"
+          placeHolder="질문내용의 키워드를 입력해주세요."
+        />
       </QuestionKeywordSection>
       <Button alignself="flex-end" type="button" onClick={postQuestion}>
         질문등록

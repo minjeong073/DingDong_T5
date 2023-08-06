@@ -5,7 +5,27 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionListState } from '../../../stores/page-store';
 import type { QuestionDataType } from '../../../stores/page-store';
 import { Link } from 'react-router-dom';
-import { Table, TableCell, TableRow, Info, Box, Div, Span, Context, Title, Addition, HashTagWrapper, HashTag, Author, Date, ForPage, PurpleBox, PurpleDiv, PurpleSpan, Tbody } from './styled';
+import {
+  Table,
+  TableCell,
+  TableRow,
+  Info,
+  Box,
+  Div,
+  Span,
+  Context,
+  Title,
+  Addition,
+  HashTagWrapper,
+  HashTag,
+  Author,
+  Date,
+  ForPage,
+  PurpleBox,
+  PurpleDiv,
+  PurpleSpan,
+  Tbody,
+} from './styled';
 import { Pagination } from '../Pagination';
 
 export const ArticlesTable = () => {
@@ -39,8 +59,11 @@ export const ArticlesTable = () => {
   //데이터 가져오기
   useEffect(() => {
     fetchData(page);
-    // console.log(QuestionData);
   }, [page]);
+
+  useEffect(() => {
+    console.log(QuestionData);
+  }, [QuestionData]);
 
   const handlePaginationChange = (e: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -67,7 +90,7 @@ export const ArticlesTable = () => {
     <>
       <Table>
         <Tbody>
-          {QuestionData.map((item, idx) => (
+          {QuestionData?.map((item, idx) => (
             <TableRow key={`${item._id}`}>
               <TableCell>
                 <Info>

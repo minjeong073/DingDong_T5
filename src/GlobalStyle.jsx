@@ -1,6 +1,14 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+  :root {
+    /* --rti-border: #e2e8f0; */
+    --rti-tag: #F1F5F9 !important;
+    --rti-radius: 50% !important;
+    --rti-main: none !important;
+    --rti-tag-remove: #7c3aed !important;
+  }
+
   *, *::before, *::after {
     box-sizing: border-box;
   }
@@ -107,6 +115,32 @@ const GlobalStyle = createGlobalStyle`
       font-style: normal;
       font-weight: 400;
     } 
+  }
+
+  .rti--container {
+    width: 623px;
+    height: 50px;
+    border: 0 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-radius: 0 !important;
+    background: #fff;
+    font-size: 17px;
+    font-weight: 400 !important;
+    padding-left: 10px;
+    margin-left: 15px;
+    color: #64748B;
+    &:focus {
+      outline: none !important;
+      border: 0 !important;
+    }
+    &::placeholder {
+      color: #94a3b8 !important;
+    }
+    .rti--tag {
+      background: var(--rti-tag) !important;
+      border: 0 !important;
+      border-radius: var(--rti-radius) !important;
+    }
   }
 `;
 
