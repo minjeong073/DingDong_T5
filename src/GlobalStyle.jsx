@@ -151,6 +151,15 @@ const GlobalStyle = createGlobalStyle`
       }
     }
   }
+  .css-1y1yng-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+      background-color: #8B5CF6 !important;
+      color: white !important;
+      border: 1px solid #8B5CF6 !important;
+      &:hover {
+        background-color: #7c3aed !important;
+        border: 1px solid #7c3aed !important;
+      }
+  }
 `;
 
 export default GlobalStyle;
