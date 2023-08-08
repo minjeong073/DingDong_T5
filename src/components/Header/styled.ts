@@ -86,7 +86,7 @@ export const LoginTypo = styled.div`
   align-items: center;
   width: 72px;
   height: 47px;
-  margin-left: 35px;
+  margin-left: 45px;
   color: #64748b;
   font-size: 15px;
   &:hover {
