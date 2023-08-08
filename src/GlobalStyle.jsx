@@ -145,7 +145,7 @@ const GlobalStyle = createGlobalStyle`
       background: var(--rti-tag) !important;
       border: 0 !important;
       border-radius: 20px !important;
-      padding: 5px 10px !important;
+      padding: 5px 3px 5px 10px !important;
       > button:hover {
         color: #7c3aed !important;
       }

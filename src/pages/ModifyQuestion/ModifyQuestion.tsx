@@ -1,19 +1,28 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Button } from '../../components/Button';
-import { HashtagIcon, KeywordInput, QuestionForm, QuestionKeywordSection, QuestionTitleInput, QuestionTitleSection, QuestionTypo } from './styled';
+import {
+  HashtagIcon,
+  QuestionForm,
+  QuestionKeywordSection,
+  QuestionTitleInput,
+  QuestionTitleSection,
+  QuestionTypo,
+} from './styled';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { QuestionData } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import { useSetRecoilState } from 'recoil';
 import modules from '../../utils/quillModules';
+import { TagsInput } from 'react-tag-input-component';
 
 export const ModifyQuestion = () => {
-  const QuillRef = useRef<ReactQuill>();
+  const QuillRef = useRef<ReactQuill | null>(null);
   const [contents, setContents] = useState('');
   const [modifiedArticle, setModifiedArticle] = useState<QuestionDataType | null>(null);
+  const [selected, setSelected] = useState<string[]>([]);
   const { _id } = useParams<{ _id: string }>();
   const navigate = useNavigate();
 
@@ -24,6 +33,7 @@ export const ModifyQuestion = () => {
       const response = await axios.get(`/api/articles/${_id}`);
       setModifiedArticle(response.data);
       setContents(response.data.content);
+      setSelected(response.data.hashtags);
     } catch (error) {
       console.error(error);
       alert('게시글 정보 가져오기 실패!');
@@ -42,9 +52,12 @@ export const ModifyQuestion = () => {
       await axios.put(`/api/articles/${_id}`, {
         ...modifiedArticle,
         content: contents,
+        hashtags: selected,
       });
       setQuestionData((prevQuestionData: QuestionDataType[]) => {
-        const updatedData = prevQuestionData.map(item => (item._id === _id ? { ...item, title: modifiedArticle.title, content: contents } : item));
+        const updatedData = prevQuestionData.map(item =>
+          item._id === _id ? { ...item, title: modifiedArticle.title, content: contents, hashtags: selected } : item,
+        );
         return updatedData;
       });
       alert('질문 수정 성공!');
@@ -73,6 +86,14 @@ export const ModifyQuestion = () => {
     setModifiedArticle(prevState => ({ ...prevState, content: contents } as QuestionDataType | null));
   }, [contents]);
 
+  useEffect(() => {
+    if (selected.length > 3) {
+      alert('키워드는 최대 3개까지 입력가능합니다');
+      setSelected(selected.slice(0, 3));
+    }
+    setModifiedArticle(prevState => ({ ...prevState, hashtags: selected } as QuestionDataType | null));
+  }, [selected]);
+
   return (
     <QuestionForm>
       <QuestionTitleSection>
@@ -80,11 +101,7 @@ export const ModifyQuestion = () => {
         <QuestionTitleInput value={modifiedArticle?.title || ''} onChange={handleTitleChange} />
       </QuestionTitleSection>
       <ReactQuill
-        ref={element => {
-          if (element !== null) {
-            QuillRef.current = element;
-          }
-        }}
+        ref={QuillRef}
         value={contents}
         onChange={setContents}
         modules={modules}
@@ -93,7 +110,7 @@ export const ModifyQuestion = () => {
       />
       <QuestionKeywordSection>
         <HashtagIcon />
-        <KeywordInput placeholder="질문 내용의 키워드를 선택해주세요." />
+        <TagsInput value={selected} onChange={setSelected} name="hashtags" placeHolder="키워드를 입력해주세요." />
       </QuestionKeywordSection>
       <Button alignself="flex-end" type="button" onClick={updateQuestion}>
         수정 완료
