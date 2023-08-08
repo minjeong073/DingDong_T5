@@ -1,4 +1,4 @@
-import { NavBar, Table, Tbody, Tr, Td, Special, HashTag, Button, Img } from './styled';
+import { NavBar, Table, Tr, Td, Special, HashTag, Button, Img } from './styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionData, QuestionListState } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
@@ -58,38 +58,11 @@ export const HashTagNav = () => {
   return (
     <NavBar>
       <Table $expanded={expanded ? true : undefined}>
-        <Tbody>
-          {onlyHashtag.map((item, index) => (
-            <Tr key={index}>
-              {/* {index === 0 ? (
-                  <Td>
-                    <Special>{item}</Special>
-                    <Special>{onlyHashtag[index+1]}</Special>
-                  </Td>                    
-                  ) : (
-                    index % 2 === 0 ? (
-                      <Td>            
-                        <HashTag key={index}>{item}</HashTag>
-                          {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> 
-                          : null}
-                      </Td>                      
-                    ) : null
-                  )}                 */}
-              {index % 2 === 0 ? (
-                <Td>
-                  <HashTag $click={click} onClick={handleClick} key={index}>
-                    {item}
-                  </HashTag>
-                  {index + 1 < onlyHashtag.length ? (
-                    <HashTag $click={click} onClick={handleClick}>
-                      {onlyHashtag[index + 1]}
-                    </HashTag>
-                  ) : null}
-                </Td>
-              ) : null}
-            </Tr>
-          ))}
-        </Tbody>
+        {onlyHashtag.map((item, index) => (
+          <HashTag key={index} $click={click} onClick={handleClick}>
+            {item}
+          </HashTag>
+        ))}
       </Table>
       <Button onClick={onClickExpanded}>
         {expanded ? '접기' : '펼치기'}

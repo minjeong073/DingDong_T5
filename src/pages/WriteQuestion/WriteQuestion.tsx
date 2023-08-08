@@ -23,6 +23,7 @@ import { TagsInput } from 'react-tag-input-component';
 export const WriteQuestion = () => {
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState('');
+  const [selected, setSelected] = useState<string[]>([]);
   const [newArticle, setNewArticle] = useState({
     title: '',
     content: '',
@@ -31,10 +32,9 @@ export const WriteQuestion = () => {
     views: 0,
     saves: 0,
     author: 'so',
-    hashtags: [],
+    hashtags: selected,
     isDeleted: false,
   });
-  const [selected, setSelected] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const setQuestionData = useSetRecoilState(QuestionData); // Recoil setter
@@ -74,7 +74,9 @@ export const WriteQuestion = () => {
       alert('키워드는 최대 3개까지 입력가능합니다');
       setSelected(selected.slice(0, 3));
     }
+    setNewArticle({ ...newArticle, hashtags: selected });
   }, [selected]);
+
   return (
     <QuestionForm>
       <QuestionTitleSection>

@@ -9,11 +9,11 @@ export const NavBar = styled.div`
   overflow: auto;
 `;
 
-export const Table = styled.table<{ $expanded?: boolean }>`
+export const Table = styled.div<{ $expanded?: boolean }>`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 90%;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  width: 185px;
   max-height: ${props => (props.$expanded ? 'auto' : '200px')};
   &::-webkit-scrollbar {
     display: none;
@@ -22,19 +22,19 @@ export const Table = styled.table<{ $expanded?: boolean }>`
   transition: max-height 0.3s ease;
 `;
 
-export const Tbody = styled.tbody``;
+// export const Tbody = styled.tbody``;
 
 export const Button = styled.button`
   font-color: #0f172a;
   font-size: 15px;
 `;
 
-export const Tr = styled.tr`
+export const Tr = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
 
-export const Td = styled.td``;
+export const Td = styled.div``;
 
 export const Special = styled.button`
   margin-left: 10px;
