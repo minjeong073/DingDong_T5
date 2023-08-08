@@ -118,8 +118,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .rti--container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-y: hidden; /* y축 스크롤바를 숨김 */
     width: 623px;
-    height: 50px;
+    min-height: 50px;
     border: 0 !important;
     border-bottom: 1px solid #e2e8f0 !important;
     background: #fff;
@@ -136,7 +139,7 @@ const GlobalStyle = createGlobalStyle`
       box-shadow: none !important;
     }
     .rti--input {
-      width: 30% !important;
+      flex: 1;
       &:placeholder {
         color: #94a3b8 !important;
       }

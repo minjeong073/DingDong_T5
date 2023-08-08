@@ -76,7 +76,7 @@ export const WriteQuestion = () => {
     setNewArticle({ ...newArticle, content: contents });
   }, [contents]);
 
-  // selected 배열의 길이를 5로 제한
+  // selected 배열의 길이를 3으로 제한
   useEffect(() => {
     if (selected.length > 3) {
       alert('키워드는 최대 3개까지 입력가능합니다');
