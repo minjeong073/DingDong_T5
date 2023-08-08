@@ -19,6 +19,7 @@ import { QuestionData } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import modules from '../../utils/quillModules';
 import { TagsInput } from 'react-tag-input-component';
+import { stringify } from 'querystring';
 
 export const WriteQuestion = () => {
   const QuillRef = useRef<ReactQuill>();
@@ -34,6 +35,7 @@ export const WriteQuestion = () => {
     hashtags: [],
     isDeleted: false,
   });
+  // string[] 이 계속 never[] 로 인식되는 이유
   const [selected, setSelected] = useState<string[]>([]);
   const navigate = useNavigate();
 
@@ -65,7 +67,9 @@ export const WriteQuestion = () => {
 
   useEffect(() => {
     // console.log(contents);
-    setNewArticle({ ...newArticle, content: contents });
+    setNewArticle({ ...newArticle, content: contents
+    /*,hashtags: {...selected} */
+  });
   }, [contents]);
 
   // selected 배열의 길이를 5로 제한
