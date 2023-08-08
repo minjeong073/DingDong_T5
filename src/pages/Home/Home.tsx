@@ -33,8 +33,16 @@ export const Home = () => {
           <LogoTypo>DINGDONG</LogoTypo>
         </LogoSection>
         <Div>
-          <Login>로그인</Login>
-          <SignUp>회원가입</SignUp>
+          <Login>
+            <Link to={"/signin"}>
+              로그인
+            </Link>
+          </Login>
+          <SignUp>
+            <Link to={"/signup"}>
+              회원가입
+            </Link>
+          </SignUp>
         </Div>
       </Header>
       <Container>
