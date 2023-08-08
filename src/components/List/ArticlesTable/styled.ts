@@ -8,7 +8,7 @@ export const Table = styled.table`
   border-collapse: collapse;
 
   td {
-    height: 150px;
+    min-height: 150px;
     border-bottom: 1px solid #e2e8f0;
   }
 `;
@@ -35,6 +35,7 @@ export const Info = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   color: #475569;
   margin: 22px 0;
   margin-left: 28px;
@@ -100,7 +101,7 @@ export const Addition = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  margin: 38px 0 30px 0;
+  margin: 38px 0 25px 0;
 `;
 
 export const HashTagWrapper = styled.div``;
@@ -113,6 +114,7 @@ export const HashTag = styled.button`
   border: 1px solid #f1f5f9;
   border-radius: 20px;
   font-size: 15px;
+  margin-bottom: 5px;
   &:hover {
     cursor: pointer;
   }
@@ -127,6 +129,7 @@ export const Author = styled.div`
 `;
 
 export const Date = styled.div`
+  min-width: 133px;
   color: #64748b;
   align-items: center;
   margin: 0 45px 0 20px;

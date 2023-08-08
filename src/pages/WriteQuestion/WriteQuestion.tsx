@@ -41,8 +41,16 @@ export const WriteQuestion = () => {
 
   const postQuestion = async () => {
     try {
-      if (newArticle.title === '' || contents === '') {
-        alert('제목과 내용을 모두 입력해주세요.');
+      if (newArticle.title === '') {
+        alert('제목을 입력해주세요.');
+        return;
+      }
+      if (contents === '') {
+        alert('내용을 입력해주세요.');
+        return;
+      }
+      if (selected.length === 0) {
+        alert('키워드를 입력해주세요.');
         return;
       }
       await axios.post('/api/articles/', newArticle).then(res => {
