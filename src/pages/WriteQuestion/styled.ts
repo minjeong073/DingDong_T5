@@ -6,7 +6,7 @@ export const QuestionForm = styled.form`
   flex-direction: column;
   width: 683px;
   height: 800px;
-  margin-right: 240px;
+  /* margin-right: 240px; */
   /* margin-right: 180px; */
 `;
 

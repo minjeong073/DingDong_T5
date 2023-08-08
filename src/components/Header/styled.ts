@@ -13,7 +13,7 @@ export const SearchInput = styled.input`
   width: 661px;
   height: 48px;
   padding-left: 60px;
-  border: 0.2px solid #e2e8f0;
+  /* border: 0.2px solid #e2e8f0; */
   border-radius: 20px;
   background: #fff;
   box-shadow: 0px 0px 8px 0px #e2e8f0;
@@ -29,7 +29,8 @@ export const LogoSection = styled.div`
   height: 54px;
   justify-content: center;
   align-items: center;
-  margin-right: 49px;
+  padding-right: 10px;
+  margin-right: 43px;
   &:hover {
     cursor: pointer;
   }

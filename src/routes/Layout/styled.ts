@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Root = styled.div`
   width: 100%;
@@ -21,4 +21,8 @@ export const LeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+`;
+
+export const Main = styled.main`
+  margin-right: 40px;
 `;
