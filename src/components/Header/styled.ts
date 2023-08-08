@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import SearchIcon from "../../assets/icon/search.svg";
-import Logo from "../../assets/icon/logo.svg";
-import NotificationIcon from "../../assets/icon/notification.svg";
+import styled from 'styled-components';
+import SearchIcon from '../../assets/icon/search.svg';
+import Logo from '../../assets/icon/logo.svg';
+import NotificationIcon from '../../assets/icon/notification.svg';
 
 export const Root = styled.header`
   padding-top: 32px;
@@ -10,15 +10,16 @@ export const Root = styled.header`
 `;
 
 export const SearchInput = styled.input`
-  width: 681px;
+  width: 661px;
   height: 48px;
   padding-left: 60px;
-  border-radius: 15px;
-  border: 0.5px solid #e2e8f0;
+  border: 0.2px solid #e2e8f0;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0px 0px 8px 0px #e2e8f0;
   background-image: url(${SearchIcon});
   background-repeat: no-repeat;
   background-position: 20px 50%;
-  box-shadow: 0px 2px 8px 0px #f1f5f9;
   font-size: 16px;
 `;
 
@@ -44,7 +45,7 @@ export const LogoImg = styled.img.attrs({
 export const LogoTypo = styled.div`
   color: #7c3aed;
   text-align: right;
-  font-family: "Inter";
+  font-family: 'Inter';
   font-size: 20px;
   font-weight: 600;
   letter-spacing: -1px;
