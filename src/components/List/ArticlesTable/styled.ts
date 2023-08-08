@@ -46,7 +46,7 @@ export const Box = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1px 0;
+  margin: 3px 0;
   min-width: 95px;
   height: 32px;
   flex-shrink: 0;
@@ -84,7 +84,7 @@ export const Context = styled.div`
 `;
 
 export const Title = styled.div`
-  margin: 26px 30px 0 0;
+  margin: 28px 30px 0 0;
   font-size: 17px;
   width: 484px;
   overflow: hidden;
@@ -101,7 +101,7 @@ export const Addition = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  margin: 38px 0 25px 0;
+  margin: 45px 0 25px 0;
 `;
 
 export const HashTagWrapper = styled.div``;
