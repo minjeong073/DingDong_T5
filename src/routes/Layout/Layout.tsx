@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { HashTagNav } from '../../components/HashtagNav';
 import { Header, Nav, RightWrapper } from '../../components';
-import { Container, Root, LeftWrapper, Main } from './styled';
+import { Container, Root, LeftWrapper, Main, Footer } from './styled';
 
 export const Layout = () => {
   return (
@@ -17,6 +17,9 @@ export const Layout = () => {
         </Main>
         <RightWrapper />
       </Container>
+      <Footer>
+        © 2023&nbsp;<b>DINGDONG</b>
+      </Footer>
     </Root>
   );
 };

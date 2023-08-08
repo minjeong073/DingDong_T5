@@ -126,6 +126,7 @@ export const Author = styled.div`
   align-items: center;
   flex: 1;
   font-size: 14px;
+  margin-left: 5px;
 `;
 
 export const Date = styled.div`

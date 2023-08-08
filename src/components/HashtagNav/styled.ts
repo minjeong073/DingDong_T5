@@ -5,7 +5,7 @@ export const NavBar = styled.div`
   flex-direction: column;
   margin-top: 23px;
   margin-right: 40px;
-  height: 400px;
+  height: fit-content;
   overflow: auto;
 `;
 
@@ -14,7 +14,7 @@ export const Table = styled.div<{ $expanded?: boolean }>`
   justify-content: flex-end;
   flex-wrap: wrap;
   width: 185px;
-  max-height: ${props => (props.$expanded ? 'auto' : '200px')};
+  max-height: ${props => (props.$expanded ? 'fit-content' : '200px')};
   &::-webkit-scrollbar {
     display: none;
   }

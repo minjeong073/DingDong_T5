@@ -29,8 +29,8 @@ export const LogoSection = styled.div`
   height: 54px;
   justify-content: center;
   align-items: center;
-  padding-right: 10px;
-  margin-right: 43px;
+  padding-right: 25px;
+  margin-right: 50px;
   &:hover {
     cursor: pointer;
   }
@@ -39,15 +39,15 @@ export const LogoSection = styled.div`
 export const LogoImg = styled.img.attrs({
   src: Logo,
 })`
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
 `;
 
 export const LogoTypo = styled.div`
   color: #7c3aed;
   text-align: right;
   font-family: 'Inter';
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: -1px;
 `;
