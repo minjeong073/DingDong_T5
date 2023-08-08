@@ -11,7 +11,6 @@ export const HashTagNav = () => {
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(false);
   const [QuestionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
-  const [click, setClick] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -47,19 +46,27 @@ export const HashTagNav = () => {
   const onlyHashtag = Array.from(new Set(forHash));
   onlyHashtag.unshift('ALL');
 
+  const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([
+    true,
+    ...Array(onlyHashtag.length - 1).fill(false),
+  ]);
+
   const onClickExpanded = () => {
-    setExpanded(!expanded);
+    setExpanded(prev => !prev);
   };
 
-  const handleClick = () => {
-    setClick(!click);
+  const handleClick = (index: number) => {
+    const newClickedHashtags = [...clickedHashtags];
+    newClickedHashtags.fill(false); // 모든 요소를 false로 설정
+    newClickedHashtags[index] = true; // 클릭한 요소를 true로 설정
+    setClickedHashtags(newClickedHashtags);
   };
 
   return (
     <NavBar>
-      <Table $expanded={expanded ? true : undefined}>
+      <Table $expanded={expanded}>
         {onlyHashtag.map((item, index) => (
-          <HashTag key={index} $click={click} onClick={handleClick}>
+          <HashTag key={index} $click={clickedHashtags[index]} onClick={() => handleClick(index)}>
             {item}
           </HashTag>
         ))}
