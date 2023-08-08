@@ -17,6 +17,7 @@ import {
   TitleText,
   TopItems,
   ButtonBar,
+  ItemWrapper,
   HashBody,
 } from "./styled";
 import { HashTagBar } from "../../components/HashtagBar";
@@ -67,7 +68,9 @@ export const Home = () => {
           </AnswerBlock>
         </Block>
         <HashBody>
-          <HashTagBar />
+          <ItemWrapper>
+            <HashTagBar />
+          </ItemWrapper>         
         </HashBody>
       </Container>
     </Root>

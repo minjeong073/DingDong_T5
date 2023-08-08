@@ -145,22 +145,28 @@ export const TitleText = styled.div`
 
 export const TopItems = styled.div`
   margin-top: 14px;
-  border: 1px solid black;
+
 `;
 
 export const slideInAnimation = keyframes`
-  0% {
-    transform: translateX(100%);
+  from {
+    transform: translateX(0%);
   }
-  100% {
+  to {
     transform: translateX(-100%);
   }
 `;
 
 export const HashBody = styled.div`
   display: fixed;
+  width: 690px;
   margin-top: 60px;
-  border: 1px solid black;
+
   overflow: hidden;
-  animation: ${slideInAnimation} 5s linear infinite;
 `;
+
+export const ItemWrapper = styled.div`
+  display: flex;  
+  // animation: ${slideInAnimation} 10s linear infinite;
+  white-space: nowrap;
+  `;
