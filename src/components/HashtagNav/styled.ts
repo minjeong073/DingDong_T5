@@ -13,8 +13,8 @@ export const Table = styled.div<{ $expanded?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  width: 250px;
   flex-wrap: wrap;
-  justify-content: fit-content;
   max-height: ${props => (props.$expanded ? 'fit-content' : '200px')};
   &::-webkit-scrollbar {
     display: none;
@@ -26,7 +26,7 @@ export const Table = styled.div<{ $expanded?: boolean }>`
 // export const Tbody = styled.tbody``;
 
 export const Button = styled.button`
-  font-color: #0f172a;
+  color: #0f172a;
   font-size: 15px;
 `;
 
@@ -35,8 +35,7 @@ export const Tr = styled.div`
   justify-content: flex-end;
 `;
 
-export const Td = styled.div`
-`;
+export const Td = styled.div``;
 
 export const Special = styled.button`
   margin-left: 10px;

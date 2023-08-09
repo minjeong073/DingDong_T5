@@ -24,7 +24,7 @@ export const HashTagNav = () => {
 
   useEffect(() => {
     fetchData();
-  }, [QuestionData]);
+  }, [setQuestionData]);
 
   let getHashtags: string[] = [];
   Array(QuestionData.length)
