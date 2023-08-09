@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Question = require('../models/Question');
 const User = require('../models/User');
 const Vote = require('../models/Vote');
+const Comment = require('../models/Comment');
 
 // Question CRUD
 // CREATE
@@ -49,9 +50,14 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
+    const comments = await Comment.find({ questionId: req.params.id }).exec();
 
-    const questionInKST = {
+    if (!question) {
+      res.status(404).json('Question not found!');
+    }
+    const updatedQuestion = {
       ...question._doc,
+      comments,
       createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
         timeZone: 'Asia/Seoul',
       }),
@@ -59,10 +65,7 @@ router.get('/:id', async (req, res) => {
         timeZone: 'Asia/Seoul',
       }),
     };
-    // console.log('test : ' + questionInKST.createdAt);
-    // console.log('locale : ' + question.createdAt.toLocaleString());
-    // console.log('locale time : ' + question.createdAt.toLocaleTimeString());
-    res.status(200).json(questionInKST);
+    res.status(200).json(updatedQuestion);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -85,13 +88,6 @@ router.put('/:id', async (req, res) => {
           },
           { new: true },
         );
-        // console.log('test' + updatedQuestion.updatedAt);
-
-        // console.log('iso : ' + updatedQuestion.updatedAt.toISOString());
-        // console.log('locale : ' + updatedQuestion.updatedAt.toLocaleString());
-        // console.log(
-        //   'locale time : ' + updatedQuestion.updatedAt.toLocaleTimeString()
-        // );
         res.status(200).json(updatedQuestion);
       } catch (err) {
         res.status(500).json(err);
@@ -106,7 +102,6 @@ router.put('/:id', async (req, res) => {
 
 // DELETE
 router.put('/:id/delete', async (req, res) => {
-  console.log(req.params.id);
   try {
     await Question.findByIdAndUpdate(
       req.params.id,
@@ -127,7 +122,36 @@ router.put('/:id/delete', async (req, res) => {
   }
 });
 
-// UPDATE Votes
+// UPDATE ETC
+
+// Comment
+router.post('/:id/comment', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const question = await Question.findById(questionId);
+    const userId = req.body.userId;
+    const user = await User.findById(userId);
+
+    if (!question) {
+      res.status(404).json('Question not found!');
+    }
+    if (!user) {
+      res.status(404).json('User not found!');
+    }
+
+    const newComment = new Comment({
+      questionId: questionId,
+      content: req.body.content,
+      userId: userId,
+    });
+    const savedComment = await newComment.save();
+    res.status(200).json(savedComment);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Votes
 router.put('/:id/vote', async (req, res) => {
   const questionId = req.params.id;
   const author = req.body.author;
@@ -159,7 +183,7 @@ router.put('/:id/vote', async (req, res) => {
   }
 });
 
-// bookmark 추가
+// Bookmark
 // login 구현 후에 userId 수정 예정
 router.post('/:id/bookmark', async (req, res) => {
   const questionId = req.params.id;
