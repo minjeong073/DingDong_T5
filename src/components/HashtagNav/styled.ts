@@ -11,6 +11,7 @@ export const NavBar = styled.div`
 
 export const Table = styled.div<{ $expanded?: boolean }>`
   display: flex;
+  flex-direction: column;
   justify-content: flex-end;
   flex-wrap: wrap;
   justify-content: fit-content;

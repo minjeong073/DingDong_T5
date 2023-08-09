@@ -45,6 +45,7 @@ export const HashTagNav = () => {
   const forHash = sortByFrequency(realHash);
   const onlyHashtag = Array.from(new Set(forHash));
   onlyHashtag.unshift('ALL');
+  // console.log(onlyHashtag.indexOf('hashtag'));
 
   const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([
     true,
