@@ -76,25 +76,29 @@ router.put('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
 
-    if (question.author === req.body.author) {
-      try {
-        const updatedQuestion = await Question.findByIdAndUpdate(
-          req.params.id,
-          {
-            $set: req.body,
-            updatedAt: new Date().toLocaleString('ko-KR', {
-              timeZone: 'Asia/Seoul',
-            }),
-          },
-          { new: true },
-        );
-        res.status(200).json(updatedQuestion);
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json('You can update only your Question!');
+    if (!question) {
+      res.status(404).json('Question not found!');
     }
+
+    // if (question.author === req.body.author) {
+    try {
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: req.body,
+          updatedAt: new Date().toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        },
+        { new: true },
+      );
+      res.status(200).json(updatedQuestion);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+    // } else {
+    //   res.status(401).json('You can update only your Question!');
+    // }
   } catch (err) {
     res.status(500).json(err);
   }
@@ -154,7 +158,7 @@ router.post('/:id/comment', async (req, res) => {
 // Votes
 router.put('/:id/vote', async (req, res) => {
   const questionId = req.params.id;
-  const author = req.body.author;
+  const userId = req.body.userId;
   try {
     const question = await Question.findById(questionId);
 
@@ -163,13 +167,13 @@ router.put('/:id/vote', async (req, res) => {
     }
     const existingVote = await Vote.findOne({
       questionId,
-      username: author,
+      userId: userId,
     });
 
     if (!existingVote) {
       await Vote.create({
         questionId,
-        username: author,
+        userId: userId,
       });
       question.votes += 1;
     } else {
@@ -191,12 +195,11 @@ router.post('/:id/bookmark', async (req, res) => {
   try {
     const question = await Question.findById(questionId);
 
-    if (question) {
-      question.saves++;
-      await question.save();
-    } else {
+    if (!question) {
       res.status(404).json('Question not found!');
     }
+    question.saves += 1;
+    await question.save();
     res.status(200).json('Question has been bookmarked');
   } catch (err) {
     res.status(500).json(err);

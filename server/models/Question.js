@@ -29,14 +29,9 @@ const QuestionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // Login 구현 후 수정 예정 : 작성자는 User의 id를 참조
-    // userId: {
-    //   type: Number,
-    //   required: true,
-    // },
-    author: {
-      type: String,
-      required: true,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     hashtags: {
       type: [String],
