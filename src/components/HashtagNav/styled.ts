@@ -63,8 +63,8 @@ export const HashTag = styled.button<{ $click?: boolean }>`
   font-size: 15px;
   &:hover {
     cursor: pointer;
-    background-color: ${props => (props.$click ? '#8B5CF6' : '')};
-    color: ${props => (props.$click ? '#FFFFFF' : '')};
+    background-color: ${props => (props.$click ? '#8B5CF6' : '#f1f5f9')};
+    color: ${props => (props.$click ? '#FFFFFF' : '#64748b')};
   }
 `;
 
