@@ -61,6 +61,7 @@ export const WriteQuestion = () => {
         ]);
         alert('질문 등록 성공!');
         navigate(`/articles/${res.data._id}`);
+        // navigate(`/articles`);
       });
     } catch (error) {
       console.error(error);
@@ -72,11 +73,26 @@ export const WriteQuestion = () => {
     setNewArticle({ ...newArticle, title: e.target.value });
   };
 
+  const handleTagsChange = (newTags: string[]) => {
+    // 글자수 제한을 10으로 가정한 예시
+    const maxLength = 6;
+    const validTags = newTags.filter(tag => {
+      if (tag.length > maxLength) {
+        alert(`키워드는 ${maxLength}자 이내로 입력해주세요.`);
+        return false;
+      }
+      return tag.length <= maxLength;
+    });
+    setSelected(validTags);
+  };
+
   useEffect(() => {
     // console.log(contents);
-    setNewArticle({ ...newArticle, content: contents
-    /*,hashtags: {...selected} */
-  });
+    setNewArticle({
+      ...newArticle,
+      content: contents,
+      /*,hashtags: {...selected} */
+    });
   }, [contents]);
 
   // selected 배열의 길이를 3으로 제한
@@ -113,7 +129,7 @@ export const WriteQuestion = () => {
       {/* </QuestionContentSection> */}
       <QuestionKeywordSection>
         <HashtagIcon />
-        <TagsInput value={selected} onChange={setSelected} name="hashtags" placeHolder="키워드를 입력해주세요." />
+        <TagsInput value={selected} onChange={handleTagsChange} name="hashtags" placeHolder="키워드를 입력해주세요." />
       </QuestionKeywordSection>
       <Button alignself="flex-end" type="button" onClick={postQuestion}>
         질문등록

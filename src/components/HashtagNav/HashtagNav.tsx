@@ -58,7 +58,7 @@ export const HashTagNav = () => {
 
   const handleClick = (index: number) => {
     const newClickedHashtags = [...clickedHashtags];
-    newClickedHashtags.fill(false); // 모든 요소를 false로 설정
+    // newClickedHashtags.fill(false); // 모든 요소를 false로 설정
     newClickedHashtags[index] = !newClickedHashtags[index]; // 클릭한 요소를 true로 설정
     setClickedHashtags(newClickedHashtags);
   };
@@ -75,14 +75,14 @@ export const HashTagNav = () => {
           <Tr key={index}>
             {index % 2 === 0 ? (
               <Td>
-                <HashTag $click={clickedHashtags[index]} onClick={() => handleClick(index)} key={index} >
+                <HashTag $click={clickedHashtags[index]} onClick={() => handleClick(index)} key={index}>
                   {item}
                 </HashTag>
-                  {index + 1 < onlyHashtag.length ? (
-                    <HashTag $click={clickedHashtags[index+1]} onClick={() => handleClick(index+1)}>
-                      {onlyHashtag[index + 1]}
-                    </HashTag>
-                  ) : null}
+                {index + 1 < onlyHashtag.length ? (
+                  <HashTag $click={clickedHashtags[index + 1]} onClick={() => handleClick(index + 1)}>
+                    {onlyHashtag[index + 1]}
+                  </HashTag>
+                ) : null}
               </Td>
             ) : null}
           </Tr>
