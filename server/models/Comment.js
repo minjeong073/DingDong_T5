@@ -15,15 +15,14 @@ const CommentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Answer',
     },
-    author: {
-      type: String,
-      default: 0,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
   },
   // 생성일(createdAt)과 수정일(updatedAt)을 자동으로 관리
-  { timestamps: true }
+  { timestamps: true },
 );
-
 
 // Date 객체로 변환
 CommentSchema.pre('save', function (next) {

@@ -20,9 +20,9 @@ const AnswerSchema = new mongoose.Schema(
       ref: 'Question',
       required: true,
     },
-    author: {
-      type: String,
-      required: true,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     votes: {
       type: Number,
@@ -44,16 +44,5 @@ AnswerSchema.pre('save', function (next) {
   this.createdAt = new Date(seoulTime);
   next();
 });
-
-// Date 객체로 변환
-AnswerSchema.methods.convertDate = function () {
-  this.createdAt = new Date(this.createdAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  this.updatedAt = new Date(this.updatedAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  return this;
-};
 
 module.exports = mongoose.model('Answer', AnswerSchema);

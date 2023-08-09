@@ -60,14 +60,4 @@ QuestionSchema.pre('save', function (next) {
   next();
 });
 
-QuestionSchema.methods.convertDate = function () {
-  this.createdAt = new Date(this.createdAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  this.updatedAt = new Date(this.updatedAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  return this;
-};
-
 module.exports = mongoose.model('Question', QuestionSchema);
