@@ -1,29 +1,7 @@
 const router = require('express').Router();
 const Comment = require('../models/Comment');
 
-// Comment CRUD
-//CREATE
-router.post('/', async (req, res) => {
-  const newComment = new Comment(req.body);
-  try {
-    const savedComment = await newComment.save();
-    res.status(200).json(savedComment);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-//GET ALL Comment
-router.get('/', async (req, res) => {
-  try {
-    const comments = await Comment.find({});
-    res.status(200).json(comments);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-//GET Comment
+// GET
 router.get('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
@@ -33,7 +11,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-//UPDATE Comment
+// UPDATE
 router.put('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
@@ -44,7 +22,7 @@ router.put('/:id', async (req, res) => {
           {
             $set: req.body,
           },
-          { new: true }
+          { new: true },
         );
         res.status(200).json(updatedComment);
       } catch (err) {
