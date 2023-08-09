@@ -6,7 +6,7 @@ export const QuestionForm = styled.form`
   flex-direction: column;
   width: 683px;
   height: 800px;
-  margin-right: 240px;
+  /* margin-right: 240px; */
   /* margin-right: 180px; */
 `;
 
@@ -44,8 +44,9 @@ export const QuestionTitleInput = styled.input`
 
 export const QuestionKeywordSection = styled.div`
   display: flex;
+  align-items: center;
   width: 100%;
-  height: 50px;
+  /* max-height: 50px; */
   margin-top: 5px;
   margin-bottom: 30px;
 `;

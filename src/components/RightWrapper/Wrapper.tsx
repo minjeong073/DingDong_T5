@@ -1,6 +1,6 @@
+import { Advertisement } from './styled';
+import adImg from '../../assets/image/advertisement.png';
+
 export const RightWrapper = () => {
-    return(
-        <>
-        </>
-    )
-}
+  return <Advertisement src={adImg} alt="광고" />;
+};

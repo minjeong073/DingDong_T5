@@ -1,17 +1,37 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import SearchIcon from "../../assets/icon/search.svg";
+import { QuestionTypo } from "../WriteQuestion/styled";
+
 
 export const Root = styled.div`
   display: flex;
   flex-direction: column;
+
 `;
 
 export const Header = styled.header`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   width: 1280px;
   margin: 0 auto;
   margin-top: 25px;
+`;
+
+export const Div = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+export const Login = styled.button`
+  width: 72px;
+  color: #64748B;
+`;  
+
+export const SignUp = styled.button`
+  width: 72px;
+  color: #64748B;
 `;
 
 export const Container = styled.div`
@@ -20,7 +40,8 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   align-items: center;
-  margin-top: 220px;
+  margin-top: 91px;
+
 `;
 
 export const SearchBar = styled.input`
@@ -83,6 +104,69 @@ export const Button2 = styled.button`
   }
 `;
 
-export const HashBody = styled.div`
-  margin-top: 91px;
+export const Block = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 699px;
+  height: 225px;
+  margin-top: 38px;
 `;
+
+export const QuestionBlock = styled.div`
+  width: 323px;
+  border: 1px solid black;
+`;
+
+export const AnswerBlock = styled.div`
+  width: 323px;
+  border: 1px solid black;
+`;
+
+export const TitleBlock = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+export const QTypo = styled(QuestionTypo)`
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+`;
+
+export const TitleText = styled.div`
+  margin-left: 9px;
+  color: #475569;
+  text-align: center;
+  font-style: normal;
+  font-size: 17px;
+`;
+
+export const TopItems = styled.div`
+  margin-top: 14px;
+
+`;
+
+export const slideInAnimation = keyframes`
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+`;
+
+export const HashBody = styled.div`
+  display: fixed;
+  width: 690px;
+  margin-top: 60px;
+
+  overflow: hidden;
+`;
+
+export const ItemWrapper = styled.div`
+  display: flex;  
+  // animation: ${slideInAnimation} 10s linear infinite;
+  white-space: nowrap;
+  `;
