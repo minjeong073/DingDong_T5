@@ -3,10 +3,7 @@ import styled from 'styled-components';
 
 export const Table = styled.table`
   width: 100%;
-  /* height: 1000px; */
-  /* border: 1px solid #e6e8e7; */
   border-collapse: collapse;
-
   td {
     min-height: 150px;
     border-bottom: 1px solid #e2e8f0;
