@@ -1,4 +1,4 @@
-import { NavBar, Table, Tbody, Tr, Td, Special, HashTag, Button, Img } from './styled';
+import { NavBar, Table, Tr, Td, Special, HashTag, Button, Img } from './styled';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionData, QuestionListState } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
@@ -11,7 +11,6 @@ export const HashTagNav = () => {
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(false);
   const [QuestionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
-  const [click, setClick] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -47,49 +46,30 @@ export const HashTagNav = () => {
   const onlyHashtag = Array.from(new Set(forHash));
   onlyHashtag.unshift('ALL');
 
+  const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([
+    true,
+    ...Array(onlyHashtag.length - 1).fill(false),
+  ]);
+
   const onClickExpanded = () => {
-    setExpanded(!expanded);
+    setExpanded(prev => !prev);
   };
 
-  const handleClick = () => {
-    setClick(!click);
+  const handleClick = (index: number) => {
+    const newClickedHashtags = [...clickedHashtags];
+    // newClickedHashtags.fill(false); // 모든 요소를 false로 설정
+    newClickedHashtags[index] = !newClickedHashtags[index]; // 클릭한 요소를 true로 설정
+    setClickedHashtags(newClickedHashtags);
   };
 
   return (
     <NavBar>
-      <Table $expanded={expanded ? true : undefined}>
-        <Tbody>
-          {onlyHashtag.map((item, index) => (
-            <Tr key={index}>
-              {/* {index === 0 ? (
-                  <Td>
-                    <Special>{item}</Special>
-                    <Special>{onlyHashtag[index+1]}</Special>
-                  </Td>                    
-                  ) : (
-                    index % 2 === 0 ? (
-                      <Td>            
-                        <HashTag key={index}>{item}</HashTag>
-                          {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> 
-                          : null}
-                      </Td>                      
-                    ) : null
-                  )}                 */}
-              {index % 2 === 0 ? (
-                <Td>
-                  <HashTag $click={click} onClick={handleClick} key={index}>
-                    {item}
-                  </HashTag>
-                  {index + 1 < onlyHashtag.length ? (
-                    <HashTag $click={click} onClick={handleClick}>
-                      {onlyHashtag[index + 1]}
-                    </HashTag>
-                  ) : null}
-                </Td>
-              ) : null}
-            </Tr>
-          ))}
-        </Tbody>
+      <Table $expanded={expanded}>
+        {onlyHashtag.map((item, index) => (
+          <HashTag key={index} $click={clickedHashtags[index]} onClick={() => handleClick(index)}>
+            {item}
+          </HashTag>
+        ))}
       </Table>
       <Button onClick={onClickExpanded}>
         {expanded ? '접기' : '펼치기'}
