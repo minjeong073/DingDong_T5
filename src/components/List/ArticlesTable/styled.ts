@@ -127,7 +127,7 @@ export const Author = styled.div`
 `;
 
 export const Date = styled.div`
-  min-width: 133px;
+  min-width: 141px;
   color: #64748b;
   align-items: center;
   margin: 0 45px 0 20px;
