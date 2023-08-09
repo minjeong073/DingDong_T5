@@ -9,8 +9,8 @@ export const LButton = styled.div`
 
 export const Button1 = styled.button<{ $result?: string }>`
   display: flex;
-  width: 80px;
-  height: 39px;
+  width: 74px;
+  height: 33px;
   border: 1px solid #e2e8f0;
   border-radius: 10px 0 0 10px;
   background-color: ${(props) =>
@@ -18,13 +18,13 @@ export const Button1 = styled.button<{ $result?: string }>`
   color: #0f172a;
   font-size: 15px;
   padding: 7px 0;
-  font-weight: 400;
+  align-items: center;
   justify-content: center;
 `;
 export const Button2 = styled.button<{ $result?: string }>`
   display: flex;
-  width: 80px;
-  height: 39px;
+  width: 74px;
+  height: 33px;
   border: 1px solid #e2e8f0;
   padding: 7px 0;
   border-radius: 0 10px 10px 0;
@@ -32,7 +32,7 @@ export const Button2 = styled.button<{ $result?: string }>`
     props.$result === "answers" ? "#F1F5F9" : "#FFFFFF"};
   color: #0f172a;
   font-size: 15px;
-  font-weight: 400;
+  align-items: center;
   justify-content: center;
 `;
 
