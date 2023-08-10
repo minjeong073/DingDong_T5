@@ -1,5 +1,4 @@
-import { Articles } from '../../components/List/ArticleList/Articles';
-import { ListContainer } from './styled';
+import { Articles } from '../../components';
 
 export const List = () => {
   return (

@@ -27,7 +27,7 @@ export const Main = styled.main`
   margin-right: 40px;
 `;
 
-export const Footer = styled.footer`
+/* export const Footer = styled.footer`
   width: 1150px;
   display: flex;
   justify-content: flex-end;
@@ -35,4 +35,4 @@ export const Footer = styled.footer`
   font-size: 13px;
   margin-top: 10px;
   margin-bottom: 50px;
-`;
+`; */
