@@ -58,7 +58,7 @@ export const HashTagNav = () => {
 
   const handleClick = (index: number) => {
     const newClickedHashtags = [...clickedHashtags];
-    // newClickedHashtags.fill(false); // 모든 요소를 false로 설정
+    newClickedHashtags.fill(false); // 모든 요소를 false로 설정
     newClickedHashtags[index] = !newClickedHashtags[index]; // 클릭한 요소를 true로 설정
     setClickedHashtags(newClickedHashtags);
   };
