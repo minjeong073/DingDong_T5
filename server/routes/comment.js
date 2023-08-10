@@ -1,11 +1,42 @@
 const router = require('express').Router();
 const Comment = require('../models/Comment');
 
-// GET
+// GET BY COMMENT ID
 router.get('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    res.status(200).json(comment);
+    const updatedComment = {
+      ...comment._doc,
+      createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+      updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+    };
+    res.status(200).json(updatedComment);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET BY QUESTION ID
+router.get('/', async (req, res) => {
+  const questionId = req.query.questionId;
+  try {
+    const comments = await Comment.find({ questionId: questionId });
+    const updatedComment = comments.map(comment => {
+      return {
+        ...comment._doc,
+        createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+        updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+      };
+    });
+    res.status(200).json(updatedComment);
   } catch (err) {
     res.status(500).json(err);
   }
