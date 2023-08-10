@@ -30,7 +30,9 @@ export const WriteQuestion = () => {
     answers: 0,
     views: 0,
     saves: 0,
-    author: 'so',
+    // user6의 id로 임시 설정
+    userId: '64d24cb479cd50b639db526a',
+    // author: 'so',
     hashtags: [],
     isDeleted: false,
   });
