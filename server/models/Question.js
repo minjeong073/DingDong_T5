@@ -29,6 +29,10 @@ const QuestionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    comments: {
+      type: Number,
+      default: 0,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

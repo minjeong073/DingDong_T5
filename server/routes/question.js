@@ -58,7 +58,7 @@ router.get('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
     const user = await User.findById(question.userId);
-    const comments = await Comment.find({ questionId: req.params.id }).exec();
+    const commentList = await Comment.find({ questionId: req.params.id }).exec();
 
     if (!question) {
       res.status(404).json('Question not found!');
@@ -66,7 +66,7 @@ router.get('/:id', async (req, res) => {
     const updatedQuestion = {
       ...question._doc,
       author: user.username,
-      comments,
+      commentList,
       createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
         timeZone: 'Asia/Seoul',
       }),
@@ -138,7 +138,7 @@ router.put('/:id/delete', async (req, res) => {
 // UPDATE ETC
 
 // Comment
-router.post('/:id/comment', async (req, res) => {
+router.put('/:id/comment', async (req, res) => {
   const questionId = req.params.id;
   try {
     const question = await Question.findById(questionId);
@@ -158,6 +158,7 @@ router.post('/:id/comment', async (req, res) => {
       userId: userId,
     });
     const savedComment = await newComment.save();
+    question.comments += 1;
     res.status(200).json(savedComment);
   } catch (err) {
     res.status(500).json(err);
@@ -198,7 +199,7 @@ router.put('/:id/vote', async (req, res) => {
 
 // Bookmark
 // login 구현 후에 userId 수정 예정
-router.post('/:id/bookmark', async (req, res) => {
+router.put('/:id/bookmark', async (req, res) => {
   const questionId = req.params.id;
 
   try {
