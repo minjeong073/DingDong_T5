@@ -161,7 +161,6 @@ export const HashBody = styled.div`
   display: fixed;
   width: 690px;
   margin-top: 60px;
-
   overflow: hidden;
 `;
 
