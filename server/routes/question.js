@@ -4,6 +4,9 @@ const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Comment = require('../models/Comment');
 
+// TODO : 로그인한 유저만 질문을 작성할 수 있도록
+// create, update, delete 미들웨어 추가
+
 // Question CRUD
 // CREATE
 router.post('/', async (req, res) => {
@@ -28,17 +31,21 @@ router.get('/', async (req, res) => {
       .skip(startIndex)
       .limit(pageSize)
       .exec();
-    const updatedQuestions = questions.map(question => {
-      return {
-        ...question._doc,
-        createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-        updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-      };
-    });
+    const updatedQuestions = await Promise.all(
+      questions.map(async question => {
+        const user = await User.findById(question.userId);
+        return {
+          ...question._doc,
+          author: user.username,
+          createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+      }),
+    );
 
     res.status(200).json({ updatedQuestions, totalQuestions });
   } catch (err) {
@@ -50,6 +57,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
+    const user = await User.findById(question.userId);
     const comments = await Comment.find({ questionId: req.params.id }).exec();
 
     if (!question) {
@@ -57,6 +65,7 @@ router.get('/:id', async (req, res) => {
     }
     const updatedQuestion = {
       ...question._doc,
+      author: user.username,
       comments,
       createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
         timeZone: 'Asia/Seoul',

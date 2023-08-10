@@ -31,18 +31,25 @@ router.post('/:questionId', async (req, res) => {
 // GET ALL
 router.get('/all/:questionId', async (req, res) => {
   try {
-    const answers = await Answer.find({ questionId: req.params.questionId });
-    const updatedAnswers = answers.map(answer => {
-      return {
-        ...answer._doc,
-        createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-        updatedAt: new Date(answer.updatedAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-      };
-    });
+    const questionId = req.params.questionId;
+    const answers = await Answer.find({ questionId: questionId });
+    const updatedAnswers = await Promise.all(
+      answers.map(async answer => {
+        const user = await User.findById(answer.userId);
+        // const comments = await Comment.find({ answerId: answer._id }).exec();
+        return {
+          ...answer._doc,
+          author: user.username,
+          // comments,
+          createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(answer.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+      }),
+    );
     res.status(200).json(updatedAnswers);
   } catch (err) {
     res.status(500).json(err);
@@ -53,6 +60,7 @@ router.get('/all/:questionId', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const answer = await Answer.findById(req.params.id);
+    const user = await User.findById(answer.userId);
     const comments = await Comment.find({ answerId: req.params.id }).exec();
 
     if (!answer) {
@@ -60,6 +68,7 @@ router.get('/:id', async (req, res) => {
     }
     const updatedAnswer = {
       ...answer._doc,
+      author: user.username,
       comments,
       createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
         timeZone: 'Asia/Seoul',
