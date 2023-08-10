@@ -10,6 +10,7 @@ import { RecoilRoot } from 'recoil';
 import { Detail } from './pages/Detail';
 import { Replies } from './pages/Replies';
 import { ModifyQuestion } from './pages/ModifyQuestion';
+import { Login } from "./pages/Login";
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
@@ -20,6 +21,7 @@ root.render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<Login/>}/>
           <Route path="/articles" element={<Layout />}>
             <Route index element={<List />} />
             <Route path="/articles/:_id" element={<Detail />} />

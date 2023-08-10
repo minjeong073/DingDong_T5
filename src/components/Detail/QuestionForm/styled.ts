@@ -1,8 +1,8 @@
-import { styled, css } from "styled-components";
-import heartImg from "../../../assets/icon/heart.svg";
-import heartFillImg from "../../../assets/icon/heart_fill.svg";
-import saveImg from "../../../assets/icon/save.svg";
-import saveFillImg from "../../../assets/icon/save_fill.svg";
+import { styled, css } from 'styled-components';
+import heartImg from '../../../assets/icon/heart.svg';
+import heartFillImg from '../../../assets/icon/heart_fill.svg';
+import saveImg from '../../../assets/icon/save.svg';
+import saveFillImg from '../../../assets/icon/save_fill.svg';
 
 interface ICustomMargin {
   top?: string;
@@ -12,10 +12,7 @@ interface ICustomMargin {
 }
 
 const customMargin = css<ICustomMargin>`
-  margin: ${(props) =>
-    `${props.top || "0px"} ${props.right || "0px"} ${props.bottom || "0px"} ${
-      props.left || "0px"
-    }`};
+  margin: ${props => `${props.top || '0px'} ${props.right || '0px'} ${props.bottom || '0px'} ${props.left || '0px'}`};
 `;
 
 export const QuestionTitleSection = styled.div<ICustomMargin>`
@@ -31,7 +28,7 @@ export const QuestionTypo = styled.div`
   height: 50px;
   background: #7c3aed;
   border-radius: 50%;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   color: #fff;
   font-size: 26px;
   font-weight: 600;
@@ -80,8 +77,8 @@ export const ItemTypo = styled.div`
 export const HeartIcon = styled.img.attrs({
   src: heartImg,
 })`
-  width: ${(props) => (props.width ? props.width : "18px")};
-  height: ${(props) => (props.width ? props.width : "18px")};
+  width: ${props => (props.width ? props.width : '18px')};
+  height: ${props => (props.width ? props.width : '18px')};
   margin-bottom: 2px;
   cursor: pointer;
 `;
@@ -89,8 +86,8 @@ export const HeartIcon = styled.img.attrs({
 export const HeartFillIcon = styled.img.attrs({
   src: heartFillImg,
 })`
-  width: ${(props) => (props.width ? props.width : "18px")};
-  height: ${(props) => (props.width ? props.width : "18px")};
+  width: ${props => (props.width ? props.width : '18px')};
+  height: ${props => (props.width ? props.width : '18px')};
   margin-bottom: 2px;
   cursor: pointer;
 `;
@@ -98,8 +95,8 @@ export const HeartFillIcon = styled.img.attrs({
 export const SaveIcon = styled.img.attrs({
   src: saveImg,
 })`
-  width: ${(props) => (props.width ? props.width : "18px")};
-  height: ${(props) => (props.width ? props.width : "15px")};
+  width: ${props => (props.width ? props.width : '18px')};
+  height: ${props => (props.width ? props.width : '15px')};
   margin-top: 10px;
   margin-bottom: 2px;
   cursor: pointer;
@@ -108,8 +105,8 @@ export const SaveIcon = styled.img.attrs({
 export const SaveFillIcon = styled.img.attrs({
   src: saveFillImg,
 })`
-  width: ${(props) => (props.width ? props.width : "18px")};
-  height: ${(props) => (props.width ? props.width : "15px")};
+  width: ${props => (props.width ? props.width : '18px')};
+  height: ${props => (props.width ? props.width : '15px')};
   margin-top: 10px;
   margin-bottom: 2px;
   cursor: pointer;
@@ -170,15 +167,34 @@ interface ITypo extends ICustomMargin {
 
 export const Typo = styled.span<ITypo>`
   display: inline-block;
-  color: ${(props) => (props.color ? props.color : "#64748b")};
-  font-size: ${(props) => (props.size ? props.size : "12px")};
+  color: ${props => (props.color ? props.color : '#64748b')};
+  font-size: ${props => (props.size ? props.size : '12px')};
   font-weight: 400;
-  text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
-  cursor: ${(props) => (props.pointer ? "pointer" : "default")};
+  text-decoration-line: ${props => (props.underline ? 'underline' : 'none')};
+  cursor: ${props => (props.pointer ? 'pointer' : 'default')};
   &:not(:first-child) {
     margin-left: 8px;
   }
   ${customMargin}
+`;
+
+export const HashTagContainer = styled.div`
+  display: flex;
+  width: 500px;
+`;
+
+export const HashTag = styled.button`
+  margin-right: 7px;
+  padding: 5px 10px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #f1f5f9;
+  border-radius: 20px;
+  font-size: 15px;
+  margin-bottom: 5px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const AskedTypo = styled.div`
@@ -219,7 +235,7 @@ interface IUserStateCircle {
 export const UserStateCircle = styled.div<IUserStateCircle>`
   width: 15px;
   height: 15px;
-  background: ${(props) => props.color};
+  background: ${props => props.color};
   border-radius: 50%;
 `;
 

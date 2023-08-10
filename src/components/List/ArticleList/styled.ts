@@ -1,7 +1,68 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Root = styled.div`
   padding-bottom: 40px;
+`;
+
+export const OrderContainer = styled.div`
+  display: flex;
+  width: 222px;
+  height: 33px;
+  flex-shrink: 0;
+  color: #0f172a;
+  margin-top: 3px;
+  /* border: 0.5px solid #e2e8f0; */
+  /* border-radius: 10px; */
+  /* background: #f1f5f9; */
+  > * {
+  }
+`;
+
+interface OrderProps {
+  selected?: boolean;
+}
+
+export const LatestOrder = styled.div<OrderProps>`
+  display: flex;
+  width: 74px;
+  height: 33px;
+  justify-content: center;
+  align-items: center;
+  color: #0f172a;
+  font-size: 15px;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  background-color: ${props => (props.selected ? '#F1F5F9' : 'transparent')};
+  border-right: 0;
+  border-radius: 10px 0px 0px 10px;
+`;
+
+export const ViewOrder = styled.div<OrderProps>`
+  display: flex;
+  width: 74px;
+  height: 33px;
+  justify-content: center;
+  align-items: center;
+  color: #0f172a;
+  font-size: 15px;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  background-color: ${props => (props.selected ? '#F1F5F9' : 'transparent')};
+  border-right: 0;
+`;
+
+export const VoteOrder = styled.div<OrderProps>`
+  display: flex;
+  width: 74px;
+  height: 33px;
+  justify-content: center;
+  align-items: center;
+  color: #0f172a;
+  font-size: 15px;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  background-color: ${props => (props.selected ? '#F1F5F9' : 'transparent')};
+  border-radius: 0px 10px 10px 0px;
 `;
 
 export const Holder = styled.div`

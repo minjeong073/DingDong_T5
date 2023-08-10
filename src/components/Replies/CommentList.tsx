@@ -4,8 +4,8 @@ import axios from 'axios';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionListState } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
-import { TableRow } from '../List/ArticlesTable/styled';
-import { LButton, Button1, Button2, ReplyTable, Upper, Heart_FillIcon, Icon, Text, Title, Addition, Author, Date, Comment, TableCell } from './styled';
+import { TableRow, Tbody, HashTagWrapper, HashTag } from '../List/ArticlesTable/styled';
+import { LButton, Button1, Button2, ReplyTable, Upper, Heart_FillIcon, Icon, Content, Text, Title, Addition, AuthorInfo, Author, Date, Comment, TableCell } from './styled';
 import { useNavigate } from 'react-router-dom';
 import dummy from '../../db/comment.json';
 import WhiteLogo from '../../assets/icon/white_logo.svg';
@@ -68,7 +68,7 @@ export const CommentList = () => {
         </Button>
       </Holder>
       <ReplyTable>
-        <tbody>
+        <Tbody>
           {Data.map((item: any) => (
             <TableRow key={item.id}>
               <TableCell>
@@ -77,17 +77,28 @@ export const CommentList = () => {
                     <Heart_FillIcon />
                     <Text>{item.votes}</Text>
                   </Icon>
-                  <Title>{item.title}</Title>
-                  <Addition>
-                    <Author>{item.author}</Author>
-                    <Date>{item.createdAt}</Date>
-                  </Addition>
                 </Upper>
-                <Comment>{(item as any)[result]}</Comment>
+                <Content>
+                  <Title>{(item as any)[result]}</Title>
+                  <Addition>
+                    <HashTagWrapper>
+                      {/* {item.hashtags.map((content, index) => (
+                        <HashTag onClick={onClickHashtag} key={content}>
+                          {content}
+                        </HashTag>
+                      ))} */}
+                    </HashTagWrapper>
+                    <AuthorInfo>
+                      <Author>{item.author}</Author>
+                      <Date>{item.createdAt}</Date>
+                    </AuthorInfo>
+
+                  </Addition>
+                </Content>
               </TableCell>
             </TableRow>
           ))}
-        </tbody>
+        </Tbody>
       </ReplyTable>
     </>
   );

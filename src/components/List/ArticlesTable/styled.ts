@@ -3,12 +3,9 @@ import styled from 'styled-components';
 
 export const Table = styled.table`
   width: 100%;
-  /* height: 1000px; */
-  /* border: 1px solid #e6e8e7; */
   border-collapse: collapse;
-
   td {
-    height: 150px;
+    min-height: 150px;
     border-bottom: 1px solid #e2e8f0;
   }
 `;
@@ -35,6 +32,7 @@ export const Info = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   color: #475569;
   margin: 22px 0;
   margin-left: 28px;
@@ -45,7 +43,7 @@ export const Box = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1px 0;
+  margin: 3px 0;
   min-width: 95px;
   height: 32px;
   flex-shrink: 0;
@@ -55,12 +53,12 @@ export const Box = styled.div`
 `;
 
 export const PurpleBox = styled(Box)`
-  border-radius: 9px;
+  border-radius: 8px;
   border: 1px solid #8b5cf6;
 `;
 
 export const Div = styled.div`
-  font-size: 15px;
+  font-size: 16px;
   margin-right: 15px;
 `;
 
@@ -69,7 +67,7 @@ export const PurpleDiv = styled(Div)`
 `;
 
 export const Span = styled.div`
-  font-size: 15px;
+  font-size: 16px;
 `;
 
 export const PurpleSpan = styled(Span)`
@@ -83,7 +81,7 @@ export const Context = styled.div`
 `;
 
 export const Title = styled.div`
-  margin: 26px 30px 0 0;
+  margin: 28px 30px 0 0;
   font-size: 17px;
   width: 484px;
   overflow: hidden;
@@ -100,7 +98,7 @@ export const Addition = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  margin: 38px 0 30px 0;
+  margin: 45px 0 25px 0;
 `;
 
 export const HashTagWrapper = styled.div``;
@@ -113,6 +111,7 @@ export const HashTag = styled.button`
   border: 1px solid #f1f5f9;
   border-radius: 20px;
   font-size: 15px;
+  margin-bottom: 5px;
   &:hover {
     cursor: pointer;
   }
@@ -124,9 +123,11 @@ export const Author = styled.div`
   align-items: center;
   flex: 1;
   font-size: 14px;
+  margin-left: 5px;
 `;
 
 export const Date = styled.div`
+  min-width: 141px;
   color: #64748b;
   align-items: center;
   margin: 0 45px 0 20px;

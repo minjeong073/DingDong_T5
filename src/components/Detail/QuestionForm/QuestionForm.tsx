@@ -23,6 +23,8 @@ import {
   UserStateCircle,
   HeartFillIcon,
   SaveFillIcon,
+  HashTagContainer,
+  HashTag,
 } from './styled';
 import DOMPurify from 'dompurify';
 import axios from 'axios';
@@ -182,11 +184,16 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         </QuestionTopContainer>
         <QuestionBottomContainer>
           <QuestionBottomLeftContainer>
+            <HashTagContainer>
+              {currentQuestion?.hashtags.map((hashtag, index) => (
+                <HashTag key={index}>{hashtag}</HashTag>
+              ))}
+            </HashTagContainer>
             <Typo underline="true" pointer="true">
               공유
             </Typo>
-            <Typo underline="true" pointer="true">
-              <Link to={`/articles/modify/${_id}`}>수정</Link>
+            <Typo underline="true" pointer="true" onClick={() => navigate(`/articles/modify/${_id}`)}>
+              수정
             </Typo>
             <Typo underline="true" pointer="true" onClick={deleteQuestion}>
               삭제

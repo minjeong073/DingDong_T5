@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { Container, NavItem } from "./styled";
-import { Link } from "react-router-dom";
+import { useMemo } from 'react';
+import { Container, NavItem } from './styled';
+import { useNavigate } from 'react-router-dom';
 
 type navItem = {
   name: string;
@@ -10,20 +10,21 @@ type navItem = {
 type navItems = navItem[];
 
 export const Nav = () => {
+  const navigate = useNavigate();
   const navItems = useMemo<navItems>(
     () => [
-      { name: "Home", src: "/" },
-      { name: "Questions", src: "/articles" },
-      { name: "Replies", src: "/replies" },
+      { name: 'Home', src: '/' },
+      { name: 'Questions', src: '/articles' },
+      { name: 'Replies', src: '/replies' },
     ],
-    []
+    [],
   );
   return (
     <Container>
       {navItems.map((item, idx) => (
-        <Link to={item.src} key={`${item.name}_${idx}`}>
-          <NavItem>{item.name}</NavItem>
-        </Link>
+        <NavItem key={`${item.name}_${idx}`} onClick={() => navigate(item.src)}>
+          {item.name}
+        </NavItem>
       ))}
     </Container>
   );

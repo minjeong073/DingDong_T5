@@ -1,8 +1,19 @@
 import { useState } from 'react';
-import { LogoImg, LogoSection, LogoTypo, NotificationSection, Root, SearchInput, UserSection, LoginTypo, SignUpTypo, LogoutTypo } from './styled';
+import {
+  LogoImg,
+  LogoSection,
+  LogoTypo,
+  NotificationSection,
+  Root,
+  SearchInput,
+  UserSection,
+  LoginTypo,
+  SignUpTypo,
+  LogoutTypo,
+} from './styled';
 
 export const Header = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
 
   return (
     <Root>
