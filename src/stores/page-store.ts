@@ -21,7 +21,7 @@ export interface QuestionDataType {
   content: string;
   createdAt: string;
   updatedAt: string;
-  //author: string;
+  author: string;
   votes?: number;
   answers?: number;
   views?: number;
@@ -39,6 +39,7 @@ const defaultQuestionData: QuestionDataType[] = [
     content: '',
     createdAt: '',
     updatedAt: '',
+    author: '',
     votes: 0,
     answers: 0,
     views: 0,
