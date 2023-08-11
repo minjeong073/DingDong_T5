@@ -157,13 +157,6 @@ export const slideInAnimation = keyframes`
   }
 `;
 
-export const HashBody = styled.div`
-  display: fixed;
-  width: 690px;
-  margin-top: 60px;
-  overflow: hidden;
-`;
-
 export const ItemWrapper = styled.div`
   display: flex;  
   // animation: ${slideInAnimation} 10s linear infinite;

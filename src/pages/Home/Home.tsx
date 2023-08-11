@@ -18,11 +18,16 @@ import {
   TopItems,
   ButtonBar,
   ItemWrapper,
-  HashBody,
 } from "./styled";
+import { HashCarousal } from "../../components/HashtagBar/HashCarousal";
 import { HashTagBar } from "../../components/HashtagBar";
 import { Link } from "react-router-dom";
+import { EmblaOptionsType } from "embla-carousel-react";
 import axios from "axios";
+
+const OPTIONS: EmblaOptionsType = { align: 'end', loop: true };
+const SLIDE_COUNT = 13;
+const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 
 export const Home = () => {
   return (
@@ -75,11 +80,10 @@ export const Home = () => {
             </TopItems>
           </AnswerBlock>
         </Block>
-        <HashBody>
-          <ItemWrapper>
-            <HashTagBar />
-          </ItemWrapper>         
-        </HashBody>
+        {/* <HashBody>
+          <HashTagBar/> 
+        </HashBody> */}
+        <HashCarousal slides={SLIDES} options={OPTIONS}/>
       </Container>
     </Root>
   );
