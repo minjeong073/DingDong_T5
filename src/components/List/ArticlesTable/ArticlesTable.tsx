@@ -51,6 +51,7 @@ export const ArticlesTable = () => {
         }),
       );
       setQuestionData(updatedQuestionsWithAnswers); */
+      console.log(updatedQuestions);
       setQuestionData(updatedQuestions);
     } catch (error) {
       console.error(error);
