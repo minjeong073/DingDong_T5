@@ -6,7 +6,6 @@ const mongoose = require('mongoose');
 
 const port = process.env.PORT || 5001;
 
-const adminRoute = require('./admin/admin');
 const authRoute = require('./routes/auth');
 const questionRoute = require('./routes/question');
 const userRoute = require('./routes/user');
@@ -26,7 +25,6 @@ mongoose
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.log(err));
 
-app.use('/admin', adminRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/articles', questionRoute);
 app.use('/api/users', userRoute);

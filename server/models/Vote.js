@@ -11,12 +11,12 @@ const VoteSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Answer',
     },
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+    username: {
+      type: String,
+      required: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model('Vote', VoteSchema);

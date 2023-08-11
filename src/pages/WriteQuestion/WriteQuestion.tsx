@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { Button } from '../../components';
+import { Button } from '../../components/Button';
 import {
   HashtagIcon,
   KeywordInput,
@@ -32,9 +32,7 @@ export const WriteQuestion = () => {
     answers: 0,
     views: 0,
     saves: 0,
-    // user6의 id로 임시 설정
-    userId: '64d24cb479cd50b639db526a',
-    // author: 'so',
+    author: 'so',
     hashtags: selected,
     isDeleted: false,
   });

@@ -1,12 +1,5 @@
+export { Nav } from './Nav';
+export { RightWrapper } from './RightWrapper';
+export { Header } from './Header';
 export { AnswerForm } from './Detail';
 export { QuestionForm } from './Detail';
-export { Header } from './Header';
-export { HashTagNav } from './HashtagNav';
-export { HashTagBar } from './HashtagBar';
-export { Articles } from './List';
-export { Nav } from './Nav';
-export { Footer } from './Footer';
-export { ArticlesTable } from './List';
-export { CommentList } from './Replies';
-export { RightWrapper } from './RightWrapper';
-export { Button } from './Button';

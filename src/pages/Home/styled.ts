@@ -1,10 +1,12 @@
-import styled, { keyframes } from 'styled-components';
-import SearchIcon from 'assets/icon/search.svg';
-import Logo from 'assets/icon/logo.svg';
+import styled, { keyframes } from "styled-components";
+import SearchIcon from "../../assets/icon/search.svg";
+import { QuestionTypo } from "../WriteQuestion/styled";
+
 
 export const Root = styled.div`
   display: flex;
   flex-direction: column;
+
 `;
 
 export const Header = styled.header`
@@ -16,36 +18,6 @@ export const Header = styled.header`
   margin-top: 25px;
 `;
 
-export const LogoSection = styled.div`
-  display: flex;
-  width: 136px;
-  height: 54px;
-  justify-content: center;
-  align-items: center;
-  /* padding-right: 25px; */
-  /* margin-right: 0px; */
-  margin-left: 25px;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-export const LogoImg = styled.img.attrs({
-  src: Logo,
-})`
-  width: 22px;
-  height: 22px;
-`;
-
-export const LogoTypo = styled.div`
-  color: #7c3aed;
-  text-align: right;
-  font-family: 'Inter';
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -1px;
-`;
-
 export const Div = styled.div`
   display: flex;
   flex-direction: row;
@@ -54,14 +26,12 @@ export const Div = styled.div`
 
 export const Login = styled.button`
   width: 72px;
-  color: #64748b;
-  font-size: 15px;
-`;
+  color: #64748B;
+`;  
 
 export const SignUp = styled.button`
   width: 72px;
-  color: #64748b;
-  font-size: 15px;
+  color: #64748B;
 `;
 
 export const Container = styled.div`
@@ -71,6 +41,7 @@ export const Container = styled.div`
   height: 100%;
   align-items: center;
   margin-top: 91px;
+
 `;
 
 export const SearchBar = styled.input`
@@ -158,18 +129,10 @@ export const TitleBlock = styled.div`
   justify-content: center;
 `;
 
-export const QuestionTypo = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+export const QTypo = styled(QuestionTypo)`
   width: 28px;
   height: 28px;
-  background: #7c3aed;
-  border-radius: 50%;
-  font-family: 'Inter', sans-serif;
-  color: #fff;
   font-size: 18px;
-  font-weight: 600;
 `;
 
 export const TitleText = styled.div`
@@ -182,6 +145,7 @@ export const TitleText = styled.div`
 
 export const TopItems = styled.div`
   margin-top: 14px;
+
 `;
 
 export const slideInAnimation = keyframes`
@@ -197,12 +161,11 @@ export const HashBody = styled.div`
   display: fixed;
   width: 690px;
   margin-top: 60px;
-
   overflow: hidden;
 `;
 
 export const ItemWrapper = styled.div`
-  display: flex;
+  display: flex;  
   // animation: ${slideInAnimation} 10s linear infinite;
   white-space: nowrap;
-`;
+  `;

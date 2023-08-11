@@ -53,12 +53,12 @@ export const Box = styled.div`
 `;
 
 export const PurpleBox = styled(Box)`
-  border-radius: 8px;
+  border-radius: 9px;
   border: 1px solid #8b5cf6;
 `;
 
 export const Div = styled.div`
-  font-size: 16px;
+  font-size: 15px;
   margin-right: 15px;
 `;
 
@@ -67,7 +67,7 @@ export const PurpleDiv = styled(Div)`
 `;
 
 export const Span = styled.div`
-  font-size: 16px;
+  font-size: 15px;
 `;
 
 export const PurpleSpan = styled(Span)`

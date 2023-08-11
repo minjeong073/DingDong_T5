@@ -1,5 +1,5 @@
-import { style } from "@mui/system";
 import styled from "styled-components";
+import { Button } from "../../components/Button";
 
 export const Root = styled.div`
   display: flex;
@@ -30,4 +30,20 @@ export const PWbox = styled.input`
   border: 0.5px solid #E2E8F0;
   margin: 10px 0;
   padding-left: 22px;
+`;
+
+export const ActionContainer= styled.div`
+  display: flex;
+  flex-direction: row; 
+  justify-content: space-between;
+`;
+
+export const Button1 = styled(Button)``;
+
+export const Button2 = styled(Button)`
+  background: #E2E8F0;
+  color: #7C3AED;
+  &:hover{
+    background: #D9D9D9;
+  }
 `;
