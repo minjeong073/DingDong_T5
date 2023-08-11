@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
+import userIdToAuthor from 'utils/userIdToAuthor';
 import {
   HeartIcon,
   ItemContainer,
@@ -64,7 +65,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const updateViews = async () => {
     try {
       if (currentQuestion) {
-        const updatedViews = currentQuestion.views + 1;
+        const updatedViews = currentQuestion.views! + 1;
         setViews(updatedViews); // Update the local state immediately
         await axios.put(`/api/articles/${_id}`, {
           ...currentQuestion,
@@ -203,7 +204,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             <AuthorBox>
               <AskedTypo>Asked</AskedTypo>
               <AuthorContainer>
-                <AuthorProfile>{currentQuestion?.author}</AuthorProfile>
+                <AuthorProfile>{userIdToAuthor(currentQuestion?.userId as string)}</AuthorProfile>
                 <UserStateCircle color={currentQuestion?.votes! < 15 ? '#D1D5DB' : '#ffd700'} />
                 <Typo>{currentQuestion?.votes}</Typo>
               </AuthorContainer>

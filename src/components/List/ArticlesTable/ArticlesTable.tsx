@@ -5,6 +5,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionListState } from '../../../stores/page-store';
 import type { QuestionDataType } from '../../../stores/page-store';
 import { Link } from 'react-router-dom';
+import userIdToAuthor from 'utils/userIdToAuthor';
 import {
   Table,
   TableCell,
@@ -126,7 +127,7 @@ export const ArticlesTable = () => {
                         </HashTag>
                       ))}
                     </HashTagWrapper>
-                    <Author>{item.author}</Author>
+                    <Author>{userIdToAuthor(item.userId)}</Author>
                     <Date>{item.createdAt}</Date>
                   </Addition>
                 </Context>

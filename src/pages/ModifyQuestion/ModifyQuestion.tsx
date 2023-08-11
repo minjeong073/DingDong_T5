@@ -45,8 +45,16 @@ export const ModifyQuestion = () => {
       if (!modifiedArticle) {
         return;
       }
-      if (modifiedArticle.title === '' || contents === '') {
-        alert('제목과 내용을 모두 입력해주세요.');
+      if (modifiedArticle.title === '') {
+        alert('제목을 입력해주세요.');
+        return;
+      }
+      if (contents === '') {
+        alert('내용을 입력해주세요.');
+        return;
+      }
+      if (selected.length === 0) {
+        alert('키워드를 입력해주세요.');
         return;
       }
       await axios.put(`/api/articles/${_id}`, {

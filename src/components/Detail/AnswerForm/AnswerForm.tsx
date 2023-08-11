@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import userIdToAuthor from 'utils/userIdToAuthor';
 import {
   HeartIcon,
   ItemContainer,
@@ -322,7 +323,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               <AuthorBox>
                 <AskedTypo>Answered</AskedTypo>
                 <AuthorContainer>
-                  <AuthorProfile>{answer.author}</AuthorProfile>
+                  <AuthorProfile>{userIdToAuthor(answer.userId)}</AuthorProfile>
                   <UserStateCircle color={answerVotes[answer._id] < 15 ? '#D1D5DB' : '#ffd700'} />
                   <Typo>{answerVotes[answer._id]}</Typo>
                 </AuthorContainer>
