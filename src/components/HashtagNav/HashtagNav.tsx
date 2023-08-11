@@ -1,6 +1,6 @@
-import { NavBar, Table, Tr, Td, Special, HashTag, Button, Img } from './styled';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { QuestionData, QuestionListState } from '../../stores/page-store';
+import { NavBar, Table, Tr, Td, HashTag, Button, Img } from './styled';
+import { useRecoilState } from 'recoil';
+import { QuestionListState } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import React, { useState, useEffect } from 'react';
 import unfold from '../../assets/icon/unfold.svg';
@@ -10,7 +10,9 @@ import axios from 'axios';
 export const HashTagNav = () => {
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(false);
-  const [QuestionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([true, ...Array(0).fill(false)]);
+  const [onlyHashtag, setOnlyHashtag] = useState<string[]>([]);
 
   const fetchData = async () => {
     try {
@@ -26,31 +28,24 @@ export const HashTagNav = () => {
     fetchData();
   }, [setQuestionData]);
 
+  useEffect(() => {
     let getHashtags: string[] = [];
-  Array(QuestionData.length)
-    .fill(0)
-    .map((item, index) => {
-      const values = QuestionData[index]?.hashtags.join(',');
+    questionData.forEach(item => {
+      const values = item?.hashtags.join(',');
       getHashtags.push(values);
     });
     const oneHashtag = getHashtags.flatMap(item => item.split(',').map(part => part.trim()));
     const realHash = oneHashtag.filter(item => item.trim() !== '');
     const sortByFrequency = (arr: any[]) => {
       const frequencyMap = arr.reduce((map, item) => {
-      map.set(item, map.get(item || 0) + 1);
+        map.set(item, (map.get(item) || 0) + 1);
         return map;
       }, new Map());
       return arr.sort((a, b) => frequencyMap.get(b) - frequencyMap.get(a));
     };
-  const forHash = sortByFrequency(realHash);
-  const onlyHashtag = Array.from(new Set(forHash));
-  onlyHashtag.unshift('ALL');
-  // console.log(onlyHashtag.indexOf('hashtag'));
-
-  const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([
-    true,
-    ...Array(onlyHashtag.length - 1).fill(false),
-  ]);
+    const sortedHash = sortByFrequency(realHash);
+    setOnlyHashtag(['ALL', ...new Set(sortedHash)]);
+  }, [questionData]);
 
   const onClickExpanded = () => {
     setExpanded(prev => !prev);
@@ -58,8 +53,8 @@ export const HashTagNav = () => {
 
   const handleClick = (index: number) => {
     const newClickedHashtags = [...clickedHashtags];
-    newClickedHashtags.fill(false); // 모든 요소를 false로 설정
-    newClickedHashtags[index] = !newClickedHashtags[index]; // 클릭한 요소를 true로 설정
+    // newClickedHashtags.fill(false);
+    newClickedHashtags[index] = !newClickedHashtags[index];
     setClickedHashtags(newClickedHashtags);
   };
 

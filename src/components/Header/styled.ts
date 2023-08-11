@@ -39,8 +39,8 @@ export const LogoSection = styled.div`
 export const LogoImg = styled.img.attrs({
   src: Logo,
 })`
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
 `;
 
 export const LogoTypo = styled.div`

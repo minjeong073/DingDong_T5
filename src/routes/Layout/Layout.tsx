@@ -1,9 +1,11 @@
-import { Outlet } from 'react-router-dom';
-import { HashTagNav } from '../../components/HashtagNav';
-import { Header, Nav, RightWrapper } from '../../components';
-import { Container, Root, LeftWrapper, Main, Footer } from './styled';
-
+import { Outlet, useLocation } from 'react-router-dom';
+import { Header, Nav, HashTagNav, RightWrapper, Footer } from '../../components';
+import { Container, Root, LeftWrapper, Main } from './styled';
 export const Layout = () => {
+  const location = useLocation(); // 현재 URL 정보를 가져옴
+
+  // 푸터가 나타날 URL 조건 설정
+  const showFooter = location.pathname.includes('/articles') || location.pathname.includes('/mypage');
   return (
     <Root>
       <Header />
@@ -17,9 +19,7 @@ export const Layout = () => {
         </Main>
         <RightWrapper />
       </Container>
-      <Footer>
-        © 2023&nbsp;<b>DINGDONG</b>
-      </Footer>
+      {showFooter && <Footer />}
     </Root>
   );
 };

@@ -28,6 +28,7 @@ export const Table = styled.div<{ $expanded?: boolean }>`
 export const Button = styled.button`
   color: #0f172a;
   font-size: 15px;
+  margin-left: 70px;
 `;
 
 export const Tr = styled.div`
