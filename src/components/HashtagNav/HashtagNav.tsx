@@ -26,22 +26,22 @@ export const HashTagNav = () => {
     fetchData();
   }, [setQuestionData]);
 
-  let getHashtags: string[] = [];
+    let getHashtags: string[] = [];
   Array(QuestionData.length)
     .fill(0)
     .map((item, index) => {
       const values = QuestionData[index]?.hashtags.join(',');
       getHashtags.push(values);
     });
-  const oneHashtag = getHashtags.flatMap(item => item.split(',').map(part => part.trim()));
-  const realHash = oneHashtag.filter(item => item.trim() !== '');
-  const sortByFrequency = (arr: any[]) => {
-    const frequencyMap = arr.reduce((map, item) => {
+    const oneHashtag = getHashtags.flatMap(item => item.split(',').map(part => part.trim()));
+    const realHash = oneHashtag.filter(item => item.trim() !== '');
+    const sortByFrequency = (arr: any[]) => {
+      const frequencyMap = arr.reduce((map, item) => {
       map.set(item, map.get(item || 0) + 1);
-      return map;
-    }, new Map());
-    return arr.sort((a, b) => frequencyMap.get(b) - frequencyMap.get(a));
-  };
+        return map;
+      }, new Map());
+      return arr.sort((a, b) => frequencyMap.get(b) - frequencyMap.get(a));
+    };
   const forHash = sortByFrequency(realHash);
   const onlyHashtag = Array.from(new Set(forHash));
   onlyHashtag.unshift('ALL');
