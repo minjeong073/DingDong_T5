@@ -53,16 +53,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   // State to keep track of the new answer being created
   const [newAnswer, setNewAnswer] = useState({
     content: '',
-<<<<<<< Updated upstream
-    questionTitle: '',
-    questionId: _id,
-    author: 'so',
-    votes: 0,
-    saves: 0,
-=======
     userId: '64d24cb479cd50b639db526a',
     author: '임시',
->>>>>>> Stashed changes
   });
   // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
@@ -112,7 +104,9 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           })
           .then(res => {
             // Update the answerData array with the updated answer
-            setAnswerData((prevAnswerData: AnswerDataType[]) => prevAnswerData.map(item => (item._id === editingAnswerId ? res.data : item)));
+            setAnswerData((prevAnswerData: AnswerDataType[]) =>
+              prevAnswerData.map(item => (item._id === editingAnswerId ? res.data : item)),
+            );
             alert('답변 수정 성공!');
             setContents('');
             setEditingAnswerId(null);
@@ -287,10 +281,18 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           <QuestionTopContainer>
             <ItemContainer>
               {/* 투표 */}
-              {isVoteClicked[answer._id] ? <HeartFillIcon onClick={() => handleVote(answer._id)} /> : <HeartIcon onClick={() => handleVote(answer._id)} />}
+              {isVoteClicked[answer._id] ? (
+                <HeartFillIcon onClick={() => handleVote(answer._id)} />
+              ) : (
+                <HeartIcon onClick={() => handleVote(answer._id)} />
+              )}
               <ItemTypo>{answerVotes[answer._id]}</ItemTypo>
               {/* 저장 */}
-              {isSaveClicked[answer._id] ? <SaveFillIcon onClick={() => handleSave(answer._id)} /> : <SaveIcon onClick={() => handleSave(answer._id)} />}
+              {isSaveClicked[answer._id] ? (
+                <SaveFillIcon onClick={() => handleSave(answer._id)} />
+              ) : (
+                <SaveIcon onClick={() => handleSave(answer._id)} />
+              )}
               <ItemTypo>{answerSaves[answer._id]}</ItemTypo>
             </ItemContainer>
             <ItemContainer>
@@ -330,7 +332,13 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           </QuestionBottomContainer>
         </QuestionBodySection>
       ))}
-      <WriteAnswerForm ref={writeAnswerFormRef} contents={contents} onContentsChange={setContents} postAnswer={postAnswer} editingAnswerId={editingAnswerId} />
+      <WriteAnswerForm
+        ref={writeAnswerFormRef}
+        contents={contents}
+        onContentsChange={setContents}
+        postAnswer={postAnswer}
+        editingAnswerId={editingAnswerId}
+      />
     </>
   );
 };
