@@ -29,14 +29,13 @@ const QuestionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // Login 구현 후 수정 예정 : 작성자는 User의 id를 참조
-    // userId: {
-    //   type: Number,
-    //   required: true,
-    // },
-    author: {
-      type: String,
-      required: true,
+    comments: {
+      type: Number,
+      default: 0,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     hashtags: {
       type: [String],
@@ -59,15 +58,5 @@ QuestionSchema.pre('save', function (next) {
   this.createdAt = new Date(seoulTime);
   next();
 });
-
-QuestionSchema.methods.convertDate = function () {
-  this.createdAt = new Date(this.createdAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  this.updatedAt = new Date(this.updatedAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  return this;
-};
 
 module.exports = mongoose.model('Question', QuestionSchema);

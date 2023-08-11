@@ -27,7 +27,7 @@ router.put('/:id', async (req, res) => {
         {
           $set: req.body,
         },
-        { new: true }
+        { new: true },
       );
       res.status(200).json(updatedUser);
     } catch (err) {

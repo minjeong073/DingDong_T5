@@ -1,39 +1,48 @@
 const router = require('express').Router();
 const Comment = require('../models/Comment');
 
-// Comment CRUD
-//CREATE
-router.post('/', async (req, res) => {
-  const newComment = new Comment(req.body);
-  try {
-    const savedComment = await newComment.save();
-    res.status(200).json(savedComment);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-//GET ALL Comment
-router.get('/', async (req, res) => {
-  try {
-    const comments = await Comment.find({});
-    res.status(200).json(comments);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-//GET Comment
+// GET BY COMMENT ID
 router.get('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    res.status(200).json(comment);
+    const updatedComment = {
+      ...comment._doc,
+      createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+      updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+    };
+    res.status(200).json(updatedComment);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-//UPDATE Comment
+// GET BY QUESTION ID
+router.get('/', async (req, res) => {
+  const questionId = req.query.questionId;
+  try {
+    const comments = await Comment.find({ questionId: questionId });
+    const updatedComment = comments.map(comment => {
+      return {
+        ...comment._doc,
+        createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+        updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+      };
+    });
+    res.status(200).json(updatedComment);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// UPDATE
 router.put('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
@@ -44,7 +53,7 @@ router.put('/:id', async (req, res) => {
           {
             $set: req.body,
           },
-          { new: true }
+          { new: true },
         );
         res.status(200).json(updatedComment);
       } catch (err) {
