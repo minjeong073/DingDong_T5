@@ -21,13 +21,14 @@ export interface QuestionDataType {
   content: string;
   createdAt: string;
   updatedAt: string;
-  userId: number;
-  author: string;
-  hashtags: string[];
-  votes: number;
-  saves: number;
+  //author: string;
+  votes?: number;
   answers?: number;
-  views: number;
+  views?: number;
+  saves?: number;
+  comments?: number;
+  userId: string;
+  hashtags: string[];
   isDeleted: boolean;
 }
 
@@ -38,13 +39,13 @@ const defaultQuestionData: QuestionDataType[] = [
     content: '',
     createdAt: '',
     updatedAt: '',
-    userId: 0,
-    author: '',
-    hashtags: [],
     votes: 0,
-    saves: 0,
     answers: 0,
     views: 0,
+    saves: 0,
+    comments: 0,
+    userId: '',
+    hashtags: [],
     isDeleted: false,
   },
 ];

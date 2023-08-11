@@ -22,8 +22,9 @@ export const LogoSection = styled.div`
   height: 54px;
   justify-content: center;
   align-items: center;
-  padding-right: 25px;
-  margin-right: 50px;
+  /* padding-right: 25px; */
+  /* margin-right: 0px; */
+  margin-left: 25px;
   &:hover {
     cursor: pointer;
   }
