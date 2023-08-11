@@ -85,22 +85,26 @@ export const HashCarousal: React.FC<PropType> = (props) => {
   
   return (
     <>
-    <HashBody ref={emblaRef}>
-      {/* <PrevButton onClick={scrollPrev} disabled={prevBtnDisabled} /> */}
-      <Div>
-        {slides.map((item, index) =>
-          <Tr key={index}>
-            <HashTag key={item}>{onlyHashtag[index]}</HashTag>
-          </Tr>
-        )}
-     </Div>
-     {/* <NextButton onClick={scrollNext} disabled={nextBtnDisabled} /> */}
-     <HashButton>
-        <PrevButton onClick={scrollPrev} disabled={prevBtnDisabled} />
-        <NextButton onClick={scrollNext} disabled={nextBtnDisabled} />
-     </HashButton>
-    </HashBody>
+    <div className="embla">
+        <div className="embla__viewport" ref={emblaRef}>
+          <div className="embla__container">
+            {slides.map((index) => (
+              <div className="embla__slide" key={index}>
+                <div className="embla__slide__number">
+                  <span>{index + 1}</span>
+                </div>
+                <HashTag key={index}>{onlyHashtag[index]}</HashTag> 
+                {/* <HashTag key={index+1}>{onlyHashtag[index+1]}</HashTag> */}
+              </div>
+            ))}
+          </div>
+        </div>
 
+        <div className="embla__buttons">
+          <PrevButton onClick={scrollPrev} disabled={prevBtnDisabled} />
+          <NextButton onClick={scrollNext} disabled={nextBtnDisabled} />
+        </div>
+      </div>
     </>
   );
 };
