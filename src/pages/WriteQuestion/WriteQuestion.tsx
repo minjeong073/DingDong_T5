@@ -28,11 +28,7 @@ export const WriteQuestion = () => {
   const [newArticle, setNewArticle] = useState({
     title: '',
     content: '',
-    votes: 0,
-    answers: 0,
-    views: 0,
-    saves: 0,
-    author: 'so',
+    userId: '64d24cb479cd50b639db526a',
     hashtags: selected,
     isDeleted: false,
   });
