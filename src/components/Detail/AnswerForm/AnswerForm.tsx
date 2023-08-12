@@ -25,17 +25,15 @@ import {
   Item,
 } from '../QuestionForm/styled';
 import DOMPurify from 'dompurify';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { WriteAnswerForm } from '../WriteAnswerForm';
 import { SaveFillIcon } from './styled';
-import { set } from 'mongoose';
 
 interface AnswerDataType {
   _id: string;
   content: string;
   questionTitle: string;
   questionId: string;
-  userId: string;
   author: string;
   votes: number;
   saves: number;
@@ -55,12 +53,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   // State to keep track of the new answer being created
   const [newAnswer, setNewAnswer] = useState({
     content: '',
-    questionTitle: '',
-    questionId: _id,
     userId: '64d24cb479cd50b639db526a',
-    author: '',
-    votes: 0,
-    saves: 0,
+    author: '임시',
   });
   // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
@@ -78,6 +72,20 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // to get the reference of the Quill editor
   const writeAnswerFormRef = useRef<HTMLFormElement>(null);
+
+  const fetchAnswerData = async () => {
+    try {
+      const answerResponse = await axios.get(`/api/answer/all/${_id}`);
+      const foundAnswer = answerResponse.data;
+      if (foundAnswer) {
+        console.log('foundAnswer: ', foundAnswer);
+        setAnswerData(foundAnswer);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('답변 정보 가져오기 실패!');
+    }
+  };
 
   const postAnswer = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
@@ -107,13 +115,19 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       }
       // If editingAnswerId is null, it means we are creating a new answer
       await axios.post(`/api/answer/${_id}`, newAnswer).then(res => {
-        setAnswerData((prevAnswerData: AnswerDataType[]) => [...prevAnswerData, res.data]);
+        // setAnswerData((prevAnswerData: AnswerDataType[]) => [...prevAnswerData, res.data]);
         alert('답변 등록 성공!');
         setContents('');
+        fetchAnswerData();
       });
     } catch (error) {
       console.error(error);
-      alert('답변 등록 또는 수정 실패!');
+      if ((error as AxiosError).response && (error as AxiosError).response!.status === 401) {
+        alert('자신이 작성한 글만 수정할 수 있습니다.'); // 401 Unauthorized 에러 시 알림
+      }
+      if ((error as AxiosError).response && (error as AxiosError).response!.status === 500) {
+        alert('답변 등록 실패!'); // 500 Internal Server Error 에러 시 알림
+      }
     }
   };
 
@@ -141,19 +155,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       if (writeAnswerFormRef.current) {
         writeAnswerFormRef.current.scrollIntoView({ behavior: 'smooth' });
       }
-    }
-  };
-
-  const fetchAnswerData = async () => {
-    try {
-      const answerResponse = await axios.get(`/api/answer/all/${_id}`);
-      const foundAnswer = answerResponse.data;
-      if (foundAnswer) {
-        setAnswerData(foundAnswer);
-      }
-    } catch (error) {
-      console.error(error);
-      alert('답변 정보 가져오기 실패!');
     }
   };
 

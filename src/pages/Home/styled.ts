@@ -15,15 +15,15 @@ export const Header = styled.header`
   margin: 0 auto;
   margin-top: 25px;
 `;
-
 export const LogoSection = styled.div`
   display: flex;
   width: 136px;
   height: 54px;
   justify-content: center;
   align-items: center;
-  padding-right: 25px;
-  margin-right: 50px;
+  /* padding-right: 25px; */
+  /* margin-right: 0px; */
+  margin-left: 25px;
   &:hover {
     cursor: pointer;
   }
@@ -196,7 +196,6 @@ export const HashBody = styled.div`
   display: fixed;
   width: 690px;
   margin-top: 60px;
-
   overflow: hidden;
 `;
 

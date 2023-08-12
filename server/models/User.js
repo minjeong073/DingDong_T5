@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema(
     ],
   },
   // 생성일(createdAt)과 수정일(updatedAt)을 자동으로 관리
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model('User', UserSchema);

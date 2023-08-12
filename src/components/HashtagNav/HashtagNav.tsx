@@ -61,20 +61,25 @@ export const HashTagNav = () => {
   return (
     <NavBar>
       <Table $expanded={expanded}>
+        {/* {onlyHashtag.map((item, index) => (
+          <HashTag key={index} $click={clickedHashtags[index]} onClick={() => handleClick(index)}>
+            {item}
+          </HashTag>
+        ))}   */}
         {onlyHashtag.map((item, index) => (
           <Tr key={index}>
-            {index % 2 === 0 && (
+            {index % 2 === 0 ? (
               <Td>
                 <HashTag $click={clickedHashtags[index]} onClick={() => handleClick(index)} key={index}>
                   {item}
                 </HashTag>
-                {index + 1 < onlyHashtag.length && (
+                {index + 1 < onlyHashtag.length ? (
                   <HashTag $click={clickedHashtags[index + 1]} onClick={() => handleClick(index + 1)}>
                     {onlyHashtag[index + 1]}
                   </HashTag>
-                )}
+                ) : null}
               </Td>
-            )}
+            ) : null}
           </Tr>
         ))}
       </Table>

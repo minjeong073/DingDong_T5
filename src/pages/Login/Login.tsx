@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
 import { LogoSection, LogoImg, LogoTypo } from "../../components/Header/styled";
-import { Button } from "../../components/Button";
 import{
   Root,
   Container,
   IDbox,
-  PWbox
+  PWbox,
+  ActionContainer,
+  Button1,
+  Button2
 } from "./styled";
-import { LoginState } from "../../stores/login-store";
+import { authAtom, userAtom } from "../../stores/login-store";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { ModalState } from "../../stores/modal-store";
@@ -16,10 +18,10 @@ import axios from "axios";
 import { response } from "express";
 
 export const Login = () => {
-  const [ isLoggedIn, setIsLoggedIn ] = useRecoilState(LoginState);
-  const [isModal, setIsModal] = useRecoilState(ModalState);
+  const [ isLoggedIn, setIsLoggedIn ] = useRecoilState(userAtom);
   const [name, setName] = useState();
   const navigate = useNavigate();
+  
   // const logoutHandler = async() => {
   //   await axios.post("/signin")
   //   .then((res) => {
@@ -54,9 +56,14 @@ export const Login = () => {
         </Link>
         <IDbox placeholder="아이디"/>
         <PWbox placeholder="비밀번호"/>
-        <Button width="100%" height="54px">
-          로그인
-        </Button>
+        <ActionContainer>
+          <Button1 width="144px" height="52px">
+            로그인
+          </Button1>
+          <Button2 width="144px" height="52px">
+            회원가입
+          </Button2>
+        </ActionContainer>
       </Container>
     </Root>
 

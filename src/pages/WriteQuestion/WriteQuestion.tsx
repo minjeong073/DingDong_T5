@@ -28,13 +28,7 @@ export const WriteQuestion = () => {
   const [newArticle, setNewArticle] = useState({
     title: '',
     content: '',
-    votes: 0,
-    answers: 0,
-    views: 0,
-    saves: 0,
-    // user6의 id로 임시 설정
     userId: '64d24cb479cd50b639db526a',
-    // author: 'so',
     hashtags: selected,
     isDeleted: false,
   });

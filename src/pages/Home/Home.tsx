@@ -56,15 +56,13 @@ export const Home = () => {
         <Block>
           <QuestionBlock>
             <TitleBlock>
-              <QuestionTypo>Q</QuestionTypo>
-              <TitleText>인기 질문</TitleText>
+              <QuestionTypo>Q</QuestionTypo> <TitleText>인기 질문</TitleText>
             </TitleBlock>
             <TopItems></TopItems>
           </QuestionBlock>
           <AnswerBlock>
             <TitleBlock>
-              <QuestionTypo>A</QuestionTypo>
-              <TitleText>인기 답변</TitleText>
+              <QuestionTypo>A</QuestionTypo> <TitleText>인기 답변</TitleText>
             </TitleBlock>
             <TopItems></TopItems>
           </AnswerBlock>
