@@ -130,8 +130,12 @@ router.delete('/:id', async (req, res) => {
     }
 
     try {
+      const question = await Question.findById(answer.questionId);
+
       await Answer.findByIdAndDelete(req.params.id);
       await Vote.deleteMany({ answerId: req.params.id });
+      question.answers -= 1;
+      await question.save();
       res.status(200).json('Answer has been deleted');
     } catch (err) {
       res.status(500).json(err);
