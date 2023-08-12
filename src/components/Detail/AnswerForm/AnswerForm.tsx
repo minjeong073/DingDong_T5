@@ -110,6 +110,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
             alert('답변 수정 성공!');
             setContents('');
             setEditingAnswerId(null);
+            fetchAnswerData();
           });
         return;
       }

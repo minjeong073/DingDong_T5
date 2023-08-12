@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
         };
       }),
     );
-
+    console.log(updatedQuestions, totalQuestions);
     res.status(200).json({ updatedQuestions, totalQuestions });
   } catch (err) {
     res.status(500).json(err);
