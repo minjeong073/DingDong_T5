@@ -203,7 +203,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             <AuthorBox>
               <AskedTypo>Asked</AskedTypo>
               <AuthorContainer>
-                <AuthorProfile>{currentQuestion?.author?.slice(0, 3)}</AuthorProfile>
+                <AuthorProfile>{currentQuestion?.author}</AuthorProfile>
                 <UserStateCircle color={currentQuestion?.votes! < 15 ? '#D1D5DB' : '#ffd700'} />
                 <Typo>{currentQuestion?.votes}</Typo>
               </AuthorContainer>
