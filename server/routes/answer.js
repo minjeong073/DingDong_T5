@@ -22,6 +22,8 @@ router.post('/:questionId', async (req, res) => {
       userId,
     });
     const savedAnswer = await newAnswer.save();
+    question.answers += 1;
+    await question.save();
     res.status(200).json(savedAnswer);
   } catch (err) {
     res.status(500).json(err);
