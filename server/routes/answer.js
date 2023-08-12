@@ -36,10 +36,11 @@ router.get('/all/:questionId', async (req, res) => {
     const updatedAnswers = await Promise.all(
       answers.map(async answer => {
         const user = await User.findById(answer.userId);
+        const author = user ? user.username : 'unknown';
         // const comments = await Comment.find({ answerId: answer._id }).exec();
         return {
           ...answer._doc,
-          author: user.username,
+          author,
           // comments,
           createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
@@ -66,9 +67,10 @@ router.get('/:id', async (req, res) => {
     if (!answer) {
       res.status(404).json('Answer not found!');
     }
+    const author = user ? user.username : 'unknown';
     const updatedAnswer = {
       ...answer._doc,
-      author: user.username,
+      author,
       comments,
       createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
         timeZone: 'Asia/Seoul',
