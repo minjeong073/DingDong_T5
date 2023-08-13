@@ -22,6 +22,8 @@ router.post('/:questionId', async (req, res) => {
       userId,
     });
     const savedAnswer = await newAnswer.save();
+    question.answers += 1;
+    await question.save();
     res.status(200).json(savedAnswer);
   } catch (err) {
     res.status(500).json(err);
@@ -36,10 +38,11 @@ router.get('/all/:questionId', async (req, res) => {
     const updatedAnswers = await Promise.all(
       answers.map(async answer => {
         const user = await User.findById(answer.userId);
+        const author = user ? user.username : 'unknown';
         // const comments = await Comment.find({ answerId: answer._id }).exec();
         return {
           ...answer._doc,
-          author: user.username,
+          author,
           // comments,
           createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
@@ -66,9 +69,10 @@ router.get('/:id', async (req, res) => {
     if (!answer) {
       res.status(404).json('Answer not found!');
     }
+    const author = user ? user.username : 'unknown';
     const updatedAnswer = {
       ...answer._doc,
-      author: user.username,
+      author,
       comments,
       createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
         timeZone: 'Asia/Seoul',
@@ -126,8 +130,12 @@ router.delete('/:id', async (req, res) => {
     }
 
     try {
+      const question = await Question.findById(answer.questionId);
+
       await Answer.findByIdAndDelete(req.params.id);
       await Vote.deleteMany({ answerId: req.params.id });
+      question.answers -= 1;
+      await question.save();
       res.status(200).json('Answer has been deleted');
     } catch (err) {
       res.status(500).json(err);

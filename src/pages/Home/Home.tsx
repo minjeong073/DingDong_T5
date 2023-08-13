@@ -1,6 +1,8 @@
-import { LogoSection, LogoImg, LogoTypo } from "../../components/Header/styled";
 import {
   Root,
+  LogoSection,
+  LogoImg,
+  LogoTypo,
   Header,
   Div,
   Login,
@@ -13,7 +15,7 @@ import {
   QuestionBlock,
   AnswerBlock,
   TitleBlock,
-  QTypo,
+  QuestionTypo,
   TitleText,
   TopItems,
   ButtonBar,
@@ -22,7 +24,7 @@ import {
 import { HashCarousal } from "../../components/HashtagBar";
 import { HashTagBar } from "../../components/HashtagBar";
 import { Link } from "react-router-dom";
-import { EmblaOptionsType } from "embla-carousel-react";
+import { EmblaOptionsType } from 'embla-carousel-react';
 import axios from "axios";
 
 const OPTIONS: EmblaOptionsType = { align: 'end', loop: true };
@@ -39,45 +41,35 @@ export const Home = () => {
         </LogoSection>
         <Div>
           <Login>
-            <Link to={"/signin"}>
-              로그인
-            </Link>
+            <Link to={'/signin'}>로그인</Link>
           </Login>
           <SignUp>
-            <Link to={"/signup"}>
-              회원가입
-            </Link>
+            <Link to={'/signup'}>회원가입</Link>
           </SignUp>
         </Div>
       </Header>
       <Container>
         <SearchBar placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" />
         <ButtonBar>
-          <Link to={"/articles/write"}>
+          <Link to={'/articles/write'}>
             <Button1> 질문하기</Button1>
           </Link>
-          <Link to={"/articles"}>
+          <Link to={'/articles'}>
             <Button2> 바로가기</Button2>
           </Link>
         </ButtonBar>
         <Block>
           <QuestionBlock>
             <TitleBlock>
-              <QTypo>Q</QTypo>
-              <TitleText>인기 질문</TitleText>
+              <QuestionTypo>Q</QuestionTypo> <TitleText>인기 질문</TitleText>
             </TitleBlock>
-            <TopItems>
-
-            </TopItems>
+            <TopItems></TopItems>
           </QuestionBlock>
           <AnswerBlock>
             <TitleBlock>
-              <QTypo>A</QTypo>
-              <TitleText>인기 답변</TitleText>
+              <QuestionTypo>A</QuestionTypo> <TitleText>인기 답변</TitleText>
             </TitleBlock>
-            <TopItems>
-
-            </TopItems>
+            <TopItems></TopItems>
           </AnswerBlock>
         </Block>
         {/* <HashBody>
