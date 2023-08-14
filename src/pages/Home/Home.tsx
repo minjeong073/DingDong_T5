@@ -22,9 +22,6 @@ import {
   HashBody,
   ItemWrapper
 } from "./styled";
-import { HashCarousal } from "../../components/HashtagBar/";
-import { HashTagBar } from "../../components/HashtagBar";
-import { TestCarousel } from "../../components/HashtagBar";
 import { RealCarousel } from "../../components/HashtagBar/";
 import { Link } from 'react-router-dom';
 import { EmblaOptionsType } from 'embla-carousel-react';
