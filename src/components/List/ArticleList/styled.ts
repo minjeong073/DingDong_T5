@@ -11,6 +11,7 @@ export const OrderContainer = styled.div`
   flex-shrink: 0;
   color: #0f172a;
   margin-top: 3px;
+  margin-left: 15px;
   /* border: 0.5px solid #e2e8f0; */
   /* border-radius: 10px; */
   /* background: #f1f5f9; */
