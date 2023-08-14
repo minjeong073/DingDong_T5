@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
       return;
     }
 
-    if (!comments || comments.length === 0) {
+    if (!comments) {
       res.status(404).json('Comments not found!');
       return;
     }

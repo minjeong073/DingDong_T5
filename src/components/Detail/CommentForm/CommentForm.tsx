@@ -40,8 +40,13 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null); // 수정중인 댓글의 id
 
   const fetchCommentList = async () => {
-    const response = await axios.get(`/api/comment?${selected === 'articles' ? 'question' : 'answer'}Id=${_id}`);
-    setCommentList(response.data);
+    try {
+      const response = await axios.get(`/api/comment?${selected === 'articles' ? 'question' : 'answer'}Id=${_id}`);
+      setCommentList(response.data);
+    } catch (error) {
+      console.error("Error fetching comment's data:", error); // "Error fetching comment's data: Error: Request failed with status code 401
+      alert('댓글 정보 가져오기 실패!');
+    }
   };
 
   const onChangeCommentInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -68,7 +73,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       fetchCommentList();
       setNewComment({ userId: '64cf545ec07a5fb842cb5016', content: '' });
     } catch (error) {
-      console.error(error);
+      console.error('Error posting comment:', error);
       alert('댓글 등록에 실패했습니다.');
     }
   };
@@ -90,6 +95,8 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       if ((error as AxiosError).response!.status === 401) {
         alert('자신의 댓글만 삭제할 수 있습니다.');
       }
+      console.error("Error deleting comment's data:", error);
+      alert('댓글 삭제에 실패했습니다.');
     }
     fetchCommentList();
   };
