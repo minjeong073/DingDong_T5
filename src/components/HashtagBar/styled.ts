@@ -63,6 +63,7 @@ export const DotBox = styled.ul`
 export const Li = styled.li`
   // display: flex-end;
   // z-index: 2;
+  border-radius: 50%;
   &:hover{
     cursor: pointer;
   }
