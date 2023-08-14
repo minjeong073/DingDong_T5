@@ -78,7 +78,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       const answerResponse = await axios.get(`/api/answer/all/${_id}`);
       const foundAnswer = answerResponse.data;
       if (foundAnswer) {
-        console.log('foundAnswer: ', foundAnswer);
         setAnswerData(foundAnswer);
       }
     } catch (error) {
@@ -162,37 +161,17 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   // Function to handle voting
   const handleVote = async (answerId: string) => {
     try {
+      /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
+      투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
+       -> Vote 테이블에 userId와 answerId를 쿼리하여 이미 투표했는지 여부 확인 */
       const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      if (isVoteClicked[answerId]) {
-        await axios.put(`/api/answer/${answerId}`, {
-          ...answerToUpdate,
-          votes: answerToUpdate.votes! - 1,
-        });
-        setAnswerVotes(prevVotes => ({
-          ...prevVotes,
-          [answerId]: prevVotes[answerId] - 1,
-        }));
-        setIsVoteClicked(prevIsVoteClicked => ({
-          ...prevIsVoteClicked,
-          [answerId]: false,
-        }));
-        return;
-      }
-      await axios.put(`/api/answer/${answerId}`, {
+      await axios.put(`/api/answer/${answerId}/vote`, {
         ...answerToUpdate,
-        votes: answerToUpdate.votes! + 1,
       });
-      setAnswerVotes(prevVotes => ({
-        ...prevVotes,
-        [answerId]: prevVotes[answerId] + 1,
-      }));
-      setIsVoteClicked(prevIsVoteClicked => ({
-        ...prevIsVoteClicked,
-        [answerId]: true,
-      }));
+      fetchAnswerData();
     } catch (error) {
       console.error('Error updating votes:', error);
       alert('투표 실패!');
@@ -201,42 +180,22 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // Function to handle saving
   const handleSave = async (answerId: string) => {
-    try {
+    /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
+    저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
+     -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
+    /*  try {
       const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      if (isSaveClicked[answerId]) {
-        await axios.put(`/api/answer/${answerId}`, {
-          ...answerToUpdate,
-          saves: answerToUpdate.saves! - 1,
-        });
-        setAnswerSaves(prevSaves => ({
-          ...prevSaves,
-          [answerId]: prevSaves[answerId] - 1,
-        }));
-        setIsSaveClicked(prevIsSaveClicked => ({
-          ...prevIsSaveClicked,
-          [answerId]: false,
-        }));
-        return;
-      }
-      await axios.put(`/api/answer/${answerId}`, {
+      await axios.put(`/api/answer/${answerId}/bookmark`, {
         ...answerToUpdate,
-        saves: answerToUpdate.saves! + 1,
       });
-      setAnswerSaves(prevSaves => ({
-        ...prevSaves,
-        [answerId]: prevSaves[answerId] + 1,
-      }));
-      setIsSaveClicked(prevIsSaveClicked => ({
-        ...prevIsSaveClicked,
-        [answerId]: true,
-      }));
+      fetchAnswerData();
     } catch (error) {
       console.error('Error updating saves:', error);
       alert('저장 실패!');
-    }
+    } */
   };
 
   useEffect(() => {
@@ -247,7 +206,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     fetchAnswerData();
   }, []);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     // Update vote and save counts when answerData changes
     answerData.forEach(answer => {
       setAnswerVotes(prevVotes => ({
@@ -267,7 +226,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         [answer._id]: false,
       }));
     });
-  }, [answerData]);
+  }, [answerData]); */
 
   return (
     <>
@@ -287,14 +246,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               ) : (
                 <HeartIcon onClick={() => handleVote(answer._id)} />
               )}
-              <ItemTypo>{answerVotes[answer._id]}</ItemTypo>
+              <ItemTypo>{answer.votes}</ItemTypo>
               {/* 저장 */}
               {isSaveClicked[answer._id] ? (
                 <SaveFillIcon onClick={() => handleSave(answer._id)} />
               ) : (
                 <SaveIcon onClick={() => handleSave(answer._id)} />
               )}
-              <ItemTypo>{answerSaves[answer._id]}</ItemTypo>
+              <ItemTypo>{answer.saves}</ItemTypo>
             </ItemContainer>
             <ItemContainer>
               <ViewDateContainer>
@@ -325,8 +284,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
                 <AskedTypo>Answered</AskedTypo>
                 <AuthorContainer>
                   <AuthorProfile>{answer.author}</AuthorProfile>
-                  <UserStateCircle color={answerVotes[answer._id] < 15 ? '#D1D5DB' : '#ffd700'} />
-                  <Typo>{answerVotes[answer._id]}</Typo>
+                  <UserStateCircle color={answer.votes < 15 ? '#D1D5DB' : '#ffd700'} />
+                  <Typo>{answer.votes}</Typo>
                 </AuthorContainer>
               </AuthorBox>
             </BottomRightContainer>
