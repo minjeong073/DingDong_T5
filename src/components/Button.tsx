@@ -6,7 +6,6 @@ const customMargin = css<{ top?: string; right?: string; bottom?: string; left?:
 `;
 
 interface IButton {
-  alignself?: string;
   width?: string;
   height?: string;
   borderradius?: string;
@@ -21,7 +20,7 @@ export const Button = styled.button<IButton>`
   display: flex;
   justify-content: center;
   align-items: center;
-  align-self: ${props => props.alignself || 'center'};
+  align-self: flex-end;
   width: ${props => props.width || '100px'};
   height: ${props => props.height || '44px'};
   border-radius: ${props => props.borderradius || '10px'};

@@ -29,6 +29,7 @@ import {
 import DOMPurify from 'dompurify';
 import axios from 'axios';
 import type { QuestionDataType } from '../../../stores/page-store';
+import { CommentForm } from '../CommentForm';
 
 type Props = {
   _id?: string | null;
@@ -173,7 +174,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
           <ItemContainer>
             <ViewDateContainer>
               <Typo>조회수 {views}</Typo>
-              <Typo>{currentQuestion?.createdAt}</Typo>
+              <Typo>{currentQuestion?.updatedAt || currentQuestion?.createdAt}</Typo>
             </ViewDateContainer>
             <ContentTypo
               dangerouslySetInnerHTML={{
@@ -210,10 +211,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             </AuthorBox>
           </QuestionBottomRightContainer>
         </QuestionBottomContainer>
-        {/* <p>Answers: {currentQuestion?.answers}</p> */}
-        {/*         <p>Hashtags: {currentQuestion?.hashtags}</p>
-        <p>Created: {currentQuestion?.createdAt}</p> */}
-        {/* <p>Updated: {currentQuestion?.updatedAt}</p> */}
+        <CommentForm _id={_id} selected="articles" />
       </QuestionBodySection>
     </>
   );

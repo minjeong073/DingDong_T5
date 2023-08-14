@@ -28,6 +28,7 @@ import DOMPurify from 'dompurify';
 import axios, { AxiosError } from 'axios';
 import { WriteAnswerForm } from '../WriteAnswerForm';
 import { SaveFillIcon } from './styled';
+import { CommentForm } from '../CommentForm';
 
 interface AnswerDataType {
   _id: string;
@@ -331,6 +332,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               </AuthorBox>
             </QuestionBottomRightContainer>
           </QuestionBottomContainer>
+          <CommentForm _id={answer._id} selected="answers" />
         </QuestionBodySection>
       ))}
       <WriteAnswerForm
