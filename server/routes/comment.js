@@ -8,6 +8,9 @@ const Answer = require('../models/Answer');
 router.get('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
+    if (!comment) {
+      res.status(404).json('Comment not found!');
+    }
     const updatedComment = {
       ...comment._doc,
       createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
@@ -28,6 +31,9 @@ router.get('/', async (req, res) => {
   const questionId = req.query.questionId;
   try {
     const comments = await Comment.find({ questionId: questionId });
+    if (!comments) {
+      res.status(404).json('Comments not found!');
+    }
     const updatedComments = await Promise.all(
       comments.map(async comment => {
         const user = await User.findById(comment.userId);
@@ -56,6 +62,9 @@ router.get('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
+    if (!comment) {
+      res.status(404).json('Comment not found!');
+    }
     // TODO : token 구현 후 수정 예정
     if (comment.userId.toString() === req.body.userId) {
       try {
