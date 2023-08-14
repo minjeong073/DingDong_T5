@@ -44,10 +44,10 @@ export const Box = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 3px 0;
-  min-width: 95px;
-  height: 32px;
+  min-width: 105px;
+  height: 35px;
   flex-shrink: 0;
-  padding-left: 11px;
+  padding-left: 3px;
   padding-right: 10px;
   /* border-radius: 5px; */
 `;
@@ -58,8 +58,11 @@ export const PurpleBox = styled(Box)`
 `;
 
 export const Div = styled.div`
+  display: flex;
+  justify-content: center;
+  min-width: 28px;
   font-size: 16px;
-  margin-right: 15px;
+  margin-right: 7px;
 `;
 
 export const PurpleDiv = styled(Div)`

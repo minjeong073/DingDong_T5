@@ -112,7 +112,7 @@ export const ModifyQuestion = () => {
         <HashtagIcon />
         <TagsInput value={selected} onChange={setSelected} name="hashtags" placeHolder="키워드를 입력해주세요." />
       </QuestionKeywordSection>
-      <Button alignself="flex-end" type="button" onClick={updateQuestion}>
+      <Button type="button" onClick={updateQuestion}>
         수정 완료
       </Button>
     </QuestionForm>

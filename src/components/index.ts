@@ -1,5 +1,4 @@
-export { AnswerForm } from './Detail';
-export { QuestionForm } from './Detail';
+export { AnswerForm, QuestionForm, CommentForm } from './Detail';
 export { Header } from './Header';
 export { HashTagNav } from './HashtagNav';
 export { HashTagBar } from './HashtagBar';

@@ -36,8 +36,12 @@ const GlobalStyle = createGlobalStyle`
     background-color: transparent;
   }
 
-  a, p, table {
+  a, table {
     all: unset;
+  }
+
+  p {
+    margin: 0;
   }
 
   input, textarea {

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Comment = require('../models/Comment');
 const User = require('../models/User');
+const Vote = require('../models/Vote');
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 
@@ -26,14 +27,27 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// GET BY QUESTION ID
+// GET BY QUESTION ID OR ANSWER ID
 router.get('/', async (req, res) => {
-  const questionId = req.query.questionId;
   try {
-    const comments = await Comment.find({ questionId: questionId });
+    let comments;
+
+    if (req.query.questionId) {
+      comments = await Comment.find({ questionId: req.query.questionId });
+    }
+    if (req.query.answerId) {
+      comments = await Comment.find({ answerId: req.query.answerId });
+    }
+    if (!req.query.questionId && !req.query.answerId) {
+      res.status(400).json('Invalid query parameters');
+      return;
+    }
+
     if (!comments) {
       res.status(404).json('Comments not found!');
+      return;
     }
+
     const updatedComments = await Promise.all(
       comments.map(async comment => {
         const user = await User.findById(comment.userId);
@@ -116,6 +130,39 @@ router.delete('/:id', async (req, res) => {
     } else {
       res.status(401).json('You can delete only your Comment!');
     }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// VOTE
+router.put('/:id/vote', async (req, res) => {
+  const commentId = req.params.id;
+  const userId = req.body.userId;
+
+  try {
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) {
+      res.status(404).json('Comment not found!');
+    }
+    const existingVote = await Vote.findOne({
+      commentId,
+      userId: userId,
+    });
+
+    if (!existingVote) {
+      await Vote.create({
+        commentId,
+        userId: userId,
+      });
+      comment.votes += 1;
+    } else {
+      await Vote.deleteOne({ _id: existingVote._id });
+      comment.votes -= 1;
+    }
+    await comment.save();
+    res.status(200).json(comment);
   } catch (err) {
     res.status(500).json(err);
   }
