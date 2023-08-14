@@ -102,21 +102,13 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   // 투표수 업데이트
   const handleVote = async () => {
     try {
-      if (isVoteClicked) {
-        await axios.put(`/api/articles/${_id}`, {
-          ...currentQuestion,
-          votes: votes! - 1,
-        });
-        setVotes(prev => prev! - 1);
-        setIsVoteClicked(false);
-        return;
-      }
-      await axios.put(`/api/articles/${_id}`, {
+      /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
+      투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
+       -> Vote 테이블에 userId와 questionId를 쿼리하여 이미 투표했는지 여부 확인 */
+      await axios.put(`/api/articles/${_id}/vote`, {
         ...currentQuestion,
-        votes: votes! + 1,
       });
-      setVotes(prev => prev! + 1);
-      setIsVoteClicked(true);
+      fetchQuestionData();
     } catch (error) {
       console.error('Error updating votes:', error);
       alert('투표 실패!');
@@ -125,22 +117,14 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
 
   // 저장수 업데이트
   const handleSave = async () => {
+    /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
+    저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
+     -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
     try {
-      if (isSaveClicked) {
-        await axios.put(`/api/articles/${_id}`, {
-          ...currentQuestion,
-          saves: saves! - 1,
-        });
-        setSaves(prev => prev! - 1);
-        setIsSaveClicked(false);
-        return;
-      }
-      await axios.put(`/api/articles/${_id}`, {
+      await axios.put(`/api/articles/${_id}/bookmark`, {
         ...currentQuestion,
-        saves: saves! + 1,
       });
-      setSaves(prev => prev! + 1);
-      setIsSaveClicked(true);
+      fetchQuestionData();
     } catch (error) {
       console.error('Error updating saves:', error);
       alert('저장 실패!');
@@ -166,15 +150,15 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
           <ItemContainer>
             {/* 투표 */}
             {isVoteClicked ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
-            <ItemTypo>{votes}</ItemTypo>
+            <ItemTypo>{currentQuestion?.votes}</ItemTypo>
             {/* 저장 */}
             {isSaveClicked ? <SaveFillIcon onClick={handleSave} /> : <SaveIcon onClick={handleSave} />}
-            <ItemTypo>{saves}</ItemTypo>
+            <ItemTypo>{currentQuestion?.saves}</ItemTypo>
           </ItemContainer>
           <ItemContainer>
             <ViewDateContainer>
               <Typo>조회수 {views}</Typo>
-              <Typo>{currentQuestion?.updatedAt || currentQuestion?.createdAt}</Typo>
+              <Typo>{currentQuestion?.createdAt}</Typo>
             </ViewDateContainer>
             <ContentTypo
               dangerouslySetInnerHTML={{
