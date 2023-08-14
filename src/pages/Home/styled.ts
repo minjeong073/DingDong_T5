@@ -208,8 +208,6 @@ export const HashBody = styled.div`
   justify-content: center;
   width: 100%;
   margin-top: 60px;
-  border: 1px solid black;
+  // border: 1px solid black;
   height: 100px;
-
-
 `;
