@@ -290,4 +290,22 @@ router.put('/:id/bookmark', async (req, res) => {
   }
 });
 
+// Views
+router.put('/:id/view', async (req, res) => {
+  const questionId = req.params.id;
+
+  try {
+    const question = await Question.findById(questionId);
+
+    if (!question) {
+      res.status(404).json('Question not found!');
+    }
+    question.views += 1;
+    await question.save();
+    res.status(200).json('Question has been viewed');
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;

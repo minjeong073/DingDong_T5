@@ -39,9 +39,6 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null); // Change initial state to null
   const [isVoteClicked, setIsVoteClicked] = useState(false); // Local state for vote button (로그인 구현 전까지 임시로 사용)
   const [isSaveClicked, setIsSaveClicked] = useState(false); // Local state for save button (로그인 구현 전까지 임시로 사용)
-  const [votes, setVotes] = useState<number | null>(null); // Local state for vote count
-  const [saves, setSaves] = useState<number | null>(null); // Local state for save count
-  const [views, setViews] = useState<number | null>(null); // Local state for view count
 
   const navigate = useNavigate();
 
@@ -51,9 +48,6 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       const foundQuestion = response.data;
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
-        setViews(foundQuestion.views); // Update the local state with the current view count
-        setVotes(foundQuestion.votes); // Set the votes value when fetching the question data
-        setSaves(foundQuestion.saves); // Set the saves value when fetching the question data
       }
     } catch (error) {
       console.error(error);
@@ -61,20 +55,12 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     }
   }, [_id]);
 
-  // Function to update the view count locally and on the server
   const updateViews = async () => {
     try {
-      if (currentQuestion) {
-        const updatedViews = currentQuestion.views + 1;
-        setViews(updatedViews); // Update the local state immediately
-        await axios.put(`/api/articles/${_id}`, {
-          ...currentQuestion,
-          views: updatedViews, // Update the view count on the server
-        });
-      }
+      await axios.put(`/api/articles/${_id}/view`);
+      fetchQuestionData();
     } catch (error) {
       console.error('Error updating views:', error);
-      alert('조회수 업데이트 실패!');
     }
   };
 
@@ -133,11 +119,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
 
   useEffect(() => {
     fetchQuestionData();
-  }, []);
-
-  useEffect(() => {
     updateViews();
-  }, [currentQuestion]);
+  }, []);
 
   return (
     <>
@@ -157,7 +140,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
           </ItemContainer>
           <ItemContainer>
             <ViewDateContainer>
-              <Typo>조회수 {views}</Typo>
+              <Typo>조회수 {currentQuestion?.views}</Typo>
               <Typo>{currentQuestion?.createdAt}</Typo>
             </ViewDateContainer>
             <ContentTypo
