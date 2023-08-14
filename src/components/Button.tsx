@@ -1,4 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+const customMargin = css<{ top?: string; right?: string; bottom?: string; left?: string }>`
+  margin: ${props => props.top || '0'} ${props => props.right || '0'} ${props => props.bottom || '0'}
+    ${props => props.left || '0'};
+`;
 
 interface IButton {
   alignself?: string;
@@ -6,6 +11,10 @@ interface IButton {
   height?: string;
   borderradius?: string;
   margin?: string;
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
 }
 
 export const Button = styled.button<IButton>`
@@ -25,4 +34,5 @@ export const Button = styled.button<IButton>`
   &:hover {
     background: #6d28d9;
   }
+  ${customMargin}
 `;

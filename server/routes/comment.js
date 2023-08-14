@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    if (comment.username === req.body.username) {
+    if (comment.userId.toString() === req.body.userId) {
       try {
         const updatedComment = await Comment.findByIdAndUpdate(
           req.params.id,
@@ -97,7 +97,7 @@ router.delete('/:id', async (req, res) => {
       // commentIds가 존재하지 않으면, comment 하나를 삭제
       try {
         const comment = await Comment.findById(commentId);
-        if (comment && comment.userId === userId) {
+        if (comment && comment.userId.toString() === userId) {
           try {
             // 댓글 하나 삭제
             await comment.deleteOne();

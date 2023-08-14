@@ -170,12 +170,14 @@ export const Typo = styled.span<ITypo>`
   color: ${props => (props.color ? props.color : '#64748b')};
   font-size: ${props => (props.size ? props.size : '12px')};
   font-weight: 400;
-  text-decoration-line: ${props => (props.underline ? 'underline' : 'none')};
-  cursor: ${props => (props.pointer ? 'pointer' : 'default')};
   &:not(:first-child) {
     margin-left: 8px;
   }
   ${customMargin}
+  &:hover {
+    cursor: ${props => (props.pointer ? 'pointer' : 'default')};
+    text-decoration-line: ${props => (props.underline ? 'underline' : 'none')};
+  }
 `;
 
 export const HashTagContainer = styled.div`
