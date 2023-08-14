@@ -54,21 +54,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   const [newAnswer, setNewAnswer] = useState({
     content: '',
     userId: '64d24cb479cd50b639db526a',
-    author: '임시',
+    author: 'unknown',
   });
   // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
-  // State to keep track of vote and save counts for each answer
-  const [answerVotes, setAnswerVotes] = useState<{ [key: string]: number }>({});
-  const [answerSaves, setAnswerSaves] = useState<{ [key: string]: number }>({});
-  // State to keep track of whether the vote button has been clicked (로그인 구현 전까지 임시로 사용)
-  const [isVoteClicked, setIsVoteClicked] = useState<{
-    [key: string]: boolean;
-  }>({});
-  // State to keep track of whether the save button has been clicked (로그인 구현 전까지 임시로 사용)
-  const [isSaveClicked, setIsSaveClicked] = useState<{
-    [key: string]: boolean;
-  }>({});
 
   // to get the reference of the Quill editor
   const writeAnswerFormRef = useRef<HTMLFormElement>(null);
@@ -206,28 +195,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     fetchAnswerData();
   }, []);
 
-  /*  useEffect(() => {
-    // Update vote and save counts when answerData changes
-    answerData.forEach(answer => {
-      setAnswerVotes(prevVotes => ({
-        ...prevVotes,
-        [answer._id]: answer.votes,
-      }));
-      setAnswerSaves(prevSaves => ({
-        ...prevSaves,
-        [answer._id]: answer.saves,
-      }));
-      setIsVoteClicked(prevIsVoteClicked => ({
-        ...prevIsVoteClicked,
-        [answer._id]: false,
-      }));
-      setIsSaveClicked(prevIsSaveClicked => ({
-        ...prevIsSaveClicked,
-        [answer._id]: false,
-      }));
-    });
-  }, [answerData]); */
-
   return (
     <>
       {answerData.length > 0 && (
@@ -241,14 +208,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           <TopContainer>
             <ItemContainer>
               {/* 투표 */}
-              {isVoteClicked[answer._id] ? (
+              {true ? (
                 <HeartFillIcon onClick={() => handleVote(answer._id)} />
               ) : (
                 <HeartIcon onClick={() => handleVote(answer._id)} />
               )}
               <ItemTypo>{answer.votes}</ItemTypo>
               {/* 저장 */}
-              {isSaveClicked[answer._id] ? (
+              {true ? (
                 <SaveFillIcon onClick={() => handleSave(answer._id)} />
               ) : (
                 <SaveIcon onClick={() => handleSave(answer._id)} />

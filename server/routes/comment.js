@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Comment = require('../models/Comment');
 const User = require('../models/User');
+const Vote = require('../models/Vote');
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 
@@ -129,6 +130,39 @@ router.delete('/:id', async (req, res) => {
     } else {
       res.status(401).json('You can delete only your Comment!');
     }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// VOTE
+router.put('/:id/vote', async (req, res) => {
+  const commentId = req.params.id;
+  const userId = req.body.userId;
+
+  try {
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) {
+      res.status(404).json('Comment not found!');
+    }
+    const existingVote = await Vote.findOne({
+      commentId,
+      userId: userId,
+    });
+
+    if (!existingVote) {
+      await Vote.create({
+        commentId,
+        userId: userId,
+      });
+      comment.votes += 1;
+    } else {
+      await Vote.deleteOne({ _id: existingVote._id });
+      comment.votes -= 1;
+    }
+    await comment.save();
+    res.status(200).json(comment);
   } catch (err) {
     res.status(500).json(err);
   }

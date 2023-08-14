@@ -18,7 +18,7 @@ const customMargin = css<ICustomMargin>`
 export const Root = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin-top: 10px;
 `;
 

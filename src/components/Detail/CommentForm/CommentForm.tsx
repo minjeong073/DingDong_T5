@@ -11,6 +11,7 @@ import {
   ContentContainer,
   InfoContainer,
   Root,
+  SaveFillIcon,
 } from './styled';
 import { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
@@ -21,19 +22,21 @@ type Props = {
 };
 
 type Comment = {
-  _id?: string;
+  _id: string;
   questionId?: string;
   answerId?: string;
   userId: string;
   author?: string;
   content: string;
-  createdAt?: string;
-  updatedAt?: string;
+  votes?: number;
+  saves?: number;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   const [commentList, setCommentList] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState<Comment>({ userId: '64cf545ec07a5fb842cb5016', content: '' });
+  const [newComment, setNewComment] = useState({ userId: '64cf545ec07a5fb842cb5016', content: '' });
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null); // 수정중인 댓글의 id
 
   const fetchCommentList = async () => {
@@ -98,21 +101,67 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
     setEditingCommentId(commentId);
   };
 
+  const onClickCommentVote = async (commentId: string) => {
+    /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
+      투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
+       -> Vote 테이블에 userId와 answerId를 쿼리하여 이미 투표했는지 여부 확인 */
+    try {
+      const answerResponse = await axios.get(`/api/comment/${commentId}`);
+      const answerToUpdate = answerResponse.data;
+      if (!answerToUpdate) return;
+
+      await axios.put(`/api/comment/${commentId}/vote`, {
+        ...answerToUpdate,
+      });
+      fetchCommentList();
+    } catch (error) {
+      console.error('Error updating votes:', error);
+      alert('투표 실패!');
+    }
+  };
+
+  const onClickCommentSave = async (commentId: string) => {
+    /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
+    저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
+     -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
+    /*     const answerResponse = await axios.get<Comment>(`/api/comment/${commentId}`);
+    const answerToUpdate = answerResponse.data;
+    if (!answerToUpdate) return;
+
+    try {
+      await axios.put(`/api/comment/${commentId}`, {
+        ...answerToUpdate,
+      });
+      fetchCommentList();
+    } catch (error) {
+      console.error('Error updating saves:', error);
+      alert('저장 실패!');
+    } */
+  };
+
   useEffect(() => {
     fetchCommentList();
   }, []);
 
   return (
     <Root>
-      {commentList.map(comment => (
+      {commentList?.map(comment => (
         <Container key={comment._id}>
           <ItemContainer left="10px" right="8px">
-            <HeartIcon />
-            <ItemTypo>0</ItemTypo>
+            {true ? (
+              <HeartFillIcon onClick={() => onClickCommentVote(comment._id)} />
+            ) : (
+              <HeartIcon onClick={() => onClickCommentVote(comment._id)} />
+            )}
+            <ItemTypo>{comment.votes}</ItemTypo>
           </ItemContainer>
           <ItemContainer right="10px">
-            <SaveIcon top="1px" bottom="2px" />
-            <ItemTypo>0</ItemTypo>
+            {true ? (
+              <SaveFillIcon onClick={() => onClickCommentSave(comment._id)} top="1px" bottom="2px" />
+            ) : (
+              <SaveIcon onClick={() => onClickCommentSave(comment._id)} top="1px" bottom="2px" />
+            )}
+            <ItemTypo>{comment.saves}</ItemTypo>
           </ItemContainer>
           <ContentContainer>
             <Typo color="black">{comment?.content}</Typo>
@@ -133,8 +182,8 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
         </Container>
       ))}
       <Input placeholder="댓글을 입력하세요" value={newComment.content} onChange={onChangeCommentInput} />
-      <Button onClick={onSubmitComment} top="5px">
-        {editingCommentId ? '댓글수정' : '댓글달기'}
+      <Button onClick={onSubmitComment} width="88px" height="38px" fontsize="15px" top="5px" borderradius="8px">
+        {editingCommentId ? '댓글수정' : '댓글작성'}
       </Button>
     </Root>
   );

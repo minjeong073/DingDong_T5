@@ -14,6 +14,7 @@ interface IButton {
   right?: string;
   bottom?: string;
   left?: string;
+  fontsize?: string;
 }
 
 export const Button = styled.button<IButton>`
@@ -27,7 +28,7 @@ export const Button = styled.button<IButton>`
   margin: ${props => props.margin || '0'};
   background: #7c3aed;
   color: #fff;
-  font-size: 17px;
+  font-size: ${props => props.fontsize || '17px'};
   letter-spacing: 0.3px;
   transition: 0.1s;
   &:hover {

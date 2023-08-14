@@ -37,8 +37,6 @@ type Props = {
 
 export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null); // Change initial state to null
-  const [isVoteClicked, setIsVoteClicked] = useState(false); // Local state for vote button (로그인 구현 전까지 임시로 사용)
-  const [isSaveClicked, setIsSaveClicked] = useState(false); // Local state for save button (로그인 구현 전까지 임시로 사용)
 
   const navigate = useNavigate();
 
@@ -132,10 +130,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         <TopContainer>
           <ItemContainer>
             {/* 투표 */}
-            {isVoteClicked ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
+            {true ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
             <ItemTypo>{currentQuestion?.votes}</ItemTypo>
             {/* 저장 */}
-            {isSaveClicked ? <SaveFillIcon onClick={handleSave} /> : <SaveIcon onClick={handleSave} />}
+            {true ? <SaveFillIcon onClick={handleSave} /> : <SaveIcon onClick={handleSave} />}
             <ItemTypo>{currentQuestion?.saves}</ItemTypo>
           </ItemContainer>
           <ItemContainer>
