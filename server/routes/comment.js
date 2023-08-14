@@ -55,22 +55,22 @@ router.put('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
     // TODO : token 구현 후 수정 예정
-    // if (comment.username === req.body.username) {
-    try {
-      const updatedComment = await Comment.findByIdAndUpdate(
-        req.params.id,
-        {
-          $set: req.body,
-        },
-        { new: true },
-      );
-      res.status(200).json(updatedComment);
-    } catch (err) {
-      res.status(500).json(err);
+    if (comment.userId.toString() === req.body.userId) {
+      try {
+        const updatedComment = await Comment.findByIdAndUpdate(
+          req.params.id,
+          {
+            $set: req.body,
+          },
+          { new: true },
+        );
+        res.status(200).json(updatedComment);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(401).json('You can update only your Comment!');
     }
-    // } else {
-    //   res.status(401).json('You can update only your Comment!');
-    // }
   } catch (err) {
     res.status(500).json(err);
   }
