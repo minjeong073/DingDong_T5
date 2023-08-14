@@ -45,7 +45,7 @@ export const Box = styled.div`
   align-items: center;
   margin: 3px 0;
   min-width: 105px;
-  height: 33px;
+  height: 35px;
   flex-shrink: 0;
   padding-left: 3px;
   padding-right: 10px;
