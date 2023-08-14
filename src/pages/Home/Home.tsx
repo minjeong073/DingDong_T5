@@ -19,14 +19,24 @@ import {
   TitleText,
   TopItems,
   ButtonBar,
-  ItemWrapper,
   HashBody,
-} from './styled';
-import { HashTagBar } from '../../components';
+  ItemWrapper
+} from "./styled";
+import { RealCarousel } from "../../components/HashtagBar/";
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import dummy from "../../db/articles.json";
 
 export const Home = () => {
+  const HashtagArr = dummy.articles.map(item => item.hashtag);
+  const oneHashtag = HashtagArr.flat();
+  const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
+  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => (
+    <div key={index}>
+      {onlyHashtag[index]}
+    </div>
+  ));
+  // console.log(carouselItems);
+
   return (
     <Root>
       <Header>
@@ -68,9 +78,7 @@ export const Home = () => {
           </AnswerBlock>
         </Block>
         <HashBody>
-          <ItemWrapper>
-            <HashTagBar />
-          </ItemWrapper>
+          <RealCarousel items={carouselItems} />
         </HashBody>
       </Container>
     </Root>
