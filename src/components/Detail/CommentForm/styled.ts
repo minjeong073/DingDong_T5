@@ -98,7 +98,7 @@ export const Typo = styled.span<ITypo>`
   }
 `;
 
-export const CommentContainer = styled.div`
+export const Container = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
@@ -108,7 +108,7 @@ export const CommentContainer = styled.div`
   padding: 10px 8px 10px 0;
 `;
 
-export const CommentInput = styled.textarea`
+export const Input = styled.textarea`
   width: 100%;
   height: 95px;
   flex-shrink: 0;
@@ -135,14 +135,14 @@ export const CommentInput = styled.textarea`
   }
 `;
 
-export const CommentContentContainer = styled.div`
+export const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex: 1;
 `;
 
-export const CommentInfoContainer = styled.div`
+export const InfoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;

@@ -1,33 +1,32 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   HeartIcon,
   ItemContainer,
   ItemTypo,
-  QuestionBodySection,
-  QuestionTitle,
-  QuestionTitleSection,
-  QuestionTopContainer,
-  QuestionTypo,
+  BodySection,
+  Title,
+  TitleSection,
+  TopContainer,
+  ATypo,
   SaveIcon,
   ContentTypo,
-  QuestionBottomLeftContainer,
-  QuestionBottomContainer,
+  BottomLeftContainer,
+  BottomContainer,
   Typo,
-  QuestionBottomRightContainer,
+  BottomRightContainer,
   AuthorBox,
   ViewDateContainer,
   AskedTypo,
   AuthorContainer,
   AuthorProfile,
   UserStateCircle,
-  CommentContainer,
   HeartFillIcon,
+  SaveFillIcon,
   Item,
-} from '../QuestionForm/styled';
+} from './styled';
 import DOMPurify from 'dompurify';
 import axios, { AxiosError } from 'axios';
 import { WriteAnswerForm } from '../WriteAnswerForm';
-import { SaveFillIcon } from './styled';
 import { CommentForm } from '../CommentForm';
 
 interface AnswerDataType {
@@ -273,14 +272,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   return (
     <>
       {answerData.length > 0 && (
-        <QuestionTitleSection top="45px">
-          <QuestionTypo>A</QuestionTypo>
-          <QuestionTitle style={{ color: '#525458' }}>{answerData.length}개의 답변</QuestionTitle>
-        </QuestionTitleSection>
+        <TitleSection top="45px">
+          <ATypo>A</ATypo>
+          <Title>{answerData.length}개의 답변</Title>
+        </TitleSection>
       )}
       {answerData?.map((answer, index) => (
-        <QuestionBodySection key={`${answer.questionId}_${index}`}>
-          <QuestionTopContainer>
+        <BodySection key={answer._id}>
+          <TopContainer>
             <ItemContainer>
               {/* 투표 */}
               {isVoteClicked[answer._id] ? (
@@ -299,7 +298,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
             </ItemContainer>
             <ItemContainer>
               <ViewDateContainer>
-                {/* <Typo>조회수 {currentQuestion?.views}</Typo> */}
+                {/* <Typo>조회수 {current?.views}</Typo> */}
                 <Typo>{answer.createdAt}</Typo>
               </ViewDateContainer>
               <ContentTypo
@@ -308,9 +307,9 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
                 }}
               />
             </ItemContainer>
-          </QuestionTopContainer>
-          <QuestionBottomContainer>
-            <QuestionBottomLeftContainer>
+          </TopContainer>
+          <BottomContainer>
+            <BottomLeftContainer>
               <Typo underline="true" pointer="true">
                 공유
               </Typo>
@@ -320,8 +319,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               <Typo underline="true" pointer="true" onClick={() => deleteAnswer(answer._id)}>
                 삭제
               </Typo>
-            </QuestionBottomLeftContainer>
-            <QuestionBottomRightContainer>
+            </BottomLeftContainer>
+            <BottomRightContainer>
               <AuthorBox>
                 <AskedTypo>Answered</AskedTypo>
                 <AuthorContainer>
@@ -330,10 +329,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
                   <Typo>{answerVotes[answer._id]}</Typo>
                 </AuthorContainer>
               </AuthorBox>
-            </QuestionBottomRightContainer>
-          </QuestionBottomContainer>
-          <CommentForm _id={answer._id} selected="answers" />
-        </QuestionBodySection>
+            </BottomRightContainer>
+          </BottomContainer>
+          <CommentForm _id={answer._id} selected="answer" />
+        </BodySection>
       ))}
       <WriteAnswerForm
         ref={writeAnswerFormRef}

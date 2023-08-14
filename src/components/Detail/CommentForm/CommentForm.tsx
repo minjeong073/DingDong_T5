@@ -1,18 +1,18 @@
 import { Button } from 'components';
 import {
   SaveIcon,
-  CommentContainer,
-  CommentInput,
+  Container,
+  Input,
   HeartFillIcon,
   HeartIcon,
   ItemContainer,
   ItemTypo,
   Typo,
-  CommentContentContainer,
-  CommentInfoContainer,
+  ContentContainer,
+  InfoContainer,
   Root,
 } from './styled';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 
 type Props = {
@@ -37,7 +37,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null); // 수정중인 댓글의 id
 
   const fetchCommentList = async () => {
-    const response = await axios.get(`/api/comment/?questionId=${_id}`);
+    const response = await axios.get(`/api/comment?${selected === 'articles' ? 'question' : 'answer'}Id=${_id}`);
     setCommentList(response.data);
   };
 
@@ -46,23 +46,28 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       ...newComment,
       content: e.target.value,
     });
-  }
+  };
 
   const onSubmitComment = async () => {
     if (!newComment.content) {
       alert('댓글을 입력해주세요.');
       return;
     }
-    if (editingCommentId) {
-      await axios.put(`/api/comment/${editingCommentId}`, newComment);
-      setEditingCommentId(null);
-      setNewComment({ userId: '64cf545ec07a5fb842cb5016', content: '' });
+    try {
+      if (editingCommentId) {
+        await axios.put(`/api/comment/${editingCommentId}`, newComment);
+        setEditingCommentId(null);
+        setNewComment({ userId: '64cf545ec07a5fb842cb5016', content: '' });
+        fetchCommentList();
+        return;
+      }
+      await axios.put(`/api/${selected}/${_id}/comment`, newComment);
       fetchCommentList();
-      return;
+      setNewComment({ userId: '64cf545ec07a5fb842cb5016', content: '' });
+    } catch (error) {
+      console.error(error);
+      alert('댓글 등록에 실패했습니다.');
     }
-    await axios.put(`/api/${selected}/${_id}/comment`, newComment);
-    fetchCommentList();
-    setNewComment({ userId: '64cf545ec07a5fb842cb5016', content: '' });
   };
 
   const onClickCommentDelete = async (commentId: string) => {
@@ -100,7 +105,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   return (
     <Root>
       {commentList.map(comment => (
-        <CommentContainer key={comment._id}>
+        <Container key={comment._id}>
           <ItemContainer left="10px" right="8px">
             <HeartIcon />
             <ItemTypo>0</ItemTypo>
@@ -109,9 +114,9 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
             <SaveIcon top="1px" bottom="2px" />
             <ItemTypo>0</ItemTypo>
           </ItemContainer>
-          <CommentContentContainer>
+          <ContentContainer>
             <Typo color="black">{comment?.content}</Typo>
-            <CommentInfoContainer>
+            <InfoContainer>
               <Typo size="12px">{comment?.author}</Typo>
               <Typo size="12px">{comment?.updatedAt || comment?.createdAt}</Typo>
               <Typo pointer="true" underline="true" size="12px">
@@ -123,11 +128,11 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
               <Typo onClick={() => onClickCommentDelete(comment._id!)} pointer="true" underline="true" size="12px">
                 삭제
               </Typo>
-            </CommentInfoContainer>
-          </CommentContentContainer>
-        </CommentContainer>
+            </InfoContainer>
+          </ContentContainer>
+        </Container>
       ))}
-      <CommentInput placeholder="댓글을 입력하세요" value={newComment.content} onChange={onChangeCommentInput} />
+      <Input placeholder="댓글을 입력하세요" value={newComment.content} onChange={onChangeCommentInput} />
       <Button onClick={onSubmitComment} top="5px">
         {editingCommentId ? '댓글수정' : '댓글달기'}
       </Button>

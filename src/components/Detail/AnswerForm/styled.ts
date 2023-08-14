@@ -15,12 +15,12 @@ const customMargin = css<ICustomMargin>`
   margin: ${props => `${props.top || '0px'} ${props.right || '0px'} ${props.bottom || '0px'} ${props.left || '0px'}`};
 `;
 
-export const QuestionTitleSection = styled.div<ICustomMargin>`
+export const TitleSection = styled.div<ICustomMargin>`
   display: flex;
   ${customMargin};
 `;
 
-export const QuestionTypo = styled.div`
+export const ATypo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,11 +34,11 @@ export const QuestionTypo = styled.div`
   font-weight: 600;
 `;
 
-export const QuestionTitle = styled.div`
+export const Title = styled.div`
   display: flex;
   /* justify-content: center; */
   align-items: center;
-  color: #0f172a;
+  color: #525458;
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
@@ -46,7 +46,7 @@ export const QuestionTitle = styled.div`
   margin-left: 16px;
 `;
 
-export const QuestionBodySection = styled.div`
+export const BodySection = styled.div`
   width: 683px;
   height: fit-content;
   flex-shrink: 0;
@@ -55,7 +55,7 @@ export const QuestionBodySection = styled.div`
   padding: 20px 0px 20px 25px;
 `;
 
-export const QuestionTopContainer = styled.div`
+export const TopContainer = styled.div`
   display: flex;
   width: 100%;
 `;
@@ -126,19 +126,19 @@ export const ContentTypo = styled.div`
   margin-left: 27px;
 `;
 
-export const QuestionBottomContainer = styled.div`
+export const BottomContainer = styled.div`
   display: flex;
   position: relative;
   height: 110px;
 `;
 
-export const QuestionBottomLeftContainer = styled.div`
+export const BottomLeftContainer = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
 `;
 
-export const QuestionBottomRightContainer = styled.div`
+export const BottomRightContainer = styled.div`
   position: absolute;
   right: 0;
   bottom: 0;

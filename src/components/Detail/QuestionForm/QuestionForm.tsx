@@ -4,17 +4,17 @@ import {
   HeartIcon,
   ItemContainer,
   ItemTypo,
-  QuestionBodySection,
-  QuestionTitle,
-  QuestionTitleSection,
-  QuestionTopContainer,
-  QuestionTypo,
+  BodySection,
+  Title,
+  TitleSection,
+  TopContainer,
+  QTypo,
   SaveIcon,
   ContentTypo,
-  QuestionBottomLeftContainer,
-  QuestionBottomContainer,
+  BottomLeftContainer,
+  BottomContainer,
   Typo,
-  QuestionBottomRightContainer,
+  BottomRightContainer,
   AuthorBox,
   ViewDateContainer,
   AskedTypo,
@@ -157,12 +157,12 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
 
   return (
     <>
-      <QuestionTitleSection>
-        <QuestionTypo>Q</QuestionTypo>
-        <QuestionTitle>{currentQuestion?.title}</QuestionTitle>
-      </QuestionTitleSection>
-      <QuestionBodySection>
-        <QuestionTopContainer>
+      <TitleSection>
+        <QTypo>Q</QTypo>
+        <Title>{currentQuestion?.title}</Title>
+      </TitleSection>
+      <BodySection>
+        <TopContainer>
           <ItemContainer>
             {/* 투표 */}
             {isVoteClicked ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
@@ -182,9 +182,9 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
               }}
             />
           </ItemContainer>
-        </QuestionTopContainer>
-        <QuestionBottomContainer>
-          <QuestionBottomLeftContainer>
+        </TopContainer>
+        <BottomContainer>
+          <BottomLeftContainer>
             <HashTagContainer>
               {currentQuestion?.hashtags.map((hashtag, index) => (
                 <HashTag key={index}>{hashtag}</HashTag>
@@ -199,8 +199,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             <Typo underline="true" pointer="true" onClick={deleteQuestion}>
               삭제
             </Typo>
-          </QuestionBottomLeftContainer>
-          <QuestionBottomRightContainer>
+          </BottomLeftContainer>
+          <BottomRightContainer>
             <AuthorBox>
               <AskedTypo>Asked</AskedTypo>
               <AuthorContainer>
@@ -209,10 +209,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
                 <Typo>{currentQuestion?.votes}</Typo>
               </AuthorContainer>
             </AuthorBox>
-          </QuestionBottomRightContainer>
-        </QuestionBottomContainer>
+          </BottomRightContainer>
+        </BottomContainer>
         <CommentForm _id={_id} selected="articles" />
-      </QuestionBodySection>
+      </BodySection>
     </>
   );
 };

@@ -148,8 +148,9 @@ router.delete('/:id', async (req, res) => {
 // UPDATE ETC
 
 // Comment
-router.post('/:id/comment', async (req, res) => {
+router.put('/:id/comment', async (req, res) => {
   const answerId = req.params.id;
+  console.log(answerId);
   try {
     const answer = await Answer.findById(answerId);
     const userId = req.body.userId;
@@ -162,11 +163,11 @@ router.post('/:id/comment', async (req, res) => {
       res.status(404).json('User not found!');
     }
 
-    const newComment = {
+    const newComment = new Comment({
       answerId: answerId,
       content: req.body.content,
       userId: userId,
-    };
+    });
     const savedComment = await newComment.save();
     res.status(200).json(savedComment);
   } catch (err) {

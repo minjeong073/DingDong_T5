@@ -26,14 +26,27 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// GET BY QUESTION ID
+// GET BY QUESTION ID OR ANSWER ID
 router.get('/', async (req, res) => {
-  const questionId = req.query.questionId;
   try {
-    const comments = await Comment.find({ questionId: questionId });
-    if (!comments) {
-      res.status(404).json('Comments not found!');
+    let comments;
+
+    if (req.query.questionId) {
+      comments = await Comment.find({ questionId: req.query.questionId });
     }
+    if (req.query.answerId) {
+      comments = await Comment.find({ answerId: req.query.answerId });
+    }
+    if (!req.query.questionId && !req.query.answerId) {
+      res.status(400).json('Invalid query parameters');
+      return;
+    }
+
+    if (!comments || comments.length === 0) {
+      res.status(404).json('Comments not found!');
+      return;
+    }
+
     const updatedComments = await Promise.all(
       comments.map(async comment => {
         const user = await User.findById(comment.userId);
