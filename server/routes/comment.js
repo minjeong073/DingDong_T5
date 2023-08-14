@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Comment = require('../models/Comment');
+const User = require('../models/User');
 
 // GET BY COMMENT ID
 router.get('/:id', async (req, res) => {
@@ -25,18 +26,25 @@ router.get('/', async (req, res) => {
   const questionId = req.query.questionId;
   try {
     const comments = await Comment.find({ questionId: questionId });
-    const updatedComment = comments.map(comment => {
-      return {
-        ...comment._doc,
-        createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-        updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-      };
-    });
-    res.status(200).json(updatedComment);
+    const updatedComments = await Promise.all(
+      comments.map(async comment => {
+        const user = await User.findById(comment.userId);
+        const author = user ? user.username : 'unknown';
+        const updatedComment = {
+          ...comment._doc,
+          author,
+          createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+        return updatedComment;
+      }),
+    );
+
+    res.status(200).json(updatedComments);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -46,22 +54,23 @@ router.get('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    if (comment.username === req.body.username) {
-      try {
-        const updatedComment = await Comment.findByIdAndUpdate(
-          req.params.id,
-          {
-            $set: req.body,
-          },
-          { new: true },
-        );
-        res.status(200).json(updatedComment);
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json('You can update only your Comment!');
+    // TODO : token 구현 후 수정 예정
+    // if (comment.username === req.body.username) {
+    try {
+      const updatedComment = await Comment.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: req.body,
+        },
+        { new: true },
+      );
+      res.status(200).json(updatedComment);
+    } catch (err) {
+      res.status(500).json(err);
     }
+    // } else {
+    //   res.status(401).json('You can update only your Comment!');
+    // }
   } catch (err) {
     res.status(500).json(err);
   }
