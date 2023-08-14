@@ -7,6 +7,8 @@ import Logo from '../../assets/icon/logo.svg';
 export const Root = styled.div`
   display: flex;
   flex-direction: column;
+  // border: 1px solid black;
+  height: 840px;
 `;
 
 export const Header = styled.header`
@@ -194,15 +196,18 @@ export const slideInAnimation = keyframes`
   }
 `;
 
-export const HashBody = styled.div`
-  display: fixed;
-  width: 690px;
-  margin-top: 60px;
-  overflow: hidden;
-`;
-
 export const ItemWrapper = styled.div`
   display: flex;
   // animation: ${slideInAnimation} 10s linear infinite;
   white-space: nowrap;
+`;
+
+export const HashBody = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 60px;
+  // border: 1px solid black;
+  height: 100px;
 `;
