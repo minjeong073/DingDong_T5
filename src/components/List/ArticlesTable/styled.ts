@@ -3,10 +3,7 @@ import styled from 'styled-components';
 
 export const Table = styled.table`
   width: 100%;
-  /* height: 1000px; */
-  /* border: 1px solid #e6e8e7; */
   border-collapse: collapse;
-
   td {
     min-height: 150px;
     border-bottom: 1px solid #e2e8f0;
@@ -56,12 +53,12 @@ export const Box = styled.div`
 `;
 
 export const PurpleBox = styled(Box)`
-  border-radius: 9px;
+  border-radius: 8px;
   border: 1px solid #8b5cf6;
 `;
 
 export const Div = styled.div`
-  font-size: 15px;
+  font-size: 16px;
   margin-right: 15px;
 `;
 
@@ -70,7 +67,7 @@ export const PurpleDiv = styled(Div)`
 `;
 
 export const Span = styled.div`
-  font-size: 15px;
+  font-size: 16px;
 `;
 
 export const PurpleSpan = styled(Span)`
@@ -130,7 +127,7 @@ export const Author = styled.div`
 `;
 
 export const Date = styled.div`
-  min-width: 133px;
+  min-width: 141px;
   color: #64748b;
   align-items: center;
   margin: 0 45px 0 20px;

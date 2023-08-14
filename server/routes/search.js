@@ -10,10 +10,7 @@ router.get('/', async (req, res) => {
 
   if (keyword) {
     searchConditions.push({
-      $or: [
-        { title: { $regex: keyword, $options: 'i' } },
-        { content: { $regex: keyword, $options: 'i' } },
-      ],
+      $or: [{ title: { $regex: keyword, $options: 'i' } }, { content: { $regex: keyword, $options: 'i' } }],
     });
   }
   if (hashtag) {

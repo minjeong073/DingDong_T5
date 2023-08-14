@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// 제목, 내용, 작성자, 조회수, 해시태그
 const CommentSchema = new mongoose.Schema(
   {
     content: {
@@ -15,15 +14,22 @@ const CommentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Answer',
     },
-    author: {
-      type: String,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    votes: {
+      type: Number,
+      default: 0,
+    },
+    saves: {
+      type: Number,
       default: 0,
     },
   },
   // 생성일(createdAt)과 수정일(updatedAt)을 자동으로 관리
-  { timestamps: true }
+  { timestamps: true },
 );
-
 
 // Date 객체로 변환
 CommentSchema.pre('save', function (next) {

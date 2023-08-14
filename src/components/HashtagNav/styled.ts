@@ -11,9 +11,10 @@ export const NavBar = styled.div`
 
 export const Table = styled.div<{ $expanded?: boolean }>`
   display: flex;
+  flex-direction: column;
   justify-content: flex-end;
+  width: 250px;
   flex-wrap: wrap;
-  width: 185px;
   max-height: ${props => (props.$expanded ? 'fit-content' : '200px')};
   &::-webkit-scrollbar {
     display: none;
@@ -25,8 +26,9 @@ export const Table = styled.div<{ $expanded?: boolean }>`
 // export const Tbody = styled.tbody``;
 
 export const Button = styled.button`
-  font-color: #0f172a;
+  color: #0f172a;
   font-size: 15px;
+  margin-left: 70px;
 `;
 
 export const Tr = styled.div`
@@ -61,8 +63,8 @@ export const HashTag = styled.button<{ $click?: boolean }>`
   font-size: 15px;
   &:hover {
     cursor: pointer;
-    background-color: ${props => (props.$click ? '#8B5CF6' : '')};
-    color: ${props => (props.$click ? '#FFFFFF' : '')};
+    background-color: ${props => (props.$click ? '#8B5CF6' : '#f1f5f9')};
+    color: ${props => (props.$click ? '#FFFFFF' : '#64748b')};
   }
 `;
 
