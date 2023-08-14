@@ -5,16 +5,15 @@ export const HashBody = styled.div`
   width: 690px;
   margin-top: 60px;
   overflow: hidden;
-  border: 1px solid black;
-  
+  // border: 1px solid black;
 `;
 
 export const Div = styled.div`
   display: flex;
-  //
-  backface-visibility: hidden;
-  touch-action: pan-y;
-  margin-left: calc(var(--slide-spacing) * -1);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
   `;
 
 export const Tr = styled.div`
@@ -31,6 +30,7 @@ export const Tr = styled.div`
 
 export const HashTag = styled.button`
   height: 40px;
+  // max-width: 230px;
   margin: 0 5px;
   padding: 5px 12px;
   white-space: nowrap;
@@ -107,4 +107,29 @@ cursor: pointer;
 export const SVG = styled.svg`
 width: 65%;
 height: 65%;
+`;
+
+export const NextButton = styled.div`
+right: -25px;
+font-size: 20px;
+line-height: 0;
+position: absolute;
+top: 50%;
+display: block;
+width: 20px;
+height: 20px;
+padding: 0;
+transform: translate(0, -50%);
+cursor: pointer;
+color: transparent;
+border: none;
+outline: none;
+background: transparent;
+transition: 200ms ease-in-out;
+
+&:before {
+    line-height: 1;
+    opacity: 0.75;
+    -webkit-font-smoothing: antialiased;
+}
 `;

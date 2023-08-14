@@ -19,12 +19,16 @@ import {
   TitleText,
   TopItems,
   ButtonBar,
-  ItemWrapper,
+  HashBody,
+  ItemWrapper
 } from "./styled";
-import { HashCarousal } from "../../components/HashtagBar";
+import { HashCarousal } from "../../components/HashtagBar/";
 import { HashTagBar } from "../../components/HashtagBar";
-import { Link } from "react-router-dom";
+import { TestCarousel } from "../../components/HashtagBar";
+import { RealCarousel } from "../../components/HashtagBar/";
+import { Link } from 'react-router-dom';
 import { EmblaOptionsType } from 'embla-carousel-react';
+import dummy from "../../db/articles.json";
 import axios from "axios";
 
 const OPTIONS: EmblaOptionsType = { align: 'end', loop: true };
@@ -32,6 +36,16 @@ const SLIDE_COUNT = 13;
 const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 
 export const Home = () => {
+  const HashtagArr = dummy.articles.map(item => item.hashtag);
+  const oneHashtag = HashtagArr.flat();
+  const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
+  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => (
+    <div key={index}>
+      {onlyHashtag[index]}
+    </div>
+  ));
+  console.log(carouselItems);
+
   return (
     <Root>
       <Header>
@@ -75,7 +89,12 @@ export const Home = () => {
         {/* <HashBody>
           <HashTagBar/> 
         </HashBody> */}
-        <HashCarousal slides={SLIDES} options={OPTIONS}/>
+        {/* <HashCarousal slides={SLIDES} options={OPTIONS}/> */}
+        {/* <HashCarousal /> */}
+        {/* <TestCarousel /> */}
+        <HashBody>
+          <RealCarousel items={carouselItems} />
+        </HashBody>
       </Container>
     </Root>
   );
