@@ -19,7 +19,7 @@ export const Tbody = styled.tbody`
 export const TableRow = styled.tr`
   display: flex;
   &:last-child {
-    margin-bottom: 60px;
+    margin-bottom: 80px;
   }
 `;
 
@@ -192,7 +192,7 @@ export const LoadingSection = styled.div`
   align-items: center;
   width: 683px;
   height: 30px;
-  margin-top: 20px;
+  margin: 20px 0 40px 0;
 `;
 
 // 회전하는 애니메이션 정의
