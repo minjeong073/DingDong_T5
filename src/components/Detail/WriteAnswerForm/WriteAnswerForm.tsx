@@ -1,6 +1,6 @@
 // WriteAnswerForm.tsx
 import ReactQuill from 'react-quill';
-import { Root, Title } from './styled';
+import { ButtonContainer, Root, Title } from './styled';
 import React, { forwardRef, useRef, useState } from 'react';
 import modules from '../../../utils/quillModules';
 import { Button } from '../../Button';
@@ -10,10 +10,11 @@ interface WriteAnswerFormProps {
   onContentsChange: (value: string) => void;
   postAnswer: (e: React.MouseEvent<HTMLButtonElement>) => void;
   editingAnswerId?: string | null;
+  onClickEditingCancel?: () => void;
 }
 
 const WriteAnswerForm: React.ForwardRefRenderFunction<HTMLFormElement, WriteAnswerFormProps> = (
-  { contents, onContentsChange, postAnswer, editingAnswerId },
+  { contents, onContentsChange, postAnswer, editingAnswerId, onClickEditingCancel },
   ref,
 ) => {
   const QuillRef = useRef<ReactQuill>(null);
@@ -30,9 +31,16 @@ const WriteAnswerForm: React.ForwardRefRenderFunction<HTMLFormElement, WriteAnsw
         placeholder="내용을 입력해주세요."
         style={{ height: '300px' }}
       />
-      <Button height="44px" onClick={postAnswer}>
-        {editingAnswerId ? '답변수정' : '답변작성'}
-      </Button>
+      <ButtonContainer>
+        <Button height="44px" onClick={postAnswer}>
+          {editingAnswerId ? '답변수정' : '답변작성'}
+        </Button>
+        {editingAnswerId && (
+          <Button onClick={onClickEditingCancel} left="3px" width="70px">
+            취소
+          </Button>
+        )}
+      </ButtonContainer>
     </Root>
   );
 };

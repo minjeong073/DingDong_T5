@@ -127,7 +127,7 @@ export const WriteQuestion = () => {
         <TagsInput value={selected} onChange={handleTagsChange} name="hashtags" placeHolder="키워드를 입력해주세요." />
       </QuestionKeywordSection>
       <Button type="button" onClick={postQuestion}>
-        질문등록
+        질문작성
       </Button>
     </QuestionForm>
   );
