@@ -28,7 +28,7 @@ export const RealCarousel: React.FC<CarouselComponentProps> = ({ items }) => {
             <CustomDotStyle clickHandler={clickHandler} isSelected={isSelected} index={index} label="Dot" />
           )}          
         centerMode={true}
-        centerSlidePercentage={10}
+        centerSlidePercentage={8}
         showThumbs={false}
         showStatus={false}
         autoPlay={true}
