@@ -18,24 +18,39 @@ import {
   QuestionTypo,
   TitleText,
   TopItems,
+  DotTypo,
+  TopItem,
   ButtonBar,
   HashBody,
-  ItemWrapper
-} from "./styled";
-import { RealCarousel } from "../../components/HashtagBar/";
-import { Link } from 'react-router-dom';
-import dummy from "../../db/articles.json";
+  ItemWrapper,
+} from './styled';
+import { RealCarousel } from '../../components/HashtagBar/';
+import { Link, useNavigate } from 'react-router-dom';
+import dummy from '../../db/articles.json';
+import axios from 'axios';
+import { useCallback, useEffect, useState } from 'react';
+import { QuestionDataType } from 'stores/page-store';
 
 export const Home = () => {
+  const [topQuestion, setTopQuestion] = useState<QuestionDataType[]>([]);
   const HashtagArr = dummy.articles.map(item => item.hashtag);
   const oneHashtag = HashtagArr.flat();
   const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
-  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => (
-    <div key={index}>
-      {onlyHashtag[index]}
-    </div>
-  ));
+  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => <div key={index}>{onlyHashtag[index]}</div>);
   // console.log(carouselItems);
+
+  const navigate = useNavigate();
+
+  const getTopQuestion = async () => {
+    const response = await axios.get('/api/articles/popular');
+    const data = response.data.updatedQuestions;
+    // data의 상위 5개만 가져와 topQuestion에 저장
+    setTopQuestion(data);
+  };
+
+  useEffect(() => {
+    getTopQuestion();
+  }, []);
 
   return (
     <Root>
@@ -68,7 +83,13 @@ export const Home = () => {
             <TitleBlock>
               <QuestionTypo>Q</QuestionTypo> <TitleText>인기 질문</TitleText>
             </TitleBlock>
-            <TopItems></TopItems>
+            <TopItems>
+              {topQuestion?.map(question => (
+                <TopItem key={question?._id} onClick={() => navigate(`/articles/${question._id}`)}>
+                  {question?.title}
+                </TopItem>
+              ))}
+            </TopItems>
           </QuestionBlock>
           <AnswerBlock>
             <TitleBlock>

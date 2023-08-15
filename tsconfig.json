@@ -20,7 +20,8 @@
       "components/*": ["./components/*"],
       "pages/*": ["./pages/*"],
       "assets/*": ["./assets/*"],
-      "utils/*": ["./utils/*"]
+      "utils/*": ["./utils/*"],
+      "stores/*": ["./stores/*"]
     }
   },
   "include": ["src", "src/custom.d.ts"],
