@@ -22,10 +22,10 @@ import {
   ButtonBar,
   HashBody,
 } from './styled';
-import { SearchBar } from "components/Header";
+import { SearchBar } from 'components/Header';
 import { RealCarousel } from '../../components/HashtagBar/';
 import { Link, useNavigate } from 'react-router-dom';
-import Articles from "../../db/articles.json";
+import Articles from '../../db/articles.json';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { QuestionDataType } from 'stores/page-store';
@@ -35,17 +35,13 @@ export const Home = () => {
   const HashtagArr = Articles.map(item => item.hashtags);
   const oneHashtag = HashtagArr.flat();
   const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
-  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => (
-    <div key={index}>
-      {onlyHashtag[index]}
-    </div>
-  ));
+  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => <div key={index}>{onlyHashtag[index]}</div>);
   // console.log(carouselItems);
 
   const navigate = useNavigate();
 
   const getTopQuestion = async () => {
-    const response = await axios.get('/api/articles/popular');
+    const response = await axios.get('/api/articles/interest');
     const data = response.data.updatedQuestions;
     // data의 상위 5개만 가져와 topQuestion에 저장
     setTopQuestion(data);
@@ -54,7 +50,7 @@ export const Home = () => {
   useEffect(() => {
     getTopQuestion();
   }, []);
-  
+
   return (
     <Root>
       <Header>
@@ -72,10 +68,7 @@ export const Home = () => {
         </Div>
       </Header>
       <Container>
-        <SearchBar
-          placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" 
-          data={Articles}
-        /> 
+        <SearchBar placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" data={Articles} />
         <ButtonBar>
           <Link to={'/articles/write'}>
             <Button1> 질문하기</Button1>
