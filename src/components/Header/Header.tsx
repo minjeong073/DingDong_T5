@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SearchBar } from './SearchBar';
 import {
   LogoImg,
   LogoSection,
