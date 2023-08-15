@@ -11,6 +11,10 @@ import { Detail } from './pages/Detail';
 import { Replies } from './pages/Replies';
 import { ModifyQuestion } from './pages/ModifyQuestion';
 import { Login } from "./pages/Login";
+import axios from 'axios';
+
+axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 

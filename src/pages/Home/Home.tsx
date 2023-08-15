@@ -7,7 +7,6 @@ import {
   Div,
   Login,
   SignUp,
-  SearchBar,
   Container,
   Button1,
   Button2,
@@ -22,21 +21,25 @@ import {
   TopItem,
   ButtonBar,
   HashBody,
-  ItemWrapper,
 } from './styled';
+import { SearchBar } from "components/Header";
 import { RealCarousel } from '../../components/HashtagBar/';
 import { Link, useNavigate } from 'react-router-dom';
-import dummy from '../../db/articles.json';
+import Articles from "../../db/articles.json";
 import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { QuestionDataType } from 'stores/page-store';
 
 export const Home = () => {
   const [topQuestion, setTopQuestion] = useState<QuestionDataType[]>([]);
-  const HashtagArr = dummy.articles.map(item => item.hashtag);
+  const HashtagArr = Articles.map(item => item.hashtags);
   const oneHashtag = HashtagArr.flat();
   const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
-  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => <div key={index}>{onlyHashtag[index]}</div>);
+  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => (
+    <div key={index}>
+      {onlyHashtag[index]}
+    </div>
+  ));
   // console.log(carouselItems);
 
   const navigate = useNavigate();
@@ -51,7 +54,7 @@ export const Home = () => {
   useEffect(() => {
     getTopQuestion();
   }, []);
-
+  
   return (
     <Root>
       <Header>
@@ -69,7 +72,10 @@ export const Home = () => {
         </Div>
       </Header>
       <Container>
-        <SearchBar placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" />
+        <SearchBar
+          placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" 
+          data={Articles}
+        /> 
         <ButtonBar>
           <Link to={'/articles/write'}>
             <Button1> 질문하기</Button1>
