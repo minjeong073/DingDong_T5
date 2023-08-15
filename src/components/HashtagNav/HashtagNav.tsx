@@ -6,18 +6,24 @@ import React, { useState, useEffect } from 'react';
 import unfold from '../../assets/icon/unfold.svg';
 import fold from '../../assets/icon/fold.svg';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const HashTagNav = () => {
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(false);
   const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
   const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([true, ...Array(0).fill(false)]);
+  // const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([...Array(0).fill(false)]);
+  const [ hashtag, setHashtag ] = useState<string[]>([]);
   const [onlyHashtag, setOnlyHashtag] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const response = await axios.get(`/api/articles?page=${page}`);
+      const hashtags = await axios.get(`/api/articles/allhashtags`);
       setQuestionData(response.data.updatedQuestions);
+      setHashtag(hashtags.data.hashtags);
     } catch (error) {
       console.error(error);
       alert('게시판 정보 가져오기 실패!');
@@ -29,12 +35,12 @@ export const HashTagNav = () => {
   }, [setQuestionData]);
 
   useEffect(() => {
-    let getHashtags: string[] = [];
-    questionData.forEach(item => {
-      const values = item?.hashtags.join(',');
-      getHashtags.push(values);
-    });
-    const oneHashtag = getHashtags.flatMap(item => item.split(',').map(part => part.trim()));
+    // let getHashtags: string[] = [];
+    // hashtag.forEach(item => {
+    //   const values = item?.join(',');
+    //   getHashtags.push(values);
+    // });
+    const oneHashtag = hashtag.flatMap(item => item.split(',').map(part => part.trim()));
     const realHash = oneHashtag.filter(item => item.trim() !== '');
     const sortByFrequency = (arr: any[]) => {
       const frequencyMap = arr.reduce((map, item) => {
@@ -56,6 +62,7 @@ export const HashTagNav = () => {
     newClickedHashtags.fill(false);
     newClickedHashtags[index] = !newClickedHashtags[index];
     setClickedHashtags(newClickedHashtags);
+    navigate(`/tag`);
   };
 
   return (
