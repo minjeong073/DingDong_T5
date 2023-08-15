@@ -41,16 +41,8 @@ export const ArticlesTable = () => {
       // setQuestionData(response.data.updatedQuestions);
       setTotalQuestions(response.data.totalQuestions);
 
-      // /api/answer/all/${_id}에서 data의 length를 가져와서 답변수로 넣어주기
       const updatedQuestions = response.data.updatedQuestions;
-      const updatedQuestionsWithAnswers = await Promise.all(
-        updatedQuestions.map(async (question: QuestionDataType) => {
-          const response = await axios.get(`/api/answer/all/${question._id}`);
-          const answers = response.data;
-          return { ...question, answers: answers.length };
-        }),
-      );
-      setQuestionData(updatedQuestionsWithAnswers);
+      setQuestionData(updatedQuestions);
     } catch (error) {
       console.error(error);
       alert('게시판 정보 가져오기 실패!');

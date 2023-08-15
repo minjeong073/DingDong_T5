@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// 이메일, 비밀번호, 이름, 전화번호
 const UserSchema = new mongoose.Schema(
   {
     email: {
@@ -28,7 +27,7 @@ const UserSchema = new mongoose.Schema(
     ],
   },
   // 생성일(createdAt)과 수정일(updatedAt)을 자동으로 관리
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model('User', UserSchema);

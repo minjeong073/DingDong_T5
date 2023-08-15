@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -12,9 +12,17 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "preserve",
+    "baseUrl": "./src",
+    "paths": {
+      "components/*": ["./components/*"],
+      "pages/*": ["./pages/*"],
+      "assets/*": ["./assets/*"],
+      "utils/*": ["./utils/*"],
+      "stores/*": ["./stores/*"]
+    }
   },
   "include": ["src", "src/custom.d.ts"],
   "exclude": ["node_modules", ".vscode"]

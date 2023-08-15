@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// 제목, 내용, 투표수, 답변수, 조회수, 저장수, 작성자, 해시태그
 const QuestionSchema = new mongoose.Schema(
   {
     title: {
@@ -29,14 +28,13 @@ const QuestionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // Login 구현 후 수정 예정 : 작성자는 User의 id를 참조
-    // userId: {
-    //   type: Number,
-    //   required: true,
-    // },
-    author: {
-      type: String,
-      required: true,
+    comments: {
+      type: Number,
+      default: 0,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     hashtags: {
       type: [String],
@@ -46,6 +44,9 @@ const QuestionSchema = new mongoose.Schema(
     isDeleted: {
       type: Boolean,
       default: false,
+    },
+    hardDeleteAt: {
+      type: Date,
     },
   },
   { timestamps: true },
@@ -59,15 +60,5 @@ QuestionSchema.pre('save', function (next) {
   this.createdAt = new Date(seoulTime);
   next();
 });
-
-QuestionSchema.methods.convertDate = function () {
-  this.createdAt = new Date(this.createdAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  this.updatedAt = new Date(this.updatedAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  return this;
-};
 
 module.exports = mongoose.model('Question', QuestionSchema);

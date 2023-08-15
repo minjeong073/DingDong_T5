@@ -1,6 +1,6 @@
-import { NavBar, Table, Tbody, Tr, Td, Special, HashTag, Button, Img } from './styled';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { QuestionData, QuestionListState } from '../../stores/page-store';
+import { NavBar, Table, Tr, Td, HashTag, Button, Img } from './styled';
+import { useRecoilState } from 'recoil';
+import { QuestionListState } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import React, { useState, useEffect } from 'react';
 import unfold from '../../assets/icon/unfold.svg';
@@ -10,8 +10,9 @@ import axios from 'axios';
 export const HashTagNav = () => {
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(false);
-  const [QuestionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
-  const [click, setClick] = useState(false);
+  const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
+  const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([true, ...Array(0).fill(false)]);
+  const [onlyHashtag, setOnlyHashtag] = useState<string[]>([]);
 
   const fetchData = async () => {
     try {
@@ -27,69 +28,55 @@ export const HashTagNav = () => {
     fetchData();
   }, [setQuestionData]);
 
-  let getHashtags: string[] = [];
-  Array(QuestionData.length)
-    .fill(0)
-    .map((item, index) => {
-      const values = QuestionData[index]?.hashtags.join(',');
+  useEffect(() => {
+    let getHashtags: string[] = [];
+    questionData.forEach(item => {
+      const values = item?.hashtags.join(',');
       getHashtags.push(values);
     });
-  const oneHashtag = getHashtags.flatMap(item => item.split(',').map(part => part.trim()));
-  const realHash = oneHashtag.filter(item => item.trim() !== '');
-  const sortByFrequency = (arr: any[]) => {
-    const frequencyMap = arr.reduce((map, item) => {
-      map.set(item, map.get(item || 0) + 1);
-      return map;
-    }, new Map());
-    return arr.sort((a, b) => frequencyMap.get(b) - frequencyMap.get(a));
-  };
-  const forHash = sortByFrequency(realHash);
-  const onlyHashtag = Array.from(new Set(forHash));
-  onlyHashtag.unshift('ALL');
+    const oneHashtag = getHashtags.flatMap(item => item.split(',').map(part => part.trim()));
+    const realHash = oneHashtag.filter(item => item.trim() !== '');
+    const sortByFrequency = (arr: any[]) => {
+      const frequencyMap = arr.reduce((map, item) => {
+        map.set(item, (map.get(item) || 0) + 1);
+        return map;
+      }, new Map());
+      return arr.sort((a, b) => frequencyMap.get(b) - frequencyMap.get(a));
+    };
+    const sortedHash = sortByFrequency(realHash);
+    setOnlyHashtag(['ALL', ...new Set(sortedHash)]);
+  }, [questionData]);
 
   const onClickExpanded = () => {
-    setExpanded(!expanded);
+    setExpanded(prev => !prev);
   };
 
-  const handleClick = () => {
-    setClick(!click);
+  const handleClick = (index: number) => {
+    const newClickedHashtags = [...clickedHashtags];
+    newClickedHashtags.fill(false);
+    newClickedHashtags[index] = !newClickedHashtags[index];
+    setClickedHashtags(newClickedHashtags);
   };
 
   return (
     <NavBar>
-      <Table $expanded={expanded ? true : undefined}>
-        <Tbody>
-          {onlyHashtag.map((item, index) => (
-            <Tr key={index}>
-              {/* {index === 0 ? (
-                  <Td>
-                    <Special>{item}</Special>
-                    <Special>{onlyHashtag[index+1]}</Special>
-                  </Td>                    
-                  ) : (
-                    index % 2 === 0 ? (
-                      <Td>            
-                        <HashTag key={index}>{item}</HashTag>
-                          {index + 1 < onlyHashtag.length ? <HashTag>{onlyHashtag[index + 1]}</HashTag> 
-                          : null}
-                      </Td>                      
-                    ) : null
-                  )}                 */}
-              {index % 2 === 0 ? (
-                <Td>
-                  <HashTag $click={click} onClick={handleClick} key={index}>
-                    {item}
+      <Table $expanded={expanded}>
+        {onlyHashtag.map((item, index) => (
+          <Tr key={index}>
+            {index % 2 === 0 && (
+              <Td>
+                <HashTag $click={clickedHashtags[index]} onClick={() => handleClick(index)} key={index}>
+                  {item}
+                </HashTag>
+                {index + 1 < onlyHashtag.length && (
+                  <HashTag $click={clickedHashtags[index + 1]} onClick={() => handleClick(index + 1)}>
+                    {onlyHashtag[index + 1]}
                   </HashTag>
-                  {index + 1 < onlyHashtag.length ? (
-                    <HashTag $click={click} onClick={handleClick}>
-                      {onlyHashtag[index + 1]}
-                    </HashTag>
-                  ) : null}
-                </Td>
-              ) : null}
-            </Tr>
-          ))}
-        </Tbody>
+                )}
+              </Td>
+            )}
+          </Tr>
+        ))}
       </Table>
       <Button onClick={onClickExpanded}>
         {expanded ? '접기' : '펼치기'}

@@ -2,6 +2,11 @@ const router = require('express').Router();
 const Question = require('../models/Question');
 const User = require('../models/User');
 const Vote = require('../models/Vote');
+const Comment = require('../models/Comment');
+const Bookmark = require('../models/Bookmark');
+
+// TODO : 로그인한 유저만 질문을 작성할 수 있도록
+//        create, update, delete 미들웨어 추가
 
 // Question CRUD
 // CREATE
@@ -15,7 +20,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET ALL
+// GET ALL -LATEST
 router.get('/', async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = 5;
@@ -27,17 +32,23 @@ router.get('/', async (req, res) => {
       .skip(startIndex)
       .limit(pageSize)
       .exec();
-    const updatedQuestions = questions.map(question => {
-      return {
-        ...question._doc,
-        createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-        updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-      };
-    });
+    const updatedQuestions = await Promise.all(
+      questions.map(async question => {
+        const user = await User.findById(question.userId);
+        const author = user ? user.username : 'unknown';
+        const updatedQuestion = {
+          ...question._doc,
+          author,
+          createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+        return updatedQuestion;
+      }),
+    );
 
     //extract hashtags list in one page
     const hashtagsList = questions.flatMap(question => question.hashtags);
@@ -48,7 +59,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-//hashtags
+
+//get All hashtags
 router.get('/allhashtags', async (req, res) => {
   try {
     const allQuestions = await Question.find({ isDeleted: false });
@@ -58,14 +70,92 @@ router.get('/allhashtags', async (req, res) => {
     res.status(500).json(err);
   }
 });
- 
+
+// GET ALL -POPULAR
+router.get('/popular', async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5;
+  const startIndex = (page - 1) * pageSize;
+  try {
+    const totalQuestions = await Question.countDocuments({ isDeleted: false });
+    const questions = await Question.find({ isDeleted: false })
+      .sort({ views: -1 }) // 조회순으로 정렬
+      .skip(startIndex)
+      .limit(pageSize)
+      .exec();
+    const updatedQuestions = await Promise.all(
+      questions.map(async question => {
+        const user = await User.findById(question.userId);
+        const author = user ? user.username : 'unknown';
+        const updatedQuestion = {
+          ...question._doc,
+          author,
+          createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+        return updatedQuestion;
+      }),
+    );
+    res.status(200).json({ updatedQuestions, totalQuestions });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET ALL -INTEREST
+router.get('/interest', async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5;
+  const startIndex = (page - 1) * pageSize;
+  try {
+    const totalQuestions = await Question.countDocuments({ isDeleted: false });
+    const questions = await Question.find({ isDeleted: false })
+      .sort({ votes: -1 })
+      .skip(startIndex)
+      .limit(pageSize)
+      .exec();
+    const updatedQuestions = await Promise.all(
+      questions.map(async question => {
+        const user = await User.findById(question.userId);
+        const author = user ? user.username : 'unknown';
+        const updatedQuestion = {
+          ...question._doc,
+          author,
+          createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+        return updatedQuestion;
+      }),
+    );
+    res.status(200).json({ updatedQuestions, totalQuestions });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // GET
 router.get('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
+    const user = await User.findById(question.userId);
+    const commentList = await Comment.find({ questionId: req.params.id }).exec();
+    const author = user ? user.username : 'unknown';
 
-    const questionInKST = {
+    if (!question) {
+      res.status(404).json('Question not found!');
+    }
+    const updatedQuestion = {
       ...question._doc,
+      author,
+      commentList,
       createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
         timeZone: 'Asia/Seoul',
       }),
@@ -73,10 +163,7 @@ router.get('/:id', async (req, res) => {
         timeZone: 'Asia/Seoul',
       }),
     };
-    // console.log('test : ' + questionInKST.createdAt);
-    // console.log('locale : ' + question.createdAt.toLocaleString());
-    // console.log('locale time : ' + question.createdAt.toLocaleTimeString());
-    res.status(200).json(questionInKST);
+    res.status(200).json(updatedQuestion);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -87,32 +174,29 @@ router.put('/:id', async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
 
-    if (question.author === req.body.author) {
-      try {
-        const updatedQuestion = await Question.findByIdAndUpdate(
-          req.params.id,
-          {
-            $set: req.body,
-            updatedAt: new Date().toLocaleString('ko-KR', {
-              timeZone: 'Asia/Seoul',
-            }),
-          },
-          { new: true },
-        );
-        // console.log('test' + updatedQuestion.updatedAt);
-
-        // console.log('iso : ' + updatedQuestion.updatedAt.toISOString());
-        // console.log('locale : ' + updatedQuestion.updatedAt.toLocaleString());
-        // console.log(
-        //   'locale time : ' + updatedQuestion.updatedAt.toLocaleTimeString()
-        // );
-        res.status(200).json(updatedQuestion);
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json('You can update only your Question!');
+    if (!question) {
+      res.status(404).json('Question not found!');
     }
+
+    // if (question.author === req.body.author) {
+    try {
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: req.body,
+          updatedAt: new Date().toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        },
+        { new: true },
+      );
+      res.status(200).json(updatedQuestion);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+    // } else {
+    //   res.status(401).json('You can update only your Question!');
+    // }
   } catch (err) {
     res.status(500).json(err);
   }
@@ -120,7 +204,6 @@ router.put('/:id', async (req, res) => {
 
 // DELETE
 router.put('/:id/delete', async (req, res) => {
-  console.log(req.params.id);
   try {
     await Question.findByIdAndUpdate(
       req.params.id,
@@ -128,6 +211,9 @@ router.put('/:id/delete', async (req, res) => {
         content: '',
         isDeleted: true,
         updatedAt: new Date().toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+        hardDeletedAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toLocaleString('ko-KR', {
           timeZone: 'Asia/Seoul',
         }),
       },
@@ -141,10 +227,41 @@ router.put('/:id/delete', async (req, res) => {
   }
 });
 
-// UPDATE Votes
+// UPDATE ETC
+
+// Comment
+router.put('/:id/comment', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const question = await Question.findById(questionId);
+    const userId = req.body.userId;
+    const user = await User.findById(userId);
+
+    if (!question) {
+      res.status(404).json('Question not found!');
+    }
+    if (!user) {
+      res.status(404).json('User not found!');
+    }
+
+    const newComment = new Comment({
+      questionId: questionId,
+      content: req.body.content,
+      userId: userId,
+    });
+    const savedComment = await newComment.save();
+    question.comments += 1;
+    await question.save();
+    res.status(200).json(savedComment);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Votes
 router.put('/:id/vote', async (req, res) => {
   const questionId = req.params.id;
-  const author = req.body.author;
+  const userId = req.body.userId;
   try {
     const question = await Question.findById(questionId);
 
@@ -153,13 +270,13 @@ router.put('/:id/vote', async (req, res) => {
     }
     const existingVote = await Vote.findOne({
       questionId,
-      username: author,
+      userId: userId,
     });
 
     if (!existingVote) {
       await Vote.create({
         questionId,
-        username: author,
+        userId: userId,
       });
       question.votes += 1;
     } else {
@@ -173,21 +290,53 @@ router.put('/:id/vote', async (req, res) => {
   }
 });
 
-// bookmark 추가
+// Bookmark
 // login 구현 후에 userId 수정 예정
-router.post('/:id/bookmark', async (req, res) => {
+router.put('/:id/bookmark', async (req, res) => {
+  const questionId = req.params.id;
+  const userId = req.body.userId;
+
+  try {
+    const question = await Question.findById(questionId);
+
+    if (!question) {
+      res.status(404).json('Question not found!');
+    }
+    const existingBookmark = await Bookmark.findOne({
+      questionId,
+      userId,
+    });
+
+    if (!existingBookmark) {
+      await Bookmark.create({
+        questionId,
+        userId,
+      });
+      question.saves += 1;
+    } else {
+      await Bookmark.deleteOne({ _id: existingBookmark._id });
+      question.saves -= 1;
+    }
+    await question.save();
+    res.status(200).json('Question has been bookmarked');
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Views
+router.put('/:id/view', async (req, res) => {
   const questionId = req.params.id;
 
   try {
     const question = await Question.findById(questionId);
 
-    if (question) {
-      question.saves++;
-      await question.save();
-    } else {
+    if (!question) {
       res.status(404).json('Question not found!');
     }
-    res.status(200).json('Question has been bookmarked');
+    question.views += 1;
+    await question.save();
+    res.status(200).json('Question has been viewed');
   } catch (err) {
     res.status(500).json(err);
   }

@@ -9,8 +9,8 @@ export const LButton = styled.div`
 
 export const Button1 = styled.button<{ $result?: string }>`
   display: flex;
-  width: 80px;
-  height: 39px;
+  width: 74px;
+  height: 33px;
   border: 1px solid #e2e8f0;
   border-radius: 10px 0 0 10px;
   background-color: ${(props) =>
@@ -18,13 +18,13 @@ export const Button1 = styled.button<{ $result?: string }>`
   color: #0f172a;
   font-size: 15px;
   padding: 7px 0;
-  font-weight: 400;
+  align-items: center;
   justify-content: center;
 `;
 export const Button2 = styled.button<{ $result?: string }>`
   display: flex;
-  width: 80px;
-  height: 39px;
+  width: 74px;
+  height: 33px;
   border: 1px solid #e2e8f0;
   padding: 7px 0;
   border-radius: 0 10px 10px 0;
@@ -32,13 +32,13 @@ export const Button2 = styled.button<{ $result?: string }>`
     props.$result === "answers" ? "#F1F5F9" : "#FFFFFF"};
   color: #0f172a;
   font-size: 15px;
-  font-weight: 400;
+  align-items: center;
   justify-content: center;
 `;
 
 export const ReplyTable = styled(Table)`
   td {
-    height: 110px;
+    min-height: 121px;
   }
 `;
 
@@ -46,41 +46,57 @@ export const TableCell = styled.td`
   flex: 1;
   display: flex;
   width: 683px;
-  flex-direction: column;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  flex-direction: row;
 `;
 
 export const Upper = styled.div`
   display: flex;
   flex-direction: row;
-`;
-
-export const Heart_FillIcon = styled(HeartFillIcon)`
-  width: 100%;
-  height: 35px;
-  border: none;
-`;
+  `;
 
 export const Icon = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 35px;
+  margin-left: 45px;
+`;
+
+export const Heart_FillIcon = styled(HeartFillIcon)`
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-top: 21px;
+`;
+
+export const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+  width: 100%;
 `;
 
 export const Text = styled.div`
-  border: none;
+  width: 15px;
+  height: 12px;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   color: #64748b;
   text-align: center;
-  font-size: 15px;
+  font-size: 9px;
   font-weight: 400;
+  margin-top: 0px;
 `;
 
 export const Title = styled.div`
   display: flex;
-  margin: 15px 0 0 22px;
+  margin-top: 24px;
+  width: 556px;
+  height: 54px;
+  // border: 1px solid black;
+  overflow: hidden;
+  text-overflow: ellipsis;
   &:hover {
     cursor: pointer;
     text-decoration: underline;
@@ -90,8 +106,15 @@ export const Title = styled.div`
 export const Addition = styled.div`
   display: flex;
   justify-content: flex-end;
+  // border: 1px solid black;
   flex: 1;
   flex-direction: row;
+`;
+
+export const AuthorInfo = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 33px;
 `;
 
 export const Author = styled.div`
@@ -110,4 +133,5 @@ export const Date = styled.div`
 export const Comment = styled.div`
   display: flex;
   margin-top: 7px;
+  border: 1px solid black;
 `;

@@ -1,5 +1,5 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const ListContainer = styled.div`
-  margin-right: 240px;
+  /* margin-right: 40px; */
 `;
