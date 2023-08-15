@@ -149,3 +149,8 @@ export const InfoContainer = styled.div`
   min-width: 160px;
   justify-self: flex-end;
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
