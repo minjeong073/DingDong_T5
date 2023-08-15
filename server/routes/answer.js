@@ -59,6 +59,49 @@ router.get('/all/:questionId', async (req, res) => {
   }
 });
 
+// GET ALL ANSWERS WITH PAGINATION - VOTES
+router.get('/all', async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Get page number from query parameter
+  const pageSize = 10; // Number of items to display per page
+  const startIndex = (page - 1) * pageSize;
+
+  try {
+    const totalAnswers = await Answer.countDocuments({});
+    const totalPages = Math.ceil(totalAnswers / pageSize);
+
+    const answers = await Answer.find({}).sort({ votes: -1 }).skip(startIndex).limit(pageSize).exec();
+
+    const updatedAnswers = await Promise.all(
+      answers.map(async answer => {
+        const user = await User.findById(answer.userId);
+        const author = user ? user.username : 'unknown';
+
+        return {
+          ...answer._doc,
+          author,
+          createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(answer.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+      }),
+    );
+
+    const hasNextPage = page < totalPages;
+    const nextPage = hasNextPage ? page + 1 : null;
+    const nextPageUrl = nextPage ? `/all?page=${nextPage}` : null;
+
+    res.status(200).json({
+      answers: updatedAnswers,
+      nextPageUrl,
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // GET
 router.get('/:id', async (req, res) => {
   try {

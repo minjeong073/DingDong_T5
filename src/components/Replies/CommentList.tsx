@@ -5,7 +5,24 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionListState } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import { TableRow, Tbody, HashTagWrapper, HashTag } from '../List/ArticlesTable/styled';
-import { LButton, Button1, Button2, ReplyTable, Upper, Heart_FillIcon, Icon, Content, Text, Title, Addition, AuthorInfo, Author, Date, Comment, TableCell } from './styled';
+import {
+  LButton,
+  Button1,
+  Button2,
+  ReplyTable,
+  Upper,
+  Heart_FillIcon,
+  Icon,
+  Content,
+  Text,
+  Title,
+  Addition,
+  AuthorInfo,
+  Author,
+  Date,
+  Comment,
+  TableCell,
+} from './styled';
 import { useNavigate } from 'react-router-dom';
 import dummy from '../../db/comment.json';
 import WhiteLogo from '../../assets/icon/white_logo.svg';
@@ -13,34 +30,13 @@ import { Holder, Img, Span } from '../List/ArticleList/styled';
 import { Button } from '../Button';
 
 export const CommentList = () => {
-  // const [QuestionData, setQuestionData] =
-  // useRecoilState<QuestionDataType[]>(QuestionListState);
-
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await axios.get("/api/articles");
-  //     setQuestionData(response.data);
-  //     let mutableData = [...response.data].reverse();
-  //     response.data = mutableData;
-  //     setQuestionData(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("게시판 정보 가져오기 실패!");
-  //   }
-  // };
-
-  // //데이터 가져오기
-  // useEffect(() => {
-  //   fetchData();
-  // }, [setQuestionData]);
-
-  const [result, setResult] = useState('comment');
+  const [result, setResult] = useState('answers');
 
   const ButtonClick = (buttonNumber: number) => {
     if (buttonNumber === 1) {
-      setResult('comment');
-    } else if (buttonNumber === 2) {
       setResult('answers');
+    } else if (buttonNumber === 2) {
+      setResult('comment');
     }
   };
   const navigate = useNavigate();
@@ -56,13 +52,13 @@ export const CommentList = () => {
       <Holder>
         <LButton>
           <Button1 onClick={() => ButtonClick(1)} $result={result}>
-            댓글
+            답변
           </Button1>
           <Button2 onClick={() => ButtonClick(2)} $result={result}>
-            답변글
+            댓글
           </Button2>
         </LButton>
-        <Button width="123px" margin="0 0 10px 0" onClick={onClickWrite}>
+        <Button width="123px" bottom="10px" onClick={onClickWrite}>
           <Img src={WhiteLogo} />
           <Span>질문하기</Span>
         </Button>
@@ -92,7 +88,6 @@ export const CommentList = () => {
                       <Author>{item.author}</Author>
                       <Date>{item.createdAt}</Date>
                     </AuthorInfo>
-
                   </Addition>
                 </Content>
               </TableCell>

@@ -1,10 +1,11 @@
-import styled from "styled-components";
-import { Table } from "../List/ArticlesTable/styled";
-import { HeartFillIcon } from "../Detail/QuestionForm/styled";
+import styled from 'styled-components';
+import { Table } from '../List/ArticlesTable/styled';
+import { HeartFillIcon } from '../Detail/QuestionForm/styled';
 
 export const LButton = styled.div`
   display: flex;
   flex-direction: row;
+  margin-left: 10px;
 `;
 
 export const Button1 = styled.button<{ $result?: string }>`
@@ -13,8 +14,7 @@ export const Button1 = styled.button<{ $result?: string }>`
   height: 33px;
   border: 1px solid #e2e8f0;
   border-radius: 10px 0 0 10px;
-  background-color: ${(props) =>
-    props.$result === "comment" ? "#F1F5F9" : "#FFFFFF"};
+  background-color: ${props => (props.$result === 'answers' ? '#F1F5F9' : '#FFFFFF')};
   color: #0f172a;
   font-size: 15px;
   padding: 7px 0;
@@ -28,8 +28,7 @@ export const Button2 = styled.button<{ $result?: string }>`
   border: 1px solid #e2e8f0;
   padding: 7px 0;
   border-radius: 0 10px 10px 0;
-  background-color: ${(props) =>
-    props.$result === "answers" ? "#F1F5F9" : "#FFFFFF"};
+  background-color: ${props => (props.$result === 'comment' ? '#F1F5F9' : '#FFFFFF')};
   color: #0f172a;
   font-size: 15px;
   align-items: center;
@@ -46,13 +45,14 @@ export const TableCell = styled.td`
   flex: 1;
   display: flex;
   width: 683px;
+  padding: 24px 0;
   flex-direction: row;
 `;
 
 export const Upper = styled.div`
   display: flex;
   flex-direction: row;
-  `;
+`;
 
 export const Icon = styled.div`
   display: flex;
@@ -66,7 +66,7 @@ export const Heart_FillIcon = styled(HeartFillIcon)`
   width: 22px;
   height: 22px;
   flex-shrink: 0;
-  margin-top: 21px;
+  /* margin-top: 21px; */
 `;
 
 export const Content = styled.div`
@@ -91,9 +91,9 @@ export const Text = styled.div`
 
 export const Title = styled.div`
   display: flex;
-  margin-top: 24px;
+  /* margin-top: 24px; */
   width: 556px;
-  height: 54px;
+  min-height: 54px;
   // border: 1px solid black;
   overflow: hidden;
   text-overflow: ellipsis;
