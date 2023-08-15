@@ -25,7 +25,7 @@ root.render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/signin" element={<Login/>}/>
+          <Route path="/signin" element={<Login />} />
           <Route path="/articles" element={<Layout />}>
             <Route index element={<List />} />
             <Route path="/articles/:_id" element={<Detail />} />
@@ -35,6 +35,7 @@ root.render(
           <Route path="/replies" element={<Layout />}>
             <Route index element={<Replies />} />
           </Route>
+          <Route path="/mypage" element={<Layout />}></Route>
         </Routes>
       </BrowserRouter>
     </RecoilRoot>
