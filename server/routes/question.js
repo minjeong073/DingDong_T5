@@ -39,7 +39,21 @@ router.get('/', async (req, res) => {
       };
     });
 
-    res.status(200).json({ updatedQuestions, totalQuestions });
+    //extract hashtags list in one page
+    const hashtagsList = questions.flatMap(question => question.hashtags);
+
+    res.status(200).json({ updatedQuestions, totalQuestions, hashtags: hashtagsList });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//hashtags
+router.get('/allhashtags', async (req, res) => {
+  try {
+    const allQuestions = await Question.find({ isDeleted: false });
+    const allHashtags = allQuestions.flatMap(question => question.hashtags);
+    res.status(200).json({ hashtags: allHashtags });
   } catch (err) {
     res.status(500).json(err);
   }
