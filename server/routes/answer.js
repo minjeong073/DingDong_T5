@@ -76,9 +76,13 @@ router.get('/all', async (req, res) => {
         const user = await User.findById(answer.userId);
         const author = user ? user.username : 'unknown';
 
+        const question = await Question.findById(answer.questionId);
+        const questionHashtags = question ? question.hashtags : [];
+
         return {
           ...answer._doc,
           author,
+          questionHashtags, // question의 hashtags를 반환합니다.
           createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
           }),
@@ -91,7 +95,7 @@ router.get('/all', async (req, res) => {
 
     const hasNextPage = page < totalPages;
     const nextPage = hasNextPage ? page + 1 : null;
-    const nextPageUrl = nextPage ? `/all?page=${nextPage}` : null;
+    const nextPageUrl = nextPage ? `http://localhost:5001/api/answer/all?page=${nextPage}` : null;
 
     res.status(200).json({
       answers: updatedAnswers,
