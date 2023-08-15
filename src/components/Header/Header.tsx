@@ -19,7 +19,7 @@ export const Header = () => {
 
   return (
     <Root>
-      <LogoSection>
+      <LogoSection onClick={()=>navigate('/')}>
         <LogoImg />
         <LogoTypo>DINGDONG</LogoTypo>
       </LogoSection>
