@@ -53,7 +53,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   // State to keep track of the new answer being created
   const [newAnswer, setNewAnswer] = useState({
     content: '',
-    userId: '64d24cb479cd50b639db526a',
+    userId: '64d24cb479cd50b639db526a', // user6
     author: 'unknown',
   });
   // State to keep track of the answer being edited
@@ -102,6 +102,15 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           });
         return;
       }
+      // question의 작성자와 answer의 작성자가 같으면 작성 불가
+      // TODO : 로그인 구현시, WriteAnswerForm을 없애는 식으로 구현 예정
+      const currentQuestion = await axios.get(`/api/articles/${_id}`);
+      if (currentQuestion.data.userId === newAnswer.userId) {
+        alert('질문자는 답변할 수 없습니다.');
+        setContents('');
+        return;
+      }
+
       // If editingAnswerId is null, it means we are creating a new answer
       await axios.post(`/api/answer/${_id}`, newAnswer).then(res => {
         // setAnswerData((prevAnswerData: AnswerDataType[]) => [...prevAnswerData, res.data]);

@@ -12,7 +12,6 @@ import {
   QuestionTypo,
 } from './styled';
 import axios from 'axios';
-import e from 'express';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { QuestionData } from '../../stores/page-store';
@@ -28,7 +27,7 @@ export const WriteQuestion = () => {
   const [newArticle, setNewArticle] = useState({
     title: '',
     content: '',
-    userId: '64d24cb479cd50b639db526a',
+    userId: '64d24cb479cd50b639db526a', //user6
     hashtags: selected,
     isDeleted: false,
   });
