@@ -133,7 +133,7 @@ export const Date = styled.div`
   min-width: 141px;
   color: #64748b;
   align-items: center;
-  margin: 0 45px 0 20px;
+  margin: 0 45px 0 15px;
   font-size: 13px;
 `;
 
