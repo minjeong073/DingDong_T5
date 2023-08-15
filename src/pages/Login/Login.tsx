@@ -13,7 +13,7 @@ import{
 import { LoginState } from "../../stores/login-store";
 import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUserActions } from "../../api/userAPI";
 import axios from "axios";
 import { response } from "express";
@@ -47,6 +47,7 @@ export const Login = () => {
   //   });
   // }, []);
 
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userInfo, setUserInfo] = useState({
@@ -54,16 +55,49 @@ export const Login = () => {
     password: '',
   });
 
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post(`/api/auth/signin`, { email, password });
-      const user = response.data;
-      // 로그인 성공 후 처리
-      console.log('Logged in:', user);
-    } catch (error) {
-      // 로그인 실패 시 처리
-      console.error('Login error:', error);
-    }
+  // const handleLogin = async (userInfo : string[]) => {
+  //   // e.preventDefault();
+
+  //   try {
+  //     const response = await axios
+  //       .post(`/api/auth/signin`, 
+  //         userInfo, 
+  //         {withCredentials: true,}
+  //       )
+  //     const user = response.data;
+  //     // 로그인 성공 후 처리
+  //     if(response.data){
+  //       console.log('Logged in:', user);
+  //       navigate('/');
+  //     }else{
+  //       console.log('Login failed');
+  //     }
+  //   } catch (error) {
+  //     // 로그인 실패 시 처리
+  //     console.error('Login error:', error);
+  //   }
+  // };
+
+  console.log(userInfo);
+
+  const handleLogin = async (userInfo:any) => {
+    // e.preventDefault();
+
+    return await axios
+      .post(`/api/auth/signin`, 
+          userInfo, 
+          {withCredentials: true}
+        )
+      .then((response) => {
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${response.data.access_token}`;
+        return response.data;
+      })
+      .catch((e) => {
+        console.log(e.response.data);
+        return "이메일 혹은 비밀번호를 확인해주세요"
+      })   
   };
 
   useEffect(() => {
@@ -82,10 +116,10 @@ export const Login = () => {
             <LogoTypo>DINGDONG</LogoTypo>
           </LogoSection>
         </Link>
-        <IDbox placeholder="아이디" value={email} onChange={(e :any)=>setEmail(e.target.value)} />
-        <PWbox placeholder="비밀번호" value={password} onChange={(e:any) => setPassword(e.target.value)}/>
+        <IDbox placeholder="아이디" value={email} type="text" onChange={(e:React.ChangeEvent<HTMLInputElement>)=>setEmail(e.target.value)} />
+        <PWbox placeholder="비밀번호" value={password} type="password" onChange={(e:React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}/>
         <ActionContainer>
-          <Button1 width="144px" height="52px" onClick={handleLogin}>
+          <Button1 width="144px" height="52px" type="submit" onClick={handleLogin}>
             로그인
           </Button1>
           <Button2 width="144px" height="52px">
