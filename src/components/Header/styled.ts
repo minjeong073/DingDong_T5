@@ -129,7 +129,19 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const SearchInput = styled.input``;
+export const SearchInput = styled.input`
+  width: 661px;
+  height: 48px;
+  padding-left: 60px;
+  /* border: 0.2px solid #e2e8f0; */
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0px 0px 8px 0px #e2e8f0;
+  background-image: url(${SearchIcon});
+  background-repeat: no-repeat;
+  background-position: 20px 50%;
+  font-size: 16px;
+`;
 
 export const DataResult = styled.div`
   width: 661px;
