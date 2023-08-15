@@ -1,7 +1,15 @@
 const mongoose = require('mongoose');
 
-const QuestionSchema = new mongoose.Schema(
+// Question[id, title, content, votes, answers, views, saves, comments,
+// userId(author), hashtags], User 저장
+
+const CopyQuestionSchema = new mongoose.Schema(
   {
+    questionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Question',
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -32,7 +40,7 @@ const QuestionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    userId: {
+    authorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
@@ -45,20 +53,12 @@ const QuestionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    hardDeleteAt: {
-      type: Date,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
   },
   { timestamps: true },
 );
 
-// 현재 UTC 시간을 기준으로 한국 시간으로 변환
-QuestionSchema.pre('save', function (next) {
-  const seoulTime = new Date(this.createdAt).toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-  });
-  this.createdAt = new Date(seoulTime);
-  next();
-});
-
-module.exports = mongoose.model('Question', QuestionSchema);
+module.exports = mongoose.model('CopyQuestion', CopyQuestionSchema);

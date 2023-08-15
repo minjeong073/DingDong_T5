@@ -3,6 +3,7 @@ const Question = require('../models/Question');
 const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Comment = require('../models/Comment');
+const Bookmark = require('../models/Bookmark');
 
 // TODO : 로그인한 유저만 질문을 작성할 수 있도록
 //        create, update, delete 미들웨어 추가
@@ -197,6 +198,9 @@ router.put('/:id/delete', async (req, res) => {
         updatedAt: new Date().toLocaleString('ko-KR', {
           timeZone: 'Asia/Seoul',
         }),
+        hardDeletedAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
       },
       { new: true },
     );
@@ -275,6 +279,7 @@ router.put('/:id/vote', async (req, res) => {
 // login 구현 후에 userId 수정 예정
 router.put('/:id/bookmark', async (req, res) => {
   const questionId = req.params.id;
+  const userId = req.body.userId;
 
   try {
     const question = await Question.findById(questionId);
@@ -282,7 +287,21 @@ router.put('/:id/bookmark', async (req, res) => {
     if (!question) {
       res.status(404).json('Question not found!');
     }
-    question.saves += 1;
+    const existingBookmark = await Bookmark.findOne({
+      questionId,
+      userId,
+    });
+
+    if (!existingBookmark) {
+      await Bookmark.create({
+        questionId,
+        userId,
+      });
+      question.saves += 1;
+    } else {
+      await Bookmark.deleteOne({ _id: existingBookmark._id });
+      question.saves -= 1;
+    }
     await question.save();
     res.status(200).json('Question has been bookmarked');
   } catch (err) {
