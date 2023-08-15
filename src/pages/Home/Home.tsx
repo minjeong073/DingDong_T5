@@ -7,7 +7,6 @@ import {
   Div,
   Login,
   SignUp,
-  SearchBar,
   Container,
   Button1,
   Button2,
@@ -20,14 +19,15 @@ import {
   TopItems,
   ButtonBar,
   HashBody,
-  ItemWrapper
 } from "./styled";
+import { SearchBar } from "components/Header";
 import { RealCarousel } from "../../components/HashtagBar/";
 import { Link } from 'react-router-dom';
-import dummy from "../../db/articles.json";
+import React, {useState, useEffect} from 'react';
+import Articles from "../../db/articles.json";
 
 export const Home = () => {
-  const HashtagArr = dummy.articles.map(item => item.hashtag);
+  const HashtagArr = Articles.map(item => item.hashtags);
   const oneHashtag = HashtagArr.flat();
   const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
   const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => (
@@ -35,8 +35,18 @@ export const Home = () => {
       {onlyHashtag[index]}
     </div>
   ));
-  // console.log(carouselItems);
 
+  // console.log(carouselItems);
+  // const [fetchSearch, setSearch] = useState('');
+  // const [page, setPage] = useState(1);
+  // const [sortType, setSortType] = useState('Popular');
+
+  // const handleChange = (e: any) => {
+  //   e.preventDefault();
+  //   setSearch(e.target.value);
+  //   setPage(1)
+  // };
+  
   return (
     <Root>
       <Header>
@@ -54,7 +64,10 @@ export const Home = () => {
         </Div>
       </Header>
       <Container>
-        <SearchBar placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" />
+        <SearchBar
+          placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" 
+          data={Articles}
+        /> 
         <ButtonBar>
           <Link to={'/articles/write'}>
             <Button1> 질문하기</Button1>
