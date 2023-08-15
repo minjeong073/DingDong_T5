@@ -5,14 +5,20 @@ export const Layout = () => {
   const location = useLocation(); // 현재 URL 정보를 가져옴
 
   // 푸터가 나타날 URL 조건 설정
+  // /articles나 /mypage를 포함할 때만 푸터가 나타남
   const showFooter = location.pathname.includes('/articles') || location.pathname.includes('/mypage');
+
+  // 해시태그 네비게이션 바가 나타날 URL 조건 설정
+  // /articles나 /replies 일 때만 해시태그 네비게이션 바가 나타남
+  const showHashTagNav = location.pathname === '/articles' || location.pathname === '/replies';
+
   return (
     <Root>
       <Header />
       <Container>
         <LeftWrapper>
           <Nav />
-          <HashTagNav />
+          {showHashTagNav && <HashTagNav />}
         </LeftWrapper>
         <Main>
           <Outlet />
