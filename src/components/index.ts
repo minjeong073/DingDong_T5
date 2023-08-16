@@ -6,6 +6,6 @@ export { Articles } from './List';
 export { Nav } from './Nav';
 export { Footer } from './Footer';
 export { ArticlesTable } from './List';
-export { CommentList } from './Replies';
+export { RepliesList } from './Replies';
 export { RightWrapper } from './RightWrapper';
 export { Button } from './Button';

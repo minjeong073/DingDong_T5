@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const cors = require('cors'); // cors 미들웨어를 추가합니다.
 
 const port = process.env.PORT || 5001;
 
@@ -18,6 +19,13 @@ const setupScheduledJob = require('./utils/setupScheduledJob');
 dotenv.config();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+
+// cors 미들웨어를 사용하여 CORS 허용 설정을 추가합니다.
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // 허용할 origin을 설정하세요.
+  }),
+);
 
 mongoose
   .connect(process.env.MONGO_URL, {

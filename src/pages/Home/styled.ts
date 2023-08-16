@@ -203,9 +203,15 @@ export const TopItem = styled.li`
     content: '•';
     display: inline-block;
     margin-right: 5px;
+    color: #475569;
   }
   &:hover {
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    color: #7c3aed;
+  }
+  * {
+    all: unset;
+    display: inline-block;
   }
 `;
 
