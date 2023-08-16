@@ -53,7 +53,7 @@ export const HashTagNav = () => {
 
   const handleClick = (index: number) => {
     const newClickedHashtags = [...clickedHashtags];
-    // newClickedHashtags.fill(false);
+    newClickedHashtags.fill(false);
     newClickedHashtags[index] = !newClickedHashtags[index];
     setClickedHashtags(newClickedHashtags);
   };

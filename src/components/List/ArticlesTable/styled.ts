@@ -101,7 +101,7 @@ export const Addition = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  margin: 45px 0 25px 0;
+  margin: 53px 0 10px 0;
 `;
 
 export const HashTagWrapper = styled.div``;
@@ -133,7 +133,7 @@ export const Date = styled.div`
   min-width: 141px;
   color: #64748b;
   align-items: center;
-  margin: 0 45px 0 20px;
+  margin: 0 45px 0 15px;
   font-size: 13px;
 `;
 

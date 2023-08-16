@@ -56,7 +56,7 @@ export const Articles = () => {
             관심순
           </VoteOrder>
         </OrderContainer>
-        <Button width="123px" bottom="10px" onClick={onClickWrite}>
+        <Button width="123px" bottom="10px" right="10px" onClick={onClickWrite}>
           <Img src={WhiteLogo} />
           <Span>질문하기</Span>
         </Button>

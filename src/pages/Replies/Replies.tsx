@@ -1,10 +1,10 @@
-import { CommentList } from '../../components';
+import { RepliesList } from '../../components';
 import { RepliesContainer } from './styled';
 
 export const Replies = () => {
   return (
     <RepliesContainer>
-      <CommentList />
+      <RepliesList />
     </RepliesContainer>
   );
 };
