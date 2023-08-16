@@ -7,6 +7,7 @@ import unfold from '../../assets/icon/unfold.svg';
 import fold from '../../assets/icon/fold.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { encode } from 'punycode';
 
 export const HashTagNav = () => {
   const [page, setPage] = useState(1);

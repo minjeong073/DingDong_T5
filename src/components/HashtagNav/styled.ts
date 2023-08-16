@@ -37,7 +37,8 @@ export const Tr = styled.div`
   justify-content: flex-end;
 `;
 
-export const Td = styled.div``;
+export const Td = styled.div`
+`;
 
 export const Special = styled.button`
   margin-left: 10px;

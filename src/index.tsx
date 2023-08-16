@@ -5,6 +5,8 @@ import GlobalStyle from './GlobalStyle';
 import { Layout } from './routes/Layout';
 import { WriteQuestion } from './pages/WriteQuestion';
 import { List } from './pages/List/List';
+import { SearchPage } from './pages/List';
+import { SearchTagPage } from './pages/List';
 import { Home } from './pages/Home/Home';
 import { RecoilRoot } from 'recoil';
 import { Detail } from './pages/Detail';
@@ -40,6 +42,10 @@ root.render(
             <Route path="/replies" element={<Layout />}>
               <Route index element={<Replies />} />
             </Route>
+            <Route path="/search" element={<Layout/>}>
+              <Route index element={<SearchPage/>} />
+              <Route index element={<SearchTagPage/>} />
+            </Route> 
             <Route path="/mypage" element={<Layout />}></Route>
           </Routes>
         </BrowserRouter>
