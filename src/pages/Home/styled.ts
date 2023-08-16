@@ -242,7 +242,7 @@ export const HashBody = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-top: 60px;
+  /* margin-top: 60px; */
   // border: 1px solid black;
-  height: 100px;
+  height: 60px;
 `;
