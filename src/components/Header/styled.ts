@@ -108,6 +108,7 @@ export const Wrapper = styled.div<IWrapper>`
   background: #fff;
   box-shadow: 0px 0px ${props => (props.$ishome ? '30px' : '8px')} 0px
     ${props => (props.$ishome ? 'rgba(100, 116, 139, 0.18)' : 'rgba(100, 116, 139, 0.3)')};
+
   .SearchInput {
     width: 100%;
     height: 100%;
