@@ -60,7 +60,7 @@ export const HashTagNav = () => {
       newClickedHashtags.fill(false);
       newClickedHashtags[index] = true;
       setClickedHashtags(newClickedHashtags);
-      navigate(`/tag`);
+      navigate(`/search?query=${encodeURIComponent(onlyHashtag[index])}`);
     },
     [clickedHashtags, navigate],
   );
