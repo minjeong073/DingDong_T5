@@ -89,42 +89,60 @@ export const SignUpTypo = styled(LoginTypo)`
   margin-left: 0;
 `;
 
-export const Fragment = styled. div`
+export const Fragment = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
 `;
 
-export const Wrapper = styled.div`
+interface IWrapper {
+  $ishome?: boolean;
+}
+
+export const Wrapper = styled.div<IWrapper>`
   display: flex;
   flex-direction: row;
-  width: 661px;
-  height: 48px;
-  border-radius: 20px;
+  width: ${props => (props.$ishome ? '686px' : '611px')};
+  height: ${props => (props.$ishome ? '68px' : '48px')};
+  border-radius: ${props => (props.$ishome ? '50px' : '20px')};
   background: #fff;
   box-shadow: 0px 0px 8px 0px #e2e8f0;
 
-  .SearchInput{ 
-    width: 611px;
+  .SearchInput {
+    width: 100%;
     height: 100%;
-    border-radius: 20px 0 0 20px;
+    border-radius: inherit;
     background-image: url(${SearchIcon});
+    background-size: ${props => (props.$ishome ? '23px' : '18px')};
     background-repeat: no-repeat;
-    background-position: 20px 50%;
-    padding-left: 60px;
-    font-size: 16px;
+    background-position: ${props => (props.$ishome ? '30px 50%' : '18px 50%')};
+    padding-left: ${props => (props.$ishome ? '75px' : '60px')};
+    padding-right: ${props => (props.$ishome ? '25px' : '0')};
+    font-size: ${props => (props.$ishome ? '18px' : '16px')};
+    ${props =>
+      props.$ishome &&
+      `
+  &::placeholder {
+    color: #94a3b8;
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+  }
+`}
   }
 
-  .Div{
+  .Div {
     width: 50px;
-    background-color: white;
-    border-radius:  0 20px 20px 0;
+    background-color: transparent;
     display: grid;
     place-items: center;
 
     svg {
       cursor: pointer;
       font-size: 16px;
+      margin-right: 10px;
     }
   }
 `;
@@ -178,4 +196,4 @@ export const DataResult = styled.div`
       cursor: pointer;
     }
   }
-`
+`;

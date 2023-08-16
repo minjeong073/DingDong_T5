@@ -1,20 +1,31 @@
-import styled from "styled-components";
-
-export const HashBody = styled.div`
-  display: fixed;
-  width: 690px;
-  margin-top: 60px;
-  overflow: hidden;
-  // border: 1px solid black;
-`;
+import styled from 'styled-components';
 
 export const Div = styled.div`
   display: flex;
   position: relative;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 800px;
   height: 100%;
+  .carousel.carousel-slider {
+    width: 850px !important;
+  }
+  .slide {
+    min-width: auto !important;
+    margin: 0 1px !important;
+  }
+  .slider-wrapper {
+    width: 750px !important;
+  }
+  /* .container-with-dots {
+    width: 100% !important;
+  }
+  .react-multi-carousel-item {
+    margin: 0 1px !important;
+    /* width: 150px !important; 
+  } */
+  .react-multi-carousel-track {
+  }
 `;
 
 export const Tr = styled.div`
@@ -28,31 +39,32 @@ export const Tr = styled.div`
 `;
 
 export const HashTag = styled.button`
-  height: 60px;
-  width: 100%;
+  height: 40px;
   margin: 0 5px;
   padding: 5px 12px;
   white-space: nowrap;
   background-color: #f1f5f9;
   color: #64748b;
   border: 1px solid #f1f5f9;
-  border-radius: 20px;
+  border-radius: 50px;
   // text-align: center;
   font-size: 17px;
   font-weight: 400;
   &:hover {
-    background-color: #C8BBF5;
+    background-color: #a78bfa;
     color: #fff;
     cursor: pointer;
+  }
+  &:active {
+    background-color: #7c3aed;
   }
 `;
 
 export const DotBox = styled.ul`
-  display: flex
+  display: flex;
   flex-direction: row;
   position: absolute;
   justify-content: center;
-  
   border: 1px solid black;
   width: 100%;
   height: 100%;
@@ -64,7 +76,7 @@ export const Li = styled.li`
   // display: flex-end;
   // z-index: 2;
   border-radius: 50%;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 `;
