@@ -60,6 +60,10 @@ export const WriteQuestion = () => {
       });
     } catch (error) {
       console.error(error);
+      if (error.response.status === 413) {
+        alert('용량이 너무 큽니다.');
+        return;
+      }
       alert('질문 등록 실패!');
     }
   };
