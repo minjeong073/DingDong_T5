@@ -168,7 +168,8 @@ export const DataResult = styled.div`
     width: 100%;
     height: 50px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    // align-items: center;
     color: black;
     text-decoration: none;
     padding-left: 10px;
@@ -176,6 +177,12 @@ export const DataResult = styled.div`
     &:hover {
       background-color: lightgrey;
       cursor: pointer;
+    }
+    .title{
+      font-weight: 600;
+    }
+    .content{
+      font-size: 13px;
     }
   }
 `
