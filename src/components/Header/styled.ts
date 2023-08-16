@@ -163,7 +163,7 @@ export const SearchInput = styled.input`
 `;
 
 export const DataResult = styled.div`
-  width: 661px;
+  width: 100%;
   height: 200px;
   background-color: white;
   border-radius: 0 0 20px 20px;
