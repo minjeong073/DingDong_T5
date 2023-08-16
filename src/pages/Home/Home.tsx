@@ -28,7 +28,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Articles from '../../db/articles.json';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { QuestionDataType } from 'stores/page-store';
+import { QuestionData, QuestionDataType } from 'stores/page-store';
 import DOMPurify from 'dompurify';
 
 interface AnswerDataType {
@@ -44,6 +44,7 @@ interface AnswerDataType {
 }
 
 export const Home = () => {
+  const [allArticle, setAllArticle] = useState<QuestionDataType[]>([]);
   const [topQuestion, setTopQuestion] = useState<QuestionDataType[]>([]);
   const [topAnswer, setTopAnswer] = useState<AnswerDataType[]>([]);
   const HashtagArr = Articles.map(item => item.hashtags);
@@ -53,6 +54,12 @@ export const Home = () => {
   // console.log(carouselItems);
 
   const navigate = useNavigate();
+
+  const getAllArticles = async() => {
+    const response = await axios.get(`/api/articles/all`);
+    const articleData = response.data;
+    setAllArticle(articleData);
+  }
 
   const getTopQuestion = async () => {
     const response = await axios.get('/api/articles/interest');
@@ -83,6 +90,7 @@ export const Home = () => {
   useEffect(() => {
     getTopQuestion();
     getTopAnswer();
+    getAllArticles();
   }, []);
 
   return (
@@ -102,7 +110,7 @@ export const Home = () => {
         </Div>
       </Header>
       <Container>
-        <SearchBar placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" data={Articles} />
+        <SearchBar placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" data={allArticle} />
         <ButtonBar>
           <Link to={'/articles/write'}>
             <Button1> 질문하기</Button1>

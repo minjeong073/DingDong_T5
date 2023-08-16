@@ -2,6 +2,7 @@ import React ,{ useState, useRef } from 'react';
 import { MdClose } from 'react-icons/md';
 import { Fragment, DataResult, Wrapper } from "./styled";
 import type { QuestionDataType } from '../../stores/page-store';
+import { useNavigate } from 'react-router-dom';
 //autocomplete 
 
 interface SearchProps{
@@ -15,6 +16,8 @@ const SearchBar: React.FC<SearchProps> = ({
 }): JSX.Element => {
   const [filteredData, setFilteredData] = useState<QuestionDataType[]>([]);
   const [wordEntered, setWordEntered] = useState<string>("");
+
+  const navigate = useNavigate();
 
   const inputRef: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
   window.addEventListener("load", () => inputRef.current?.focus());
@@ -57,12 +60,13 @@ const SearchBar: React.FC<SearchProps> = ({
       </Wrapper>
       {filteredData.length !==0 && (
         <DataResult>
-          {filteredData.map(({title}, key) => (
+          {filteredData.map(data => (
             <a
-              key={key}
+              onClick={()=>navigate(`/articles/${data._id}`)}
+              key={data?._id}
               target="_blank"
             >
-              {title}
+              {data.title}
             </a>
           ))}
         </DataResult>
