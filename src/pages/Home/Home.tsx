@@ -55,11 +55,11 @@ export const Home = () => {
 
   const navigate = useNavigate();
 
-  const getAllArticles = async() => {
+  const getAllArticles = async () => {
     const response = await axios.get(`/api/articles/all`);
     const articleData = response.data;
     setAllArticle(articleData);
-  }
+  };
 
   const getTopQuestion = async () => {
     const response = await axios.get('/api/articles/interest');
@@ -127,7 +127,7 @@ export const Home = () => {
             <TopItems>
               {topQuestion?.map(question => (
                 <TopItem key={question?._id} onClick={() => navigate(`/articles/${question._id}`)}>
-                  {question?.title}
+                  {question?.title.length > 27 ? question?.title.slice(0, 27) + '...' : question?.title}
                 </TopItem>
               ))}
             </TopItems>
@@ -142,7 +142,7 @@ export const Home = () => {
                   key={answer?._id}
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(
-                      answer.content.length > 30 ? answer.content.slice(0, 30) + '...' : answer.content,
+                      answer.content.length > 27 ? answer.content.slice(0, 27) + '...' : answer.content,
                     ),
                   }}
                   onClick={() => onClickNavigateQuestion(answer)}

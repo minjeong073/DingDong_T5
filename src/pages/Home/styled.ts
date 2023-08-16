@@ -196,7 +196,6 @@ export const TopItem = styled.li`
   line-height: normal;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
   margin: 10px 0px;
   cursor: pointer;
   &:before {
@@ -212,6 +211,11 @@ export const TopItem = styled.li`
   * {
     all: unset;
     display: inline-block;
+    margin-right: 2px;
+    color: inherit !important;
+  }
+  *:hover {
+    color: #7c3aed !important;
   }
 `;
 
