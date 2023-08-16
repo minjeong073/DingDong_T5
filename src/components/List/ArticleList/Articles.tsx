@@ -17,7 +17,7 @@ import { Button } from '../../Button';
 import { useState } from 'react';
 
 export const Articles = () => {
-  const [selected, setSelected] = useState({
+  const [selectedOrder, setSelectedOrder] = useState({
     latest: true,
     view: false,
     vote: false,
@@ -32,13 +32,13 @@ export const Articles = () => {
   const onClickSelected = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
     if (target.innerText === '최신순') {
-      setSelected({ latest: true, view: false, vote: false });
+      setSelectedOrder({ latest: true, view: false, vote: false });
     }
     if (target.innerText === '조회순') {
-      setSelected({ latest: false, view: true, vote: false });
+      setSelectedOrder({ latest: false, view: true, vote: false });
     }
     if (target.innerText === '관심순') {
-      setSelected({ latest: false, view: false, vote: true });
+      setSelectedOrder({ latest: false, view: false, vote: true });
     }
   };
 
@@ -46,13 +46,13 @@ export const Articles = () => {
     <Root>
       <Holder>
         <OrderContainer>
-          <LatestOrder onClick={onClickSelected} selected={selected.latest}>
+          <LatestOrder onClick={onClickSelected} selected={selectedOrder.latest}>
             최신순
           </LatestOrder>
-          <ViewOrder onClick={onClickSelected} selected={selected.view}>
+          <ViewOrder onClick={onClickSelected} selected={selectedOrder.view}>
             조회순
           </ViewOrder>
-          <VoteOrder onClick={onClickSelected} selected={selected.vote}>
+          <VoteOrder onClick={onClickSelected} selected={selectedOrder.vote}>
             관심순
           </VoteOrder>
         </OrderContainer>
@@ -62,7 +62,7 @@ export const Articles = () => {
         </Button>
       </Holder>
       <ArticleContainer>
-        <ArticlesTable />
+        <ArticlesTable selectedOrder={selectedOrder} />
       </ArticleContainer>
     </Root>
   );

@@ -28,13 +28,21 @@ import {
 } from './styled';
 import { Pagination } from '../Pagination';
 
-export const ArticlesTable = () => {
-  const [page, setPage] = useState(1);
-  const [QuestionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
-  const [totalQuestions, setTotalQuestions] = useState(0);
+type Props = {
+  selectedOrder: {
+    latest: boolean;
+    view: boolean;
+    vote: boolean;
+  };
+};
+
+export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
+  const [page, setPage] = useState<number>(1);
+  const [QuestionData, setQuestionData] = useState<QuestionDataType[]>([]);
+  const [totalQuestions, setTotalQuestions] = useState<number>(0);
   const itemsPerPage = 5;
 
-  const fetchData = async (page: number) => {
+  const fetchLatestQuestionData = async (page: number) => {
     try {
       const response = await axios.get(`/api/articles?page=${page}`);
       // setPage(response.data.page);
@@ -48,14 +56,49 @@ export const ArticlesTable = () => {
       alert('게시판 정보 가져오기 실패!');
     }
   };
+
+  const fetchViewQuestionData = async (page: number) => {
+    try {
+      const response = await axios.get(`/api/articles/popular?page=${page}`);
+      setTotalQuestions(response.data.totalQuestions);
+
+      const updatedQuestions = response.data.updatedQuestions;
+      setQuestionData(updatedQuestions);
+    } catch (error) {
+      console.error(error);
+      alert('게시판 정보 가져오기 실패!');
+    }
+  };
+
+  const fetchVoteQuestionData = async (page: number) => {
+    try {
+      const response = await axios.get(`/api/articles/interest?page=${page}`);
+      setTotalQuestions(response.data.totalQuestions);
+
+      const updatedQuestions = response.data.updatedQuestions;
+      setQuestionData(updatedQuestions);
+    } catch (error) {
+      console.error(error);
+      alert('게시판 정보 가져오기 실패!');
+    }
+  };
+
   //데이터 가져오기
   useEffect(() => {
-    fetchData(page);
-  }, [page]);
+    if (selectedOrder.latest) {
+      fetchLatestQuestionData(page);
+    }
+    if (selectedOrder.view) {
+      fetchViewQuestionData(page);
+    }
+    if (selectedOrder.vote) {
+      fetchVoteQuestionData(page);
+    }
+  }, [page, selectedOrder]);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     console.log(QuestionData);
-  }, [QuestionData]);
+  }, [QuestionData]); */
 
   const handlePaginationChange = (e: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -129,7 +172,7 @@ export const ArticlesTable = () => {
       </Table>
       <Pagination
         page={page}
-        itemList={QuestionData}
+        QuestionData={QuestionData}
         totalQuestions={totalQuestions}
         itemsPerPage={itemsPerPage}
         handlePaginationChange={handlePaginationChange}
