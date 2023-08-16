@@ -59,13 +59,41 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 //get All hashtags
 router.get('/allhashtags', async (req, res) => {
   try {
     const allQuestions = await Question.find({ isDeleted: false });
-    const allHashtags = allQuestions.flatMap(question => question.hashtags);
-    res.status(200).json({ hashtags: allHashtags });
+
+    // Create an array of hashtag objects with their creation dates
+    const hashtagObjects = allQuestions.flatMap(question => {
+      return question.hashtags.map(hashtag => {
+        return {
+          hashtag,
+          createdAt: question.createdAt,
+        };
+      });
+    });
+
+    // Count hashtag frequencies
+    const hashtagFrequencies = hashtagObjects.reduce((map, obj) => {
+      map.set(obj.hashtag, (map.get(obj.hashtag) || 0) + 1);
+      return map;
+    }, new Map());
+
+    // Sort hashtag objects by frequency and then by creation date
+    const sortedHashtagObjects = hashtagObjects.sort((a, b) => {
+      const frequencyComparison = hashtagFrequencies.get(b.hashtag) - hashtagFrequencies.get(a.hashtag);
+      if (frequencyComparison === 0) {
+        // If frequencies are the same, sort by creation date (newest first)
+        return b.createdAt - a.createdAt;
+      }
+      return frequencyComparison;
+    });
+
+    // Extract the sorted hashtags and remove duplicates
+    const uniqueSortedHashtags = [...new Set(sortedHashtagObjects.map(obj => obj.hashtag))];
+
+    res.status(200).json({ hashtags: uniqueSortedHashtags });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -145,7 +173,7 @@ router.get('/interest', async (req, res) => {
 router.get('/all', async (req, res) => {
   try {
     const questions = await Question.find();
-    const updatedQuestions = questions.map((question) => {
+    const updatedQuestions = questions.map(question => {
       return {
         ...question._doc,
         createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
