@@ -7,6 +7,7 @@ import unfold from '../../assets/icon/unfold.svg';
 import fold from '../../assets/icon/fold.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { encode } from 'punycode';
 
 export const HashTagNav = () => {
   const [page, setPage] = useState(1);
@@ -62,7 +63,7 @@ export const HashTagNav = () => {
     newClickedHashtags.fill(false);
     newClickedHashtags[index] = !newClickedHashtags[index];
     setClickedHashtags(newClickedHashtags);
-    navigate(`/tag/${onlyHashtag[index]}`);
+    navigate(`/search?query=${encodeURIComponent(onlyHashtag[index])}`);
   };
 
   return (
