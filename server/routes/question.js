@@ -141,6 +141,29 @@ router.get('/interest', async (req, res) => {
   }
 });
 
+//GET ALL - without pagination
+router.get('/all', async (req, res) => {
+  try {
+    const questions = await Question.find();
+    const updatedQuestions = questions.map((question) => {
+      return {
+        ...question._doc,
+        createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+        updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+      };
+    });
+    // updatedQuestions.forEach((question) => console.log(question.createdAt));
+
+    res.status(200).json(updatedQuestions);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // GET
 router.get('/:id', async (req, res) => {
   try {
