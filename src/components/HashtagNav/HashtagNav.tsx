@@ -62,7 +62,7 @@ export const HashTagNav = () => {
     newClickedHashtags.fill(false);
     newClickedHashtags[index] = !newClickedHashtags[index];
     setClickedHashtags(newClickedHashtags);
-    navigate(`/tag`);
+    navigate(`/tag/${onlyHashtag[index]}`);
   };
 
   return (
@@ -76,7 +76,7 @@ export const HashTagNav = () => {
                   {item}
                 </HashTag>
                 {index + 1 < onlyHashtag.length && (
-                  <HashTag $click={clickedHashtags[index + 1]} onClick={() => handleClick(index + 1)}>
+                  <HashTag $click={clickedHashtags[index + 1]} onClick={() => handleClick(index + 1)} key={index+1}>
                     {onlyHashtag[index + 1]}
                   </HashTag>
                 )}
