@@ -3,7 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const cors = require('cors'); // cors 미들웨어를 추가합니다.
+const cors = require('cors');
+const passport = require('passport');
 
 const port = process.env.PORT || 5001;
 
@@ -14,16 +15,17 @@ const userRoute = require('./routes/user');
 const answerRoute = require('./routes/answer');
 const commentRoute = require('./routes/comment');
 const searchRoute = require('./routes/search');
+const mypageRoute = require('./routes/mypage');
 const setupScheduledJob = require('./utils/setupScheduledJob');
 
 dotenv.config();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
-// cors 미들웨어를 사용하여 CORS 허용 설정을 추가합니다.
 app.use(
   cors({
-    origin: 'http://localhost:3000', // 허용할 origin을 설정하세요.
+    origin: 'http://localhost:3000',
   }),
 );
 
@@ -42,6 +44,7 @@ app.use('/api/users', userRoute);
 app.use('/api/answer', answerRoute);
 app.use('/api/comment', commentRoute);
 app.use('/api/search', searchRoute);
+app.use('/api/mypage', mypageRoute);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
