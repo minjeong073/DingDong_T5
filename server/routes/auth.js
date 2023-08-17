@@ -6,6 +6,9 @@ const passportLocal = require('passport-local');
 const passportJwt = require('passport-jwt');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 //jwt
 passport.use(
@@ -13,7 +16,7 @@ passport.use(
   new passportJwt.Strategy(
     {
       jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: 'secret',
+      secretOrKey: process.env.JWT_SECRET_KEY,
     },
     (jwt_payload, done) => {
       done(null, {
@@ -36,10 +39,7 @@ passport.use(
         return done(null, false, { reason: 'Invalid password' });
       }
       // authentication success
-      if (user) {
-        const { password, ...userInfo } = user._doc;
-        return done(null, { user: userInfo });
-      }
+      return done(null, user);
     } catch (err) {
       return done(err);
     }
@@ -68,13 +68,11 @@ router.post('/signup', async (req, res) => {
 // SIGNIN
 router.post('/signin', async (req, res, next) => {
   passport.authenticate('local', { session: false }, (err, user, info) => {
-    if (err || !user) return res.status(400).json({ message: 'Authentication failed', user: user });
+    if (err || !user) return res.status(400).json({ message: 'Authentication failed' });
     return req.login(user, { session: false }, err => {
       if (err) return next(err);
-
-      const token = jwt.sign({ id: user.id }, 'secret', { expiresIn: '1h' });
-      const { password, ...userInfo } = user;
-      return res.status(200).json({ user: userInfo, token: token });
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+      return res.status(200).json({ token: token });
     });
   })(req, res, next);
 });
