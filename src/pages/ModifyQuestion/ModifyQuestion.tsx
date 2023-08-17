@@ -41,6 +41,11 @@ export const ModifyQuestion = () => {
   };
 
   const updateQuestion = async () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     try {
       if (!modifiedArticle) {
         return;
@@ -50,6 +55,7 @@ export const ModifyQuestion = () => {
         return;
       }
       await axios.put(`/api/articles/${_id}`, {
+        headers: { Authorization: `Bearer ${token}` },
         ...modifiedArticle,
         content: contents,
         hashtags: selected,
