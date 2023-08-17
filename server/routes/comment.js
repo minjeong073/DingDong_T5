@@ -72,6 +72,50 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET ALL COMMENTS WITH PAGINATION - VOTES
+router.get('/all', async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 10;
+  const startIndex = (page - 1) * pageSize;
+
+  try {
+    const totalComments = await Comment.countDocuments();
+    const totalPages = Math.ceil(totalComments / pageSize);
+
+    const comments = await Comment.find().sort({ votes: -1 }).skip(startIndex).limit(pageSize).exec();
+
+    const updatedComments = await Promise.all(
+      comments.map(async comment => {
+        const user = await User.findById(comment.userId);
+        const author = user ? user.username : 'unknown';
+
+        const updatedComment = {
+          ...comment._doc,
+          author,
+          createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+        return updatedComment;
+      }),
+    );
+
+    const hasNextPage = page < totalPages;
+    const nextPage = hasNextPage ? page + 1 : null;
+    const nextPageUrl = nextPage ? `http://localhost:5001/api/comments/all?page=${nextPage}` : null;
+
+    res.status(200).json({
+      comments: updatedComments,
+      nextPageUrl,
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // UPDATE
 router.put('/:id', async (req, res) => {
   try {

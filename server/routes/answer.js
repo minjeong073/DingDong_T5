@@ -39,11 +39,9 @@ router.get('/all/:questionId', async (req, res) => {
       answers.map(async answer => {
         const user = await User.findById(answer.userId);
         const author = user ? user.username : 'unknown';
-        // const comments = await Comment.find({ answerId: answer._id }).exec();
         return {
           ...answer._doc,
           author,
-          // comments,
           createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
           }),
