@@ -66,7 +66,9 @@ const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Element =>
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if(e.key === 'Enter'){
+    if(wordEntered.trim() === ""){
+      alert("검색어가 입력되지 않았습니다.");
+    }else if( e.key === 'Enter'){
       navigateSearchPage();
     }
   }
