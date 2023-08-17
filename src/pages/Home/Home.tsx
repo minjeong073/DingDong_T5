@@ -21,7 +21,6 @@ import {
   TopItem,
   ButtonBar,
   HashBody,
-  User
 } from './styled';
 import { UserSection, LogoutTypo } from 'components/Header/styled';
 import { SearchBar } from 'components/Header';
@@ -96,14 +95,6 @@ export const Home = () => {
     getAllArticles();
   }, []);
 
-  // {isLogin ? <UserSection>딩동</UserSection> : <LoginTypo onClick={() => navigate('/signin')}>로그인</LoginTypo>}
-  // {isLogin ? (
-  //   <LogoutTypo>로그아웃</LogoutTypo>
-  // ) : (
-  //   <SignUpTypo onClick={() => navigate('/signup')}>회원가입</SignUpTypo>
-  // )}   
-  
-
   return (
     <Root>
       <Header>
@@ -113,7 +104,7 @@ export const Home = () => {
         </LogoSection>
         <Div>
           { isLogin 
-          ? <User onClick={() => navigate('/mypage')}>딩동</User>
+          ? <UserSection onClick={() => navigate('/mypage')}>딩동</UserSection>
           : <Login onClick={() => navigate('/signin')}> 로그인 </Login> 
           }
           { isLogin

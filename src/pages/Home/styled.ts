@@ -1,7 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import SearchIcon from '../../assets/icon/search.svg';
 import Logo from '../../assets/icon/logo.svg';
-import { UserSection } from 'components/Header/styled';
 
 export const Root = styled.div`
   display: flex;
@@ -52,9 +51,6 @@ export const Div = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-`;
-
-export const User = styled(UserSection)`
 `;
 
 export const Login = styled.button`
