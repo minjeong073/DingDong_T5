@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 const port = process.env.PORT || 5001;
 
@@ -18,6 +19,7 @@ const setupScheduledJob = require('./utils/setupScheduledJob');
 dotenv.config();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 mongoose
   .connect(process.env.MONGO_URL, {
