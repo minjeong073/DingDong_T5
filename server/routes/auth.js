@@ -79,7 +79,7 @@ router.post('/signin', async (req, res, next) => {
 
 // SIGNOUT
 router.get('/signout', (req, res) => {
-  req.logout();
+  // client에서 token 지움
   res.status(200).json({ message: 'Signout success' });
 });
 
