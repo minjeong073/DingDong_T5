@@ -73,7 +73,7 @@ const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Element =>
 
   const navigateSearchPage = () => {
     if(filteredData){
-      navigate(`/search?query=${encodeURIComponent(wordEntered.trim())}`);
+      navigate(`/search?keyword=${encodeURIComponent(wordEntered.trim())}`);
     }else{
       alert('관련된 키워드가 담긴 게시글이 없습니다!');
     }
