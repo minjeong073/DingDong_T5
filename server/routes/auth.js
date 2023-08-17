@@ -77,4 +77,10 @@ router.post('/signin', async (req, res, next) => {
   })(req, res, next);
 });
 
+// SIGNOUT
+router.get('/signout', (req, res) => {
+  req.logout();
+  res.status(200).json({ message: 'Signout success' });
+});
+
 module.exports = router;
