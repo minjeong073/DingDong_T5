@@ -86,10 +86,10 @@ export const Login = () => {
     return await axios
       .post(`/api/auth/signin`, userInfo, { withCredentials: true })
       .then(response => {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-        localStorage.setItem('token', response.data.token);
-        const user = response.data.user.user;
-        alert(`${user.username}님 환영합니다!`);
+        const token = response.data.token;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        localStorage.setItem('token', token);
+        alert('로그인 성공');
         navigate('/');
         // window.location.reload();
         return response;
