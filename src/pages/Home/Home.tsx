@@ -21,7 +21,9 @@ import {
   TopItem,
   ButtonBar,
   HashBody,
+  User
 } from './styled';
+import { UserSection, LogoutTypo } from 'components/Header/styled';
 import { SearchBar } from 'components/Header';
 import { RealCarousel } from '../../components/HashtagBar/';
 import { Link, useNavigate } from 'react-router-dom';
@@ -52,6 +54,7 @@ export const Home = () => {
   const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
   const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => <div key={index}>{onlyHashtag[index]}</div>);
   // console.log(carouselItems);
+  const isLogin = !!localStorage.getItem("token");
 
   const navigate = useNavigate();
 
@@ -93,6 +96,14 @@ export const Home = () => {
     getAllArticles();
   }, []);
 
+  // {isLogin ? <UserSection>딩동</UserSection> : <LoginTypo onClick={() => navigate('/signin')}>로그인</LoginTypo>}
+  // {isLogin ? (
+  //   <LogoutTypo>로그아웃</LogoutTypo>
+  // ) : (
+  //   <SignUpTypo onClick={() => navigate('/signup')}>회원가입</SignUpTypo>
+  // )}   
+  
+
   return (
     <Root>
       <Header>
@@ -101,12 +112,14 @@ export const Home = () => {
           <LogoTypo>DINGDONG</LogoTypo>
         </LogoSection>
         <Div>
-          <Login>
-            <Link to={'/signin'}>로그인</Link>
-          </Login>
-          <SignUp>
-            <Link to={'/signup'}>회원가입</Link>
-          </SignUp>
+          { isLogin 
+          ? <User onClick={() => navigate('/mypage')}>딩동</User>
+          : <Login onClick={() => navigate('/signin')}> 로그인 </Login> 
+          }
+          { isLogin
+          ? <LogoutTypo>로그아웃</LogoutTypo>
+          : <SignUp onClick={() => navigate('/signup')}>회원가입</SignUp>
+          }
         </Div>
       </Header>
       <Container>
