@@ -14,6 +14,7 @@ const userRoute = require('./routes/user');
 const answerRoute = require('./routes/answer');
 const commentRoute = require('./routes/comment');
 const searchRoute = require('./routes/search');
+const mypageRoute = require('./routes/mypage');
 const setupScheduledJob = require('./utils/setupScheduledJob');
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use('/api/users', userRoute);
 app.use('/api/answer', answerRoute);
 app.use('/api/comment', commentRoute);
 app.use('/api/search', searchRoute);
+app.use('/api/mypage', mypageRoute);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
