@@ -15,7 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const isLogin = !!localStorage.getItem("token");
   const navigate = useNavigate();
 
   return (
