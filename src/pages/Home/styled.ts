@@ -53,18 +53,6 @@ export const Div = styled.div`
   justify-content: center;
 `;
 
-export const Login = styled.button`
-  width: 72px;
-  color: #64748b;
-  font-size: 15px;
-`;
-
-export const SignUp = styled.button`
-  width: 72px;
-  color: #64748b;
-  font-size: 15px;
-`;
-
 export const Container = styled.div`
   display: flex;
   flex-direction: column;

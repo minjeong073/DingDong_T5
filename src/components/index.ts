@@ -1,7 +1,7 @@
 export { AnswerForm, QuestionForm, CommentForm } from './Detail';
-export { Header } from './Header';
+export { Header, SearchBar } from './Header';
 export { HashTagNav } from './HashtagNav';
-export { HashTagBar } from './HashtagBar';
+export { HashTagBar, RealCarousel } from './HashtagBar';
 export { Articles } from './List';
 export { Nav } from './Nav';
 export { Footer } from './Footer';
@@ -9,3 +9,4 @@ export { ArticlesTable } from './List';
 export { RepliesList } from './Replies';
 export { RightWrapper } from './RightWrapper';
 export { Button } from './Button';
+export { LoginLogoutButton } from './LoginLogoutButton';

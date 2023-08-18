@@ -5,8 +5,6 @@ import {
   LogoTypo,
   Header,
   Div,
-  Login,
-  SignUp,
   Container,
   Button1,
   Button2,
@@ -17,14 +15,11 @@ import {
   QuestionTypo,
   TitleText,
   TopItems,
-  DotTypo,
   TopItem,
   ButtonBar,
   HashBody,
 } from './styled';
-import { UserSection, LogoutTypo } from 'components/Header/styled';
-import { SearchBar } from 'components/Header';
-import { RealCarousel } from '../../components/HashtagBar/';
+import { SearchBar, LoginLogoutButton, RealCarousel } from 'components';
 import { Link, useNavigate } from 'react-router-dom';
 import Articles from '../../db/articles.json';
 import axios from 'axios';
@@ -53,7 +48,6 @@ export const Home = () => {
   const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
   const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => <div key={index}>{onlyHashtag[index]}</div>);
   // console.log(carouselItems);
-  const isLogin = !!localStorage.getItem("token");
 
   const navigate = useNavigate();
 
@@ -103,14 +97,7 @@ export const Home = () => {
           <LogoTypo>DINGDONG</LogoTypo>
         </LogoSection>
         <Div>
-          { isLogin 
-          ? <UserSection onClick={() => navigate('/mypage')}>딩동</UserSection>
-          : <Login onClick={() => navigate('/signin')}> 로그인 </Login> 
-          }
-          { isLogin
-          ? <LogoutTypo>로그아웃</LogoutTypo>
-          : <SignUp onClick={() => navigate('/signup')}>회원가입</SignUp>
-          }
+          <LoginLogoutButton />
         </Div>
       </Header>
       <Container>
