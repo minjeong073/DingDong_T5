@@ -1,9 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
-// import { allArticles } from "../../../api/url";
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { QuestionListState } from '../../stores/page-store';
-import type { QuestionDataType } from '../../stores/page-store';
 import {
   LButton,
   Button1,
@@ -37,8 +33,8 @@ import { Button } from '../Button';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroller';
 import DOMPurify from 'dompurify';
+import { QuestionDataType } from 'stores/page-store';
 
-const initialUrl = 'http://localhost:5001/api/answer/all';
 const fetchUrl = async (url: string) => {
   const response = await fetch(url);
   const data = await response.json();
@@ -46,13 +42,15 @@ const fetchUrl = async (url: string) => {
 };
 
 export const RepliesList = () => {
-  const [result, setResult] = useState('answers');
+  const [result, setResult] = useState('answer');
   const [expandedStates, setExpandedStates] = useState<{ [itemId: string]: boolean }>({});
 
   const navigate = useNavigate();
 
+  const initialUrl = useMemo(() => `http://localhost:5001/api/${result}/all`, [result]);
+
   const { data, fetchNextPage, hasNextPage, isLoading, isFetching, isError, error } = useInfiniteQuery(
-    'answers',
+    result,
     ({ pageParam = initialUrl }) => fetchUrl(pageParam),
     {
       getNextPageParam: lastPage => lastPage.nextPageUrl || undefined,
@@ -61,7 +59,7 @@ export const RepliesList = () => {
 
   const ButtonClick = (buttonNumber: number) => {
     if (buttonNumber === 1) {
-      setResult('answers');
+      setResult('answer');
     } else if (buttonNumber === 2) {
       setResult('comment');
     }
@@ -72,14 +70,18 @@ export const RepliesList = () => {
   };
 
   const onClickNavigateQuestion = async (item: any) => {
-    if (item.questionId) {
-      try {
-        const response = await axios.get(`/api/articles/${item.questionId}`);
-        const questionData = response.data;
-        navigate(`/articles/${item.questionId}`);
-      } catch (error) {
-        alert('삭제된 질문글입니다.');
+    try {
+      if (item.answerId) {
+        const answerResponse = await axios.get(`/api/answer/${item.answerId}`);
+        const answerData = answerResponse.data;
+        navigate(`/articles/${answerData.questionId}`);
+        return;
       }
+      if (item.questionId) {
+        navigate(`/articles/${item.questionId}`);
+      }
+    } catch (error) {
+      alert('삭제된 질문글입니다.');
     }
   };
 
@@ -87,7 +89,8 @@ export const RepliesList = () => {
     if (data) {
       const initialExpandedStates: { [itemId: string]: boolean } = {};
       data.pages.forEach(pageData => {
-        pageData.answers.forEach((item: any) => {
+        const items = pageData.answers || pageData.comments; // Choose items based on availability
+        items.forEach((item: any) => {
           if (item.content.length > 200) {
             initialExpandedStates[item._id] = false;
           }
@@ -95,6 +98,7 @@ export const RepliesList = () => {
       });
       setExpandedStates(initialExpandedStates);
     }
+    console.log(data);
   }, [data]);
 
   if (isLoading)
@@ -124,8 +128,9 @@ export const RepliesList = () => {
       <Table>
         <Tbody>
           <InfiniteScroll loadMore={fetchNextPage} hasMore={hasNextPage}>
-            {data?.pages.map(pageData => {
-              return pageData.answers.map((item: any) => (
+            {data?.pages?.map(pageData => {
+              const items = pageData.answers || pageData.comments; // Choose items based on availability
+              return items?.map((item: any) => (
                 <TableRow key={item._id}>
                   <TableCell>
                     <Upper>
@@ -135,19 +140,23 @@ export const RepliesList = () => {
                       </Icon>
                     </Upper>
                     <Content>
-                      <Title
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(
-                            item.content.length > 200
-                              ? expandedStates[item._id]
-                                ? item.content
-                                : `${item.content.slice(0, 200)}...`
-                              : item.content,
-                          ),
-                        }}
-                        $isExpanded={expandedStates[item._id]}
-                        onClick={() => onClickNavigateQuestion(item)}
-                      />
+                      {items === pageData.answers ? (
+                        <Title
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(
+                              item.content.length > 200
+                                ? expandedStates[item._id]
+                                  ? item.content
+                                  : `${item.content.slice(0, 200)}...`
+                                : item.content,
+                            ),
+                          }}
+                          $isExpanded={expandedStates[item._id]}
+                          onClick={() => onClickNavigateQuestion(item)}
+                        />
+                      ) : (
+                        <Title onClick={() => onClickNavigateQuestion(item)}>{item.content}</Title>
+                      )}
                       {item.content.length > 200 && (
                         <MoreTypo
                           onClick={() =>
@@ -158,7 +167,7 @@ export const RepliesList = () => {
                       )}
                       <Addition>
                         <HashTagWrapper>
-                          {item.questionHashtags.map((hashtag: string) => (
+                          {item.questionHashtags?.map((hashtag: string) => (
                             <HashTag key={hashtag}>{hashtag}</HashTag>
                           ))}
                         </HashTagWrapper>

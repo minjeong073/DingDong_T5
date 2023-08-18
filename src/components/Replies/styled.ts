@@ -43,7 +43,7 @@ export const Button1 = styled.button<{ $result?: string }>`
   height: 33px;
   border: 1px solid #e2e8f0;
   border-radius: 10px 0 0 10px;
-  background-color: ${props => (props.$result === 'answers' ? '#F1F5F9' : '#FFFFFF')};
+  background-color: ${props => (props.$result === 'answer' ? '#F1F5F9' : '#FFFFFF')};
   color: #0f172a;
   font-size: 15px;
   padding: 7px 0;
