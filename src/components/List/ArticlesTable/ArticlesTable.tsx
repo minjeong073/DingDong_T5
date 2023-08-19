@@ -34,9 +34,10 @@ type Props = {
     view: boolean;
     vote: boolean;
   };
+  data?: QuestionDataType[];
 };
 
-export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
+export const ArticlesTable: React.FC<Props> = ({ selectedOrder,data }) => {
   const [page, setPage] = useState<number>(1);
   const [QuestionData, setQuestionData] = useState<QuestionDataType[]>([]);
   const [totalQuestions, setTotalQuestions] = useState<number>(0);
@@ -56,6 +57,8 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
       alert('게시판 정보 가져오기 실패!');
     }
   };
+
+  console.log(data? data[0] : null);
 
   const fetchViewQuestionData = async (page: number) => {
     try {
@@ -101,27 +104,9 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
     setPage(1);
   }, [selectedOrder]);
 
-  /*  useEffect(() => {
-    console.log(QuestionData);
-  }, [QuestionData]); */
-
   const handlePaginationChange = (e: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
-
-  //api 이용해서
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await allArticles<String[]>();
-  //       setArticles(response.data);
-  //     }catch(error){
-  //     console.error(error);
-  //     alert("게시판 정보 가져오기 실패!");
-  //     }
-  //   };
-  //   fetchData();
-  // }, [setArticles]);
 
   //해시태그 클릭하면 그 기능을 확인할 수 있음
   const onClickHashtag = () => {};
