@@ -45,6 +45,7 @@ interface AnswerDataType {
 }
 
 export const Home = () => {
+  const [user, setUser] = useState();
   const [allArticle, setAllArticle] = useState<QuestionDataType[]>([]);
   const [topQuestion, setTopQuestion] = useState<QuestionDataType[]>([]);
   const [topAnswer, setTopAnswer] = useState<AnswerDataType[]>([]);
