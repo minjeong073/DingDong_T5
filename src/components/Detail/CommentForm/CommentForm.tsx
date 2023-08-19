@@ -16,7 +16,6 @@ import {
 } from './styled';
 import { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
-import { set } from 'mongoose';
 
 type Props = {
   _id?: string | null;
@@ -38,13 +37,32 @@ type Comment = {
 
 export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   const [commentList, setCommentList] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState({ userId: '64cf545ec07a5fb842cb5016', content: '' });
+  const [newComment, setNewComment] = useState({ content: '' });
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null); // 수정중인 댓글의 id
+  const [isVoted, setIsVoted] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const fetchCommentList = async () => {
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.get(`/api/comment?${selected === 'articles' ? 'question' : 'answer'}Id=${_id}`);
-      setCommentList(response.data);
+      // TODO : commentId로 vote, save 여부 가져오기
+      /*
+      if (token) {
+        const voteResponse = await axios.get(`/api/comment/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const saveResponse = await axios.get(`/api/comment/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setIsVoted(voteResponse.data);
+        setIsSaved(saveResponse.data);
+      }
+      */
+      const foundComments = response.data;
+      if (foundComments) {
+        setCommentList(foundComments);
+      }
     } catch (error) {
       console.error("Error fetching comment's data:", error); // "Error fetching comment's data: Error: Request failed with status code 401
       alert('댓글 정보 가져오기 실패!');
@@ -59,21 +77,28 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   };
 
   const onSubmitComment = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     if (!newComment.content) {
       alert('댓글을 입력해주세요.');
       return;
     }
     try {
       if (editingCommentId) {
-        await axios.put(`/api/comment/${editingCommentId}`, newComment);
+        await axios.put(`/api/comment/${editingCommentId}`, newComment, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setEditingCommentId(null);
-        setNewComment({ userId: '64cf545ec07a5fb842cb5016', content: '' });
+        setNewComment({ content: '' });
         fetchCommentList();
         return;
       }
       await axios.put(`/api/${selected}/${_id}/comment`, newComment);
       fetchCommentList();
-      setNewComment({ userId: '64cf545ec07a5fb842cb5016', content: '' });
+      setNewComment({ content: '' });
     } catch (error) {
       console.error('Error posting comment:', error);
       alert('댓글 등록에 실패했습니다.');
@@ -81,18 +106,16 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   };
 
   const onClickCommentDelete = async (commentId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     try {
+      if (!window.confirm('정말 삭제하시겠습니까?')) return;
       await axios.delete(`/api/comment/${commentId}`, {
-        data: {
-          userId: '64cf545ec07a5fb842cb5016', //임시
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      // 정말로 삭제하시겠습니까? 확인창 띄우기
-      const confirm = window.confirm('정말로 삭제하시겠습니까?');
-      if (confirm) {
-        alert('삭제되었습니다.');
-      }
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
         alert('자신의 댓글만 삭제할 수 있습니다.');
@@ -111,6 +134,11 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   };
 
   const onClickCommentVote = async (commentId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
       투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
        -> Vote 테이블에 userId와 answerId를 쿼리하여 이미 투표했는지 여부 확인 */
@@ -119,38 +147,55 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      await axios.put(`/api/comment/${commentId}/vote`, {
+      const response = await axios.put(`/api/comment/${commentId}/vote`, null, {
+        headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
+      const isVoted = response.data;
+      setIsVoted(isVoted);
       fetchCommentList();
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신의 댓글은 투표할 수 없습니다.');
+      }
       console.error('Error updating votes:', error);
       alert('투표 실패!');
     }
   };
 
   const onClickCommentSave = async (commentId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
     저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
      -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
-    /*     const answerResponse = await axios.get<Comment>(`/api/comment/${commentId}`);
+    const answerResponse = await axios.get<Comment>(`/api/comment/${commentId}`);
     const answerToUpdate = answerResponse.data;
     if (!answerToUpdate) return;
 
     try {
-      await axios.put(`/api/comment/${commentId}`, {
+      const response = await axios.put(`/api/comment/${commentId}`, null, {
+        headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
+      const isSaved = response.data;
+      setIsSaved(isSaved);
       fetchCommentList();
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신의 댓글은 저장할 수 없습니다.');
+      }
       console.error('Error updating saves:', error);
       alert('저장 실패!');
-    } */
+    }
   };
 
   const onClickEditingCancel = () => {
     setEditingCommentId(null);
-    setNewComment({ userId: '64cf545ec07a5fb842cb5016', content: '' });
+    setNewComment({ content: '' });
   };
 
   useEffect(() => {
@@ -162,7 +207,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       {commentList?.map(comment => (
         <Container key={comment._id}>
           <ItemContainer left="10px" right="8px">
-            {true ? (
+            {isVoted ? (
               <HeartFillIcon onClick={() => onClickCommentVote(comment._id)} />
             ) : (
               <HeartIcon onClick={() => onClickCommentVote(comment._id)} />
@@ -170,7 +215,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
             <ItemTypo>{comment.votes}</ItemTypo>
           </ItemContainer>
           <ItemContainer right="10px">
-            {true ? (
+            {isSaved ? (
               <SaveFillIcon onClick={() => onClickCommentSave(comment._id)} top="1px" bottom="2px" />
             ) : (
               <SaveIcon onClick={() => onClickCommentSave(comment._id)} top="1px" bottom="2px" />
