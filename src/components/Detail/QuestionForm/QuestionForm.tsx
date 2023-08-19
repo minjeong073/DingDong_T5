@@ -44,10 +44,19 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
 
   const fetchQuestionData = useCallback(async () => {
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.get(`/api/articles/${_id}`);
+      const isVoted = await axios.get(`/api/articles/${_id}/vote`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const isSaved = await axios.get(`/api/articles/${_id}/bookmark`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const foundQuestion = response.data;
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
+        setIsVoted(isVoted.data);
+        setIsSaved(isSaved.data);
       }
     } catch (error) {
       console.error(error);
