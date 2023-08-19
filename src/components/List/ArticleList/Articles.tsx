@@ -35,6 +35,7 @@ export const Articles = () => {
     } else {
       // 로그인이 필요한 알림 등을 처리할 수 있습니다.
       alert('로그인이 필요합니다.');
+      navigate('/signin');
     }
   }, [isLogin]);
 

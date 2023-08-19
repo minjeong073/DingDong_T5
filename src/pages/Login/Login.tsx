@@ -72,16 +72,13 @@ export const Login = () => {
             <LogoTypo>DINGDONG</LogoTypo>
           </LogoSection>
         </Link>
-
         <IDbox placeholder="이메일" value={email} type="text" id="email" onChange={handleEmailChange} />
         <PWbox placeholder="비밀번호" value={password} type="password" id="password" onChange={handlePasswordChange} />
         <ActionContainer>
-          <Button1 width="144px" height="52px" type="submit" onClick={handleLogin}>
+          <Button1 type="submit" onClick={handleLogin}>
             로그인
           </Button1>
-          <Button2 width="144px" height="52px">
-            회원가입
-          </Button2>
+          <Button2>회원가입</Button2>
         </ActionContainer>
       </Container>
     </Root>
