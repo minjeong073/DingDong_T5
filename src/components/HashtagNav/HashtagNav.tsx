@@ -50,8 +50,10 @@ export const HashTagNav = () => {
   useEffect(() => {
     const target: boolean = true;
     let targetIndex:number = clickedHashtags.indexOf(target);
-    if(clicked)
-    navigate(`/search/hashtag?hashtag=${encodeURIComponent(onlyHashtag[targetIndex])}`);
+    if(clicked && onlyHashtag[targetIndex]!='ALL')
+      navigate(`/search/hashtag?hashtag=${encodeURIComponent(onlyHashtag[targetIndex])}`);
+    else if(onlyHashtag[targetIndex] === 'ALL')
+      navigate(`/articles`);
   }, [clickedHashtags, handleClick]);
   
   const toggleExpanded = useCallback(() => {
