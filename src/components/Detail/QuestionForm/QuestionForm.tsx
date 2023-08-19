@@ -51,14 +51,14 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     try {
       const response = await axios.get(`/api/articles/${_id}`);
       if (token) {
-        const isVoted = await axios.get(`/api/articles/${_id}/vote`, {
+        const voteResponse = await axios.get(`/api/articles/${_id}/isVoted`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const isSaved = await axios.get(`/api/articles/${_id}/bookmark`, {
+        const saveResponse = await axios.get(`/api/articles/${_id}/isBookmarked`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setIsVoted(isVoted.data);
-        setIsSaved(isSaved.data);
+        setIsVoted(voteResponse.data);
+        setIsSaved(saveResponse.data);
       }
       const foundQuestion = response.data;
       if (foundQuestion) {
@@ -116,10 +116,11 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     }
     // token 없을 경우 알림 추가해주세요!
     try {
-      const isVoted = await axios.put(`/api/articles/${_id}/vote`, null, {
+      const response = await axios.put(`/api/articles/${_id}/vote`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsVoted(isVoted.data);
+      const isVoted = response.data;
+      setIsVoted(isVoted);
       fetchQuestionData();
     } catch (error) {
       console.error('Error updating votes:', error);
@@ -140,10 +141,11 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     // token 없을 경우 알림 추가해주세요!
 
     try {
-      const isSaved = await axios.put(`/api/articles/${_id}/bookmark`, null, {
+      const response = await axios.put(`/api/articles/${_id}/bookmark`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsSaved(isSaved.data);
+      const isSaved = response.data;
+      setIsSaved(isSaved);
       fetchQuestionData();
     } catch (error) {
       console.error('Error updating saves:', error);
