@@ -428,4 +428,24 @@ router.put('/:id/view', async (req, res) => {
   }
 });
 
+router.get('/:id/votelist', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const votelist = await Vote.find({ questionId: questionId });
+    res.status(200).json(votelist);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get('/:id/bookmarklist', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const bookmarklist = await Bookmark.find({ questionId: questionId });
+    res.status(200).json(bookmarklist);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
