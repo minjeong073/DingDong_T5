@@ -32,6 +32,7 @@ passport.use(
   new passportLocal.Strategy({ usernameField: 'email', passwordField: 'password' }, async (email, password, done) => {
     try {
       const user = await User.findOne({ email: email });
+      console.log(user);
       if (!user) {
         return done(null, false, { reason: 'User not found' });
       }
@@ -72,6 +73,8 @@ router.post('/signin', async (req, res, next) => {
     return req.login(user, { session: false }, err => {
       if (err) return next(err);
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+      // const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn: '7d' });
+      // res.cookie('refreshToken', refreshToken, { httpOnly: true });
       return res.status(200).json({ token: token });
     });
   })(req, res, next);
