@@ -198,12 +198,12 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             <Typo underline="true" pointer="true">
               공유
             </Typo>
-            {user.username === currentQuestion?.author && (
+            {user._id === currentQuestion?.userId && (
               <Typo underline="true" pointer="true" onClick={() => navigate(`/articles/modify/${_id}`)}>
                 수정
               </Typo>
             )}
-            {user.username === currentQuestion?.author && (
+            {user._id === currentQuestion?.userId && (
               <Typo underline="true" pointer="true" onClick={deleteQuestion}>
                 삭제
               </Typo>

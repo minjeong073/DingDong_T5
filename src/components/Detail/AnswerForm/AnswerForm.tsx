@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import React from 'react';
 import {
   HeartIcon,
   ItemContainer,
@@ -22,7 +23,6 @@ import {
   UserStateCircle,
   HeartFillIcon,
   SaveFillIcon,
-  Item,
 } from './styled';
 import DOMPurify from 'dompurify';
 import axios, { AxiosError } from 'axios';
@@ -38,6 +38,7 @@ interface AnswerDataType {
   questionTitle: string;
   questionId: string;
   author: string;
+  userId: string;
   votes: number;
   saves: number;
   createdAt: string;
@@ -116,16 +117,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         return;
       }
 
-      // question의 작성자와 answer의 작성자가 같으면 작성 불가
-      // TODO : 로그인 구현시, WriteAnswerForm을 없애는 식으로 구현 예정
-
-      // const currentQuestion = await axios.get(`/api/articles/${_id}`);
-      // if (currentQuestion.data.userId === newAnswer.userId) {
-      //   alert('질문자는 답변할 수 없습니다.');
-      //   setContents('');
-      //   return;
-      // }
-
       // If editingAnswerId is null, it means we are creating a new answer
       await axios
         .post(`/api/answer/${_id}`, newAnswer, {
@@ -148,9 +139,13 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   // 특정 answer를 삭제하는 함수
   const deleteAnswer = async (answerId: string) => {
     try {
+      // 삭제할건지 확인
+      const confirm = window.confirm('정말 삭제하시겠습니까?');
+      if (!confirm) return;
+
       await axios.delete(`/api/answer/${answerId}`).then(res => {
         setAnswerData((prevAnswerData: AnswerDataType[]) => prevAnswerData.filter(item => item._id !== answerId));
-        alert('답변 삭제 성공!');
+        alert('답변이 삭제되었습니다.');
       });
     } catch (error) {
       console.error(error);
@@ -235,72 +230,78 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         </TitleSection>
       )}
       {answerData?.map((answer, index) => (
-        <BodySection key={answer._id}>
-          <TopContainer>
-            <ItemContainer>
-              {/* 투표 */}
-              {true ? (
-                <HeartFillIcon onClick={() => handleVote(answer._id)} />
-              ) : (
-                <HeartIcon onClick={() => handleVote(answer._id)} />
-              )}
-              <ItemTypo>{answer.votes}</ItemTypo>
-              {/* 저장 */}
-              {true ? (
-                <SaveFillIcon onClick={() => handleSave(answer._id)} />
-              ) : (
-                <SaveIcon onClick={() => handleSave(answer._id)} />
-              )}
-              <ItemTypo>{answer.saves}</ItemTypo>
-            </ItemContainer>
-            <ItemContainer>
-              <ViewDateContainer>
-                {/* <Typo>조회수 {current?.views}</Typo> */}
-                <Typo>{answer.createdAt}</Typo>
-              </ViewDateContainer>
-              <ContentTypo
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(answer.content as string),
-                }}
-              />
-            </ItemContainer>
-          </TopContainer>
-          <BottomContainer>
-            <BottomLeftContainer>
-              <Typo underline="true" pointer="true">
-                공유
-              </Typo>
-              <Typo underline="true" pointer="true" onClick={() => editAnswer(answer._id)}>
-                수정
-              </Typo>
-              <Typo underline="true" pointer="true" onClick={() => deleteAnswer(answer._id)}>
-                삭제
-              </Typo>
-            </BottomLeftContainer>
-            <BottomRightContainer>
-              <AuthorBox>
-                <AskedTypo>Answered</AskedTypo>
-                <AuthorContainer>
-                  <AuthorProfile>{answer.author}</AuthorProfile>
-                  <UserStateCircle color={answer.votes < 15 ? '#D1D5DB' : '#ffd700'} />
-                  <Typo>{answer.votes}</Typo>
-                </AuthorContainer>
-              </AuthorBox>
-            </BottomRightContainer>
-          </BottomContainer>
-          {isLogin && <CommentForm _id={answer._id} selected="answer" />}
-        </BodySection>
+        <React.Fragment key={answer._id}>
+          <BodySection>
+            <TopContainer>
+              <ItemContainer>
+                {/* 투표 */}
+                {true ? (
+                  <HeartFillIcon onClick={() => handleVote(answer._id)} />
+                ) : (
+                  <HeartIcon onClick={() => handleVote(answer._id)} />
+                )}
+                <ItemTypo>{answer.votes}</ItemTypo>
+                {/* 저장 */}
+                {true ? (
+                  <SaveFillIcon onClick={() => handleSave(answer._id)} />
+                ) : (
+                  <SaveIcon onClick={() => handleSave(answer._id)} />
+                )}
+                <ItemTypo>{answer.saves}</ItemTypo>
+              </ItemContainer>
+              <ItemContainer>
+                <ViewDateContainer>
+                  {/* <Typo>조회수 {current?.views}</Typo> */}
+                  <Typo>{answer.createdAt}</Typo>
+                </ViewDateContainer>
+                <ContentTypo
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(answer.content as string),
+                  }}
+                />
+              </ItemContainer>
+            </TopContainer>
+            <BottomContainer>
+              <BottomLeftContainer>
+                <Typo underline="true" pointer="true">
+                  공유
+                </Typo>
+                {user._id === answer.userId && (
+                  <Typo underline="true" pointer="true" onClick={() => editAnswer(answer._id)}>
+                    수정
+                  </Typo>
+                )}
+                {user._id === answer.userId && (
+                  <Typo underline="true" pointer="true" onClick={() => deleteAnswer(answer._id)}>
+                    삭제
+                  </Typo>
+                )}
+              </BottomLeftContainer>
+              <BottomRightContainer>
+                <AuthorBox>
+                  <AskedTypo>Answered</AskedTypo>
+                  <AuthorContainer>
+                    <AuthorProfile>{answer.author}</AuthorProfile>
+                    <UserStateCircle color={answer.votes < 15 ? '#D1D5DB' : '#ffd700'} />
+                    <Typo>{answer.votes}</Typo>
+                  </AuthorContainer>
+                </AuthorBox>
+              </BottomRightContainer>
+            </BottomContainer>
+            {isLogin && <CommentForm _id={answer._id} selected="answer" />}
+          </BodySection>
+          {isLogin && user._id !== currentQuestion?.userId && user._id !== answer.userId && (
+            <WriteAnswerForm
+              ref={writeAnswerFormRef}
+              contents={contents}
+              onContentsChange={setContents}
+              postAnswer={postAnswer}
+              editingAnswerId={editingAnswerId}
+              onClickEditingCancel={onClickEditingCancel}
+            />
+          )}
+        </React.Fragment>
       ))}
-      {isLogin && user._id !== currentQuestion?.userId && (
-        <WriteAnswerForm
-          ref={writeAnswerFormRef}
-          contents={contents}
-          onContentsChange={setContents}
-          postAnswer={postAnswer}
-          editingAnswerId={editingAnswerId}
-          onClickEditingCancel={onClickEditingCancel}
-        />
-      )}
     </>
   );
 };
