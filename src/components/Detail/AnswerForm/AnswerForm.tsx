@@ -65,7 +65,19 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   const fetchAnswerData = async () => {
     try {
+      const token = localStorage.getItem('token');
       const answerResponse = await axios.get(`/api/answer/all/${_id}`);
+      if (token) {
+        const voteResponse = await axios.get(`/api/answer/${_id}/isVoted`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const saveResponse = await axios.get(`/api/answer/${_id}/isBookmarked`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setIsVoted(voteResponse.data);
+        setIsSaved(saveResponse.data);
+      }
+
       const foundAnswer = answerResponse.data;
       if (foundAnswer) {
         setAnswerData(foundAnswer);
@@ -192,13 +204,17 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      const isVoted = await axios.put(`/api/answer/${answerId}/vote`, null, {
+      const response = await axios.put(`/api/answer/${answerId}/vote`, null, {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      setIsVoted(isVoted.data);
+      const isVoted = response.data;
+      setIsVoted(isVoted);
       fetchAnswerData();
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신이 작성한 글은 투표할 수 없습니다.'); // 401 Unauthorized
+      }
       console.error('Error updating votes:', error);
       alert('투표 실패!');
     }
@@ -219,13 +235,17 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      const isSaved = await axios.put(`/api/answer/${answerId}/bookmark`, null, {
+      const response = await axios.put(`/api/answer/${answerId}/bookmark`, null, {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      setIsSaved(isSaved.data);
+      const isSaved = response.data;
+      setIsSaved(isSaved);
       fetchAnswerData();
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신이 작성한 글은 저장할 수 없습니다.'); // 401 Unauthorized
+      }
       console.error('Error updating saves:', error);
       alert('저장 실패!');
     }

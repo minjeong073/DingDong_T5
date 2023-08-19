@@ -19,9 +19,8 @@ router.post('/:questionId', authenticateToken, async (req, res) => {
     if (!question) {
       res.status(404).json('Question not found!');
     }
-    console.log(question.userId.toString(), userIdFromToken);
     if (question.userId.toString() === userIdFromToken) {
-      res.status(401).json('Access denied');
+      res.status(401).json('You cannot answer your own question!');
     }
     const newAnswer = new Answer({
       questionId: req.params.questionId,
@@ -268,7 +267,7 @@ router.put('/:id/vote', authenticateToken, async (req, res) => {
 });
 
 // isVoted - 투표 여부 확인
-router.get('/:id/vote', authenticateToken, async (req, res) => {
+router.get('/:id/isVoted', authenticateToken, async (req, res) => {
   const answerId = req.params.id;
   const userIdFromToken = req.user.id;
   try {
@@ -324,7 +323,7 @@ router.put('/:id/bookmark', authenticateToken, async (req, res) => {
 });
 
 // isBookmarked - 북마크 여부 확인
-router.get('/:id/bookmark', authenticateToken, async (req, res) => {
+router.get('/:id/isBookmarked', authenticateToken, async (req, res) => {
   const answerId = req.params.id;
   const userIdFromToken = req.user.id;
   try {

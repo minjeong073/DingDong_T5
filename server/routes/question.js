@@ -391,7 +391,7 @@ router.put('/:id/vote', authenticateToken, async (req, res) => {
 });
 
 // isVoted - 투표 여부 확인
-router.get('/:id/vote', authenticateToken, async (req, res) => {
+router.get('/:id/isVoted', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
   const userId = req.user.id;
   try {
@@ -448,7 +448,7 @@ router.put('/:id/bookmark', authenticateToken, async (req, res) => {
 });
 
 // isBookmarked - 북마크 여부 확인
-router.get('/:id/bookmark', authenticateToken, async (req, res) => {
+router.get('/:id/isBookmarked', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
   const userId = req.user.id;
   try {
