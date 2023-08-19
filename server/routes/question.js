@@ -5,10 +5,9 @@ const Vote = require('../models/Vote');
 const Comment = require('../models/Comment');
 const Bookmark = require('../models/Bookmark');
 
-const authenticateToken = require('../middlewares/authenticateToken');
-
-// TODO : 로그인한 유저만 질문을 작성할 수 있도록
-//        create, update, delete 미들웨어 추가
+const authMiddleware = require('../middlewares/authenticates');
+const authenticateToken = authMiddleware.authenticateToken;
+const authorizeUser = authMiddleware.authorizeUser;
 
 // Question CRUD
 // CREATE
@@ -226,17 +225,11 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', authenticateToken, async (req, res) => {
-  const userId = req.body.userId;
-  const userIdFromToken = req.user.id;
-  // console.log(userId, userIdFromToken);
+router.put('/:id', authenticateToken, authorizeUser, async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
     if (!question) {
-      res.status(404).json('Question not found!');
-    }
-    if (userId !== userIdFromToken) {
-      res.status(401).json('You can only update your own question!');
+      return res.status(404).json('Question not found!');
     }
     try {
       const updatedQuestion = await Question.findByIdAndUpdate(
@@ -259,8 +252,17 @@ router.put('/:id', authenticateToken, async (req, res) => {
 });
 
 // DELETE
-router.put('/:id/delete', async (req, res) => {
+router.put('/:id/delete', authenticateToken, async (req, res) => {
+  const questionId = req.params.id;
+  const userIdFromToken = req.user.id;
   try {
+    const question = await Question.findById(questionId);
+    if (!question) {
+      return res.status(404).json('Question not found');
+    }
+    if (question.userId.toString() !== userIdFromToken) {
+      return res.status(403).json('Access denied');
+    }
     await Question.findByIdAndUpdate(
       req.params.id,
       {
@@ -286,7 +288,7 @@ router.put('/:id/delete', async (req, res) => {
 // UPDATE ETC
 
 // Comment
-router.put('/:id/comment', async (req, res) => {
+router.put('/:id/comment', authenticateToken, authorizeUser, async (req, res) => {
   const questionId = req.params.id;
   try {
     const question = await Question.findById(questionId);
