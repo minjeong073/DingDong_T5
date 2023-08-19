@@ -5,7 +5,7 @@ import { Div, HashTag } from './styled';
 import { CustomPrevArrow, CustomNextArrow, CustomDotStyle } from './HashTagButton';
 
 interface CarouselComponentProps {
-  items: JSX.Element[];
+  items: string[];
 }
 
 export const RealCarousel: React.FC<CarouselComponentProps> = ({ items }) => {
