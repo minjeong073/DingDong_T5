@@ -19,7 +19,7 @@ import {
 } from './styled';
 import DOMPurify from 'dompurify';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios, { Axios, AxiosError } from 'axios';
 
 type ReplyRowProps = {
   type: string;
@@ -42,22 +42,34 @@ export const ReplyRow: React.FC<ReplyRowProps> = ({ type, item, expandedStates, 
 
   const onClickNavigateQuestion = async (item: any) => {
     try {
-      if (item.answerId) {
-        const answerResponse = await axios.get(`/api/answer/${item.answerId}`);
-        const answerData = answerResponse.data;
-        navigate(`/articles/${answerData.questionId}`);
-        return;
+      const itemId = item.questionId || item.answerId;
+
+      if (!itemId) {
+        return; // 둘 다 없는 경우 처리하지 않음
       }
-      if (item.questionId) {
-        navigate(`/articles/${item.questionId}`);
+
+      const isValidResponse = await axios.get(`/api/articles/valid/${itemId}`);
+      const isValid = isValidResponse.data.isValid;
+
+      if (isValid) {
+        if (item.answerId) {
+          const answerResponse = await axios.get(`/api/answer/${item.answerId}`);
+          const answerData = answerResponse.data;
+          navigate(`/articles/${answerData.questionId}`);
+        } else if (item.questionId) {
+          navigate(`/articles/${item.questionId}`);
+        }
+      } else {
+        alert('삭제된 게시글입니다.');
       }
     } catch (error) {
-      alert('삭제된 질문글입니다.');
+      console.log(error);
+      alert('오류가 발생했습니다.');
     }
   };
 
   return (
-    <TableRow key={item._id}>
+    <TableRow>
       <TableCell>
         <Upper>
           <Icon>

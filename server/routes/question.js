@@ -220,6 +220,26 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// GET - 클라이언트에서 요청한 질문 ID의 유효성을 검증
+router.get('/valid/:id', async (req, res) => {
+  try {
+    const questionId = req.params.id;
+
+    const question = await Question.findById(questionId);
+
+    if (question) {
+      // 유효한 질문 ID인 경우
+      res.status(200).json({ isValid: true });
+    } else {
+      // 유효하지 않은 질문 ID인 경우
+      res.status(200).json({ isValid: false });
+    }
+  } catch (error) {
+    console.error('Error checking question ID validity:', error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
 // UPDATE
 router.put('/:id', async (req, res) => {
   try {
