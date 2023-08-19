@@ -41,7 +41,9 @@ export const Login = () => {
         },
       );
       const { token } = response.data;
+      const expirationDate = new Date(new Date().getTime() + 60 * 60 * 1000);
       localStorage.setItem('token', token);
+      localStorage.setItem('expirationDate', expirationDate.toString());
       console.log('로그인 성공:', response.data);
       navigate('/');
       window.location.reload();
