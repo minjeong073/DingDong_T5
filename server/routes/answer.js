@@ -4,6 +4,7 @@ const Question = require('../models/Question');
 const Vote = require('../models/Vote');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
+const Bookmark = require('../models/Bookmark');
 
 const authMiddleware = require('../middlewares/authenticates');
 const authenticateToken = authMiddleware.authenticateToken;
@@ -261,6 +262,80 @@ router.put('/:id/vote', authenticateToken, async (req, res) => {
     }
     await answer.save();
     res.status(200).json({ message: 'Vote has been updated', isVoted });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// isVoted - 투표 여부 확인
+router.get('/:id/vote', authenticateToken, async (req, res) => {
+  const answerId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const vote = await Vote.findOne({
+      answerId,
+      userId: userIdFromToken,
+    });
+    if (!vote) {
+      return res.status(200).json(false);
+    } else {
+      return res.status(200).json(true);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Bookmark
+router.put('/:id/bookmark', authenticateToken, async (req, res) => {
+  const answerId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const answer = await Answer.findById(answerId);
+    let isBookmarked = false;
+    if (!answer) {
+      return res.status(404).json('Answer not found!');
+    }
+    if (answer.userId.toString() === userIdFromToken) {
+      return res.status(401).json('You cannot bookmark your answer');
+    }
+
+    const existingBookmark = await Bookmark.findOne({
+      answerId,
+      userId: userIdFromToken,
+    });
+    if (!existingBookmark) {
+      await Bookmark.create({
+        answerId,
+        userId: userIdFromToken,
+      });
+      answer.saves += 1;
+      isBookmarked = true;
+    } else {
+      await Bookmark.deleteOne({ _id: existingBookmark._id });
+      answer.saves -= 1;
+      isBookmarked = false;
+    }
+    await answer.save();
+    res.status(200).json({ message: 'Bookmark has been updated', isBookmarked });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// isBookmarked - 북마크 여부 확인
+router.get('/:id/bookmark', authenticateToken, async (req, res) => {
+  const answerId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const bookmark = await Bookmark.findOne({
+      answerId,
+      userId: userIdFromToken,
+    });
+    if (!bookmark) {
+      return res.status(200).json(false);
+    }
+    return res.status(200).json(true);
   } catch (err) {
     res.status(500).json(err);
   }
