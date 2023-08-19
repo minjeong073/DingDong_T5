@@ -45,18 +45,21 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const fetchQuestionData = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
+      console.log('token:', token);
       const response = await axios.get(`/api/articles/${_id}`);
-      const isVoted = await axios.get(`/api/articles/${_id}/vote`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const isSaved = await axios.get(`/api/articles/${_id}/bookmark`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (token) {
+        const isVoted = await axios.get(`/api/articles/${_id}/vote`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const isSaved = await axios.get(`/api/articles/${_id}/bookmark`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setIsVoted(isVoted.data);
+        setIsSaved(isSaved.data);
+      }
       const foundQuestion = response.data;
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
-        setIsVoted(isVoted.data);
-        setIsSaved(isSaved.data);
       }
     } catch (error) {
       console.error(error);
@@ -75,6 +78,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
 
   const deleteQuestion = async () => {
     const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     // token 없을 경우 로그인 알림 추가해주세요!
 
     try {
@@ -101,6 +108,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   // 투표수 업데이트
   const handleVote = async () => {
     const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     // token 없을 경우 알림 추가해주세요!
     try {
       /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
@@ -120,6 +131,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   // 저장수 업데이트
   const handleSave = async () => {
     const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     // token 없을 경우 알림 추가해주세요!
 
     /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
