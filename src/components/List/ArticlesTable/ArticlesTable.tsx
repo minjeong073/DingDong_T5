@@ -92,19 +92,19 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
 
   return (
     <>
-      <Table>
-        <Tbody>
-          {isLoading ? (
-            <>
-              {QuestionData?.map((question, idx) => (
-                <QuestionRow key={idx} item={question} />
-              ))}
-            </>
+
+          {isLoading ? (            
+            <Table>
+              <Tbody>
+                {QuestionData?.map((question, idx) => (
+                  <QuestionRow key={idx} item={question} />
+                ))}
+              </Tbody>                
+            </Table>
+                          
           ) : (
             <Loading />
           )}
-        </Tbody>
-      </Table>
       <Pagination
         page={page}
         QuestionData={QuestionData}
