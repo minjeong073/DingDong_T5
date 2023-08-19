@@ -3,6 +3,7 @@ import heartFillImg from 'assets/icon/heart_fill.svg';
 
 export const TableRow = styled.div`
   display: flex;
+  border-bottom: 1px solid #e9ecef;
   &:last-child {
     margin-bottom: 80px;
   }

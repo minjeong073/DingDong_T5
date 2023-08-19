@@ -44,13 +44,15 @@ export const Home = () => {
   const [allArticle, setAllArticle] = useState<QuestionDataType[]>([]);
   const [topQuestion, setTopQuestion] = useState<QuestionDataType[]>([]);
   const [topAnswer, setTopAnswer] = useState<AnswerDataType[]>([]);
-  const HashtagArr = Articles.map(item => item.hashtags);
-  const oneHashtag = HashtagArr.flat();
-  const onlyHashtag = Array.from(new Set(oneHashtag)).slice(0, 13);
-  const carouselItems: JSX.Element[] = onlyHashtag.map((item, index) => <div key={index}>{onlyHashtag[index]}</div>);
-  // console.log(carouselItems);
+  const [hashTags, setHashTags] = useState<string[]>([]);
 
   const navigate = useNavigate();
+
+  const getAllHashTags = useCallback(async () => {
+    const response = await axios.get('/api/articles/allhashtags');
+    const data = response.data;
+    setHashTags(data.hashtags);
+  }, []);
 
   const getAllArticles = async () => {
     const response = await axios.get(`/api/articles/all`);
@@ -88,6 +90,7 @@ export const Home = () => {
     getTopQuestion();
     getTopAnswer();
     getAllArticles();
+    getAllHashTags();
   }, []);
 
   return (
@@ -144,7 +147,7 @@ export const Home = () => {
           </AnswerBlock>
         </Block>
         <HashBody>
-          <RealCarousel items={carouselItems} />
+          <RealCarousel items={hashTags} />
         </HashBody>
       </Container>
     </Root>
