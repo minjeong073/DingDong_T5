@@ -5,21 +5,28 @@ const Vote = require('../models/Vote');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
 
+const authMiddleware = require('../middlewares/authenticates');
+const authenticateToken = authMiddleware.authenticateToken;
+
 // Answer CRUD
 // CREATE
-router.post('/:questionId', async (req, res) => {
-  const { content, userId } = req.body;
-
+router.post('/:questionId', authenticateToken, async (req, res) => {
+  const questionId = req.params.questionId;
+  const userIdFromToken = req.user.id;
   try {
-    const question = await Question.findById(req.params.questionId);
+    const question = await Question.findById(questionId);
     if (!question) {
       res.status(404).json('Question not found!');
+    }
+    console.log(question.userId.toString(), userIdFromToken);
+    if (question.userId.toString() === userIdFromToken) {
+      res.status(401).json('You cannot answer your own question!');
     }
     const newAnswer = new Answer({
       questionId: req.params.questionId,
       questionTitle: question.title,
-      content,
-      userId,
+      content: req.body.content,
+      userId: userIdFromToken,
     });
     const savedAnswer = await newAnswer.save();
     question.answers += 1;
@@ -59,8 +66,8 @@ router.get('/all/:questionId', async (req, res) => {
 
 // GET ALL ANSWERS WITH PAGINATION - VOTES
 router.get('/all', async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Get page number from query parameter
-  const pageSize = 10; // Number of items to display per page
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 10;
   const startIndex = (page - 1) * pageSize;
 
   try {
@@ -80,7 +87,7 @@ router.get('/all', async (req, res) => {
         return {
           ...answer._doc,
           author,
-          questionHashtags, // question의 hashtags를 반환합니다.
+          questionHashtags,
           createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
           }),
@@ -133,18 +140,18 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
+  const answerId = req.params.id;
+  const userIdFromToken = req.user.id;
   try {
-    const answer = await Answer.findById(req.params.id);
-    // TODO : === 이면 answer.userId 와 req.body.userId 가 다르게 나오는 문제 해결
-    if (answer.userId == req.body.userId) {
+    const answer = await Answer.findById(answerId);
+    if (answer.userId.toString() === userIdFromToken) {
       // 수정 사항에 questionId, title 있으면 무시
       delete req.body.questionId;
       delete req.body.questionTitle;
-
       try {
         const updateAnswer = await Answer.findByIdAndUpdate(
-          req.params.id,
+          answerId,
           {
             $set: req.body,
             updatedAt: new Date().toLocaleString('ko-KR', {
@@ -153,7 +160,7 @@ router.put('/:id', async (req, res) => {
           },
           { new: true },
         );
-        res.status(200).json(updateAnswer);
+        res.status(200).json({ message: 'Answer has been updated', updateAnswer });
       } catch (err) {
         res.status(500).json(err);
       }
