@@ -40,16 +40,16 @@ type ReplyRowProps = {
 export const ReplyRow: React.FC<ReplyRowProps> = ({ type, item, expandedStates, onClickExpanded }) => {
   const navigate = useNavigate();
 
-  const isValidQuestion = useCallback(async (questionId: string) => {
-    const isValid = await axios.get(`/api/articles/${questionId}`);
-    if (isValid.data) {
+  const isValidQuestion = async (questionId: string) => {
+    const response = await axios.get(`/api/articles/valid/${questionId}`);
+    if (response.data.isValid) {
       navigate(`/articles/${questionId}`);
     } else {
       alert('삭제된 게시글입니다.');
     }
-  }, []);
+  };
 
-  const onClickNavigateQuestion = useCallback(async (item: any) => {
+  const onClickNavigateQuestion = async (item: any) => {
     try {
       let questionId;
       if (item.answerId) {
@@ -66,7 +66,7 @@ export const ReplyRow: React.FC<ReplyRowProps> = ({ type, item, expandedStates, 
       console.log(error);
       alert('오류가 발생했습니다.');
     }
-  }, []);
+  };
 
   return (
     <TableRow>
