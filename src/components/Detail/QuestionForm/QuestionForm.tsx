@@ -51,14 +51,14 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       console.log('token:', token);
       const response = await axios.get(`/api/articles/${_id}`);
       if (token) {
-        const isVoted = await axios.get(`/api/articles/${_id}/vote`, {
+        const voteResponse = await axios.get(`/api/articles/${_id}/isVoted`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const isSaved = await axios.get(`/api/articles/${_id}/bookmark`, {
+        const saveResponse = await axios.get(`/api/articles/${_id}/isBookmarked`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setIsVoted(isVoted.data);
-        setIsSaved(isSaved.data);
+        setIsVoted(voteResponse.data);
+        setIsSaved(saveResponse.data);
       }
       const foundQuestion = response.data;
       if (foundQuestion) {
@@ -120,10 +120,11 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
       투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
        -> Vote 테이블에 userId와 questionId를 쿼리하여 이미 투표했는지 여부 확인 */
-      const isVoted = await axios.put(`/api/articles/${_id}/vote`, null, {
+      const response = await axios.put(`/api/articles/${_id}/vote`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsVoted(isVoted.data);
+      const isVoted = response.data;
+      setIsVoted(isVoted);
       fetchQuestionData();
     } catch (error) {
       console.error('Error updating votes:', error);
@@ -144,10 +145,11 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
      -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
     try {
-      const isSaved = await axios.put(`/api/articles/${_id}/bookmark`, null, {
+      const response = await axios.put(`/api/articles/${_id}/bookmark`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsSaved(isSaved.data);
+      const isSaved = response.data;
+      setIsSaved(isSaved);
       fetchQuestionData();
     } catch (error) {
       console.error('Error updating saves:', error);

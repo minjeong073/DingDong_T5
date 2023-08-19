@@ -39,6 +39,7 @@ interface AnswerDataType {
   author: string;
   votes: number;
   saves: number;
+  comments: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -58,6 +59,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   });
   // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
+  const [isVoted, setIsVoted] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const isLogin = useRecoilValue(LoginState);
 
   // to get the reference of the Quill editor
@@ -65,7 +68,19 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   const fetchAnswerData = async () => {
     try {
+      const token = localStorage.getItem('token');
       const answerResponse = await axios.get(`/api/answer/all/${_id}`);
+      if (token) {
+        const voteResponse = await axios.get(`/api/answer/${_id}/isVoted`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const saveResponse = await axios.get(`/api/answer/${_id}/isBookmarked`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setIsVoted(voteResponse.data);
+        setIsSaved(saveResponse.data);
+      }
+
       const foundAnswer = answerResponse.data;
       if (foundAnswer) {
         setAnswerData(foundAnswer);
@@ -142,11 +157,21 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // 특정 answer를 삭제하는 함수
   const deleteAnswer = async (answerId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     try {
-      await axios.delete(`/api/answer/${answerId}`).then(res => {
-        setAnswerData((prevAnswerData: AnswerDataType[]) => prevAnswerData.filter(item => item._id !== answerId));
-        alert('답변 삭제 성공!');
-      });
+      if (!window.confirm('정말 삭제하시겠습니까?')) return;
+      await axios
+        .delete(`/api/answer/${answerId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+          setAnswerData((prevAnswerData: AnswerDataType[]) => prevAnswerData.filter(item => item._id !== answerId));
+          alert('답변 삭제 성공!');
+        });
     } catch (error) {
       console.error(error);
       alert('답변 삭제 실패!');
@@ -169,6 +194,11 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // Function to handle voting
   const handleVote = async (answerId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     try {
       /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
       투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
@@ -177,11 +207,17 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      await axios.put(`/api/answer/${answerId}/vote`, {
+      const response = await axios.put(`/api/answer/${answerId}/vote`, null, {
+        headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
+      const isVoted = response.data;
+      setIsVoted(isVoted);
       fetchAnswerData();
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신이 작성한 글은 투표할 수 없습니다.'); // 401 Unauthorized
+      }
       console.error('Error updating votes:', error);
       alert('투표 실패!');
     }
@@ -189,22 +225,33 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // Function to handle saving
   const handleSave = async (answerId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
     저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
      -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
-    /*  try {
+    try {
       const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      await axios.put(`/api/answer/${answerId}/bookmark`, {
+      const response = await axios.put(`/api/answer/${answerId}/bookmark`, null, {
+        headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
+      const isSaved = response.data;
+      setIsSaved(isSaved);
       fetchAnswerData();
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신이 작성한 글은 저장할 수 없습니다.'); // 401 Unauthorized
+      }
       console.error('Error updating saves:', error);
       alert('저장 실패!');
-    } */
+    }
   };
 
   const onClickEditingCancel = () => {
@@ -233,14 +280,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           <TopContainer>
             <ItemContainer>
               {/* 투표 */}
-              {true ? (
+              {isVoted ? (
                 <HeartFillIcon onClick={() => handleVote(answer._id)} />
               ) : (
                 <HeartIcon onClick={() => handleVote(answer._id)} />
               )}
               <ItemTypo>{answer.votes}</ItemTypo>
               {/* 저장 */}
-              {true ? (
+              {isSaved ? (
                 <SaveFillIcon onClick={() => handleSave(answer._id)} />
               ) : (
                 <SaveIcon onClick={() => handleSave(answer._id)} />

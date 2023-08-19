@@ -4,6 +4,7 @@ const Question = require('../models/Question');
 const Vote = require('../models/Vote');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
+const Bookmark = require('../models/Bookmark');
 
 const authMiddleware = require('../middlewares/authenticates');
 const authenticateToken = authMiddleware.authenticateToken;
@@ -18,7 +19,6 @@ router.post('/:questionId', authenticateToken, async (req, res) => {
     if (!question) {
       res.status(404).json('Question not found!');
     }
-    console.log(question.userId.toString(), userIdFromToken);
     if (question.userId.toString() === userIdFromToken) {
       res.status(401).json('You cannot answer your own question!');
     }
@@ -145,6 +145,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
   const userIdFromToken = req.user.id;
   try {
     const answer = await Answer.findById(answerId);
+    if (!answer) {
+      return res.status(404).json('Answer not found!');
+    }
     if (answer.userId.toString() === userIdFromToken) {
       // 수정 사항에 questionId, title 있으면 무시
       delete req.body.questionId;
@@ -165,7 +168,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
         res.status(500).json(err);
       }
     } else {
-      res.status(401).json('You can update only your Answer!');
+      res.status(401).json('Access denied');
     }
   } catch (err) {
     res.status(500).json(err);
@@ -173,19 +176,22 @@ router.put('/:id', authenticateToken, async (req, res) => {
 });
 
 // DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
+  const answerId = req.params.id;
+  const userIdFromToken = req.user.id;
   try {
-    const answer = await Answer.findById(req.params.id);
-
+    const answer = await Answer.findById(answerId);
     if (!answer) {
-      res.status(404).json('Answer not found!');
+      return res.status(404).json('Answer not found!');
     }
-
+    if (answer.userId.toString() !== userIdFromToken) {
+      return res.status(401).json('Access denied');
+    }
     try {
       const question = await Question.findById(answer.questionId);
 
-      await Answer.findByIdAndDelete(req.params.id);
-      await Vote.deleteMany({ answerId: req.params.id });
+      await Answer.findByIdAndDelete(answerId);
+      await Vote.deleteMany({ answerId: answerId });
       question.answers -= 1;
       await question.save();
       res.status(200).json('Answer has been deleted');
@@ -200,27 +206,23 @@ router.delete('/:id', async (req, res) => {
 // UPDATE ETC
 
 // Comment
-router.put('/:id/comment', async (req, res) => {
+router.put('/:id/comment', authenticateToken, async (req, res) => {
   const answerId = req.params.id;
-  console.log(answerId);
+  const userIdFromToken = req.user.id;
   try {
     const answer = await Answer.findById(answerId);
-    const userId = req.body.userId;
-    const user = await User.findById(userId);
-
     if (!answer) {
-      res.status(404).json('Answer not found!');
-    }
-    if (!user) {
-      res.status(404).json('User not found!');
+      return res.status(404).json('Answer not found!');
     }
 
     const newComment = new Comment({
       answerId: answerId,
       content: req.body.content,
-      userId: userId,
+      userId: userIdFromToken,
     });
     const savedComment = await newComment.save();
+    answer.comments += 1;
+    await answer.save();
     res.status(200).json(savedComment);
   } catch (err) {
     res.status(500).json(err);
@@ -228,33 +230,111 @@ router.put('/:id/comment', async (req, res) => {
 });
 
 // VOTE
-router.put('/:id/vote', async (req, res) => {
+router.put('/:id/vote', authenticateToken, async (req, res) => {
   const answerId = req.params.id;
-  const userId = req.body.userId;
-
+  const userIdFromToken = req.user.id;
   try {
     const answer = await Answer.findById(answerId);
-
+    let isVoted = false;
     if (!answer) {
-      res.status(404).json('Answer not found!');
+      return res.status(404).json('Answer not found!');
+    }
+    if (answer.userId.toString() === userIdFromToken) {
+      return res.status(401).json('You cannot vote your answer');
     }
     const existingVote = await Vote.findOne({
       answerId,
-      userId: userId,
+      userId: userIdFromToken,
     });
 
     if (!existingVote) {
       await Vote.create({
         answerId,
-        userId: userId,
+        userId: userIdFromToken,
       });
       answer.votes += 1;
+      isVoted = true;
     } else {
       await Vote.deleteOne({ _id: existingVote._id });
       answer.votes -= 1;
+      isVoted = false;
     }
     await answer.save();
-    res.status(200).json(answer);
+    res.status(200).json({ message: 'Vote has been updated', isVoted });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// isVoted - 투표 여부 확인
+router.get('/:id/isVoted', authenticateToken, async (req, res) => {
+  const answerId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const vote = await Vote.findOne({
+      answerId,
+      userId: userIdFromToken,
+    });
+    if (!vote) {
+      return res.status(200).json(false);
+    } else {
+      return res.status(200).json(true);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Bookmark
+router.put('/:id/bookmark', authenticateToken, async (req, res) => {
+  const answerId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const answer = await Answer.findById(answerId);
+    let isBookmarked = false;
+    if (!answer) {
+      return res.status(404).json('Answer not found!');
+    }
+    if (answer.userId.toString() === userIdFromToken) {
+      return res.status(401).json('You cannot bookmark your answer');
+    }
+
+    const existingBookmark = await Bookmark.findOne({
+      answerId,
+      userId: userIdFromToken,
+    });
+    if (!existingBookmark) {
+      await Bookmark.create({
+        answerId,
+        userId: userIdFromToken,
+      });
+      answer.saves += 1;
+      isBookmarked = true;
+    } else {
+      await Bookmark.deleteOne({ _id: existingBookmark._id });
+      answer.saves -= 1;
+      isBookmarked = false;
+    }
+    await answer.save();
+    res.status(200).json({ message: 'Bookmark has been updated', isBookmarked });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// isBookmarked - 북마크 여부 확인
+router.get('/:id/isBookmarked', authenticateToken, async (req, res) => {
+  const answerId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const bookmark = await Bookmark.findOne({
+      answerId,
+      userId: userIdFromToken,
+    });
+    if (!bookmark) {
+      return res.status(200).json(false);
+    }
+    return res.status(200).json(true);
   } catch (err) {
     res.status(500).json(err);
   }

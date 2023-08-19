@@ -4,6 +4,10 @@ const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
+const Bookmark = require('../models/Bookmark');
+
+const authMiddleware = require('../middlewares/authenticates');
+const authenticateToken = authMiddleware.authenticateToken;
 
 // GET BY QUESTION ID OR ANSWER ID
 router.get('/', async (req, res) => {
@@ -132,62 +136,58 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
+  const commentId = req.params.id;
+  const userIdFromToken = req.user.id;
   try {
-    const comment = await Comment.findById(req.params.id);
+    const comment = await Comment.findById(commentId);
     if (!comment) {
-      res.status(404).json('Comment not found!');
+      return res.status(404).json('Comment not found!');
     }
-    // TODO : token 구현 후 수정 예정
-    if (comment.userId.toString() === req.body.userId) {
-      try {
-        const updatedComment = await Comment.findByIdAndUpdate(
-          req.params.id,
-          {
-            $set: req.body,
-          },
-          { new: true },
-        );
-        res.status(200).json(updatedComment);
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json('You can update only your Comment!');
+    if (comment.userId.toString() !== userIdFromToken) {
+      return res.status(401).json('You can update only your Comment!');
+    }
+    try {
+      const updatedComment = await Comment.findByIdAndUpdate(
+        commentId,
+        {
+          $set: req.body,
+          updatedAt: new Date().toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        },
+        { new: true },
+      );
+      res.status(200).json(updatedComment);
+    } catch (err) {
+      res.status(500).json(err);
     }
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-// DELETE Comment
-router.delete('/:id', async (req, res) => {
+// DELETE
+router.delete('/:id', authenticateToken, async (req, res) => {
+  const commentId = req.params.id;
+  const userIdFromToken = req.user.id;
   try {
-    const comment = await Comment.findById(req.params.id);
+    const comment = await Comment.findById(commentId);
     if (!comment) {
-      res.status(404).json('Comment not found!');
+      return res.status(404).json('Comment not found!');
     }
-
-    // TODO : token 구현 후 수정 예정
-    if (comment.userId.toString() === req.body.userId) {
-      if (comment.questionId) {
-        const question = await Question.findById(comment.questionId);
-        question.comments -= 1;
-        await question.save();
-      } else if (comment.answerId) {
-        const answer = await Answer.findById(comment.answerId);
-        answer.comments -= 1;
-        await answer.save();
-      }
-      // comment 삭제
-      try {
-        await Comment.findByIdAndDelete(req.params.id);
-        res.status(200).json('Comment has been deleted...');
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json('You can delete only your Comment!');
+    if (comment.userId.toString() !== userIdFromToken) {
+      return res.status(401).json('You can delete only your Comment!');
+    }
+    try {
+      await Comment.findByIdAndDelete(commentId);
+      const model = comment.questionId ? Question : Answer;
+      await model.findByIdAndUpdate(comment.questionId || comment.answerId, {
+        $inc: { comments: -1 },
+      });
+      res.status(200).json('Comment has been deleted!');
+    } catch (err) {
+      res.status(500).json(err);
     }
   } catch (err) {
     res.status(500).json(err);
@@ -195,33 +195,113 @@ router.delete('/:id', async (req, res) => {
 });
 
 // VOTE
-router.put('/:id/vote', async (req, res) => {
+router.put('/:id/vote', authenticateToken, async (req, res) => {
   const commentId = req.params.id;
-  const userId = req.body.userId;
+  const userIdFromToken = req.user.id;
 
   try {
     const comment = await Comment.findById(commentId);
+    let isVoted = false;
 
     if (!comment) {
-      res.status(404).json('Comment not found!');
+      return res.status(404).json('Comment not found!');
+    }
+    if (comment.userId.toString() === userIdFromToken) {
+      return res.status(401).json('You cannot vote your own comment!');
     }
     const existingVote = await Vote.findOne({
       commentId,
-      userId: userId,
+      userId: userIdFromToken,
     });
 
     if (!existingVote) {
       await Vote.create({
         commentId,
-        userId: userId,
+        userId: userIdFromToken,
       });
       comment.votes += 1;
+      isVoted = true;
     } else {
       await Vote.deleteOne({ _id: existingVote._id });
       comment.votes -= 1;
+      isVoted = false;
     }
     await comment.save();
-    res.status(200).json(comment);
+    res.status(200).json({ message: 'Vote has been updated', isVoted });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// isVoted
+router.get('/:id/isVoted', authenticateToken, async (req, res) => {
+  const commentId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const vote = await Vote.findOne({
+      commentId,
+      userId: userIdFromToken,
+    });
+    if (!vote) {
+      return res.status(200).json(false);
+    }
+    res.status(200).json(true);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Bookmark
+router.put('/:id/bookmark', authenticateToken, async (req, res) => {
+  const commentId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const comment = await Comment.findById(commentId);
+    let isBookmarked = false;
+    if (!comment) {
+      return res.status(404).json('Comment not found!');
+    }
+    if (comment.userId.toString() === userIdFromToken) {
+      return res.status(401).json('You cannot bookmark your own comment!');
+    }
+    const existingBookmark = await Bookmark.findOne({
+      commentId,
+      userId: userIdFromToken,
+    });
+
+    if (!existingBookmark) {
+      await Bookmark.create({
+        commentId,
+        userId: userIdFromToken,
+      });
+      comment.bookmarks += 1;
+      isBookmarked = true;
+    } else {
+      await Bookmark.deleteOne({ _id: existingBookmark._id });
+      comment.bookmarks -= 1;
+      isBookmarked = false;
+    }
+    await comment.save();
+    res.status(200).json({ message: 'Bookmark has been updated', isBookmarked });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// isBookmarked
+router.get('/:id/isBookmarked', authenticateToken, async (req, res) => {
+  const commentId = req.params.id;
+  const userIdFromToken = req.user.id;
+  try {
+    const bookmark = await Bookmark.findOne({
+      commentId,
+      userId: userIdFromToken,
+    });
+    if (!bookmark) {
+      return res.status(200).json(false);
+    } else {
+      return res.status(200).json(true);
+    }
   } catch (err) {
     res.status(500).json(err);
   }
