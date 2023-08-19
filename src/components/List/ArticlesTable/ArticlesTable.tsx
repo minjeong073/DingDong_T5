@@ -7,7 +7,7 @@ import type { QuestionDataType } from '../../../stores/page-store';
 import { Link } from 'react-router-dom';
 import { Table, Tbody } from './styled';
 import { Pagination } from '../Pagination';
-import { QuestionRow } from 'components/QuestionRow';
+import { QuestionRow, Loading } from 'components';
 
 type Props = {
   selectedOrder: {
@@ -21,6 +21,7 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
   const [page, setPage] = useState<number>(1);
   const [QuestionData, setQuestionData] = useState<QuestionDataType[]>([]);
   const [totalQuestions, setTotalQuestions] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const itemsPerPage = 5;
 
   const fetchLatestQuestionData = async (page: number) => {
@@ -32,6 +33,7 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
 
       const updatedQuestions = response.data.updatedQuestions;
       setQuestionData(updatedQuestions);
+      setIsLoading(true);
     } catch (error) {
       console.error(error);
       alert('게시판 정보 가져오기 실패!');
@@ -45,6 +47,7 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
 
       const updatedQuestions = response.data.updatedQuestions;
       setQuestionData(updatedQuestions);
+      setIsLoading(true);
     } catch (error) {
       console.error(error);
       alert('게시판 정보 가져오기 실패!');
@@ -58,6 +61,7 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
 
       const updatedQuestions = response.data.updatedQuestions;
       setQuestionData(updatedQuestions);
+      setIsLoading(true);
     } catch (error) {
       console.error(error);
       alert('게시판 정보 가져오기 실패!');
@@ -86,30 +90,19 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
     setPage(value);
   };
 
-  //api 이용해서
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await allArticles<String[]>();
-  //       setArticles(response.data);
-  //     }catch(error){
-  //     console.error(error);
-  //     alert("게시판 정보 가져오기 실패!");
-  //     }
-  //   };
-  //   fetchData();
-  // }, [setArticles]);
-
-  /*   //해시태그 클릭하면 그 기능을 확인할 수 있음
-  const onClickHashtag = () => {}; */
-
   return (
     <>
       <Table>
         <Tbody>
-          {QuestionData?.map((question, idx) => (
-            <QuestionRow key={idx} item={question} />
-          ))}
+          {isLoading ? (
+            <>
+              {QuestionData?.map((question, idx) => (
+                <QuestionRow key={idx} item={question} />
+              ))}
+            </>
+          ) : (
+            <Loading />
+          )}
         </Tbody>
       </Table>
       <Pagination

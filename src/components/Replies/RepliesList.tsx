@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Tbody, Table, LButton, Button1, Button2, LoadingSection, LoadingIcon } from './styled';
+import { Tbody, Table, LButton, Button1, Button2 } from './styled';
 import { useNavigate } from 'react-router-dom';
 import WhiteLogo from '../../assets/icon/white_logo.svg';
 import { Holder, Img, Span } from '../List/ArticleList/styled';
@@ -7,6 +7,7 @@ import { Button } from '../Button';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroller';
 import { ReplyRow } from '../ReplyRow';
+import { Loading } from 'components/Loading';
 
 const fetchUrl = async (url: string) => {
   const response = await fetch(url);
@@ -109,12 +110,7 @@ export const RepliesList = () => {
               <></>
             )}
           </InfiniteScroll>
-          {isLoading ||
-            (isFetching && (
-              <LoadingSection>
-                <LoadingIcon />
-              </LoadingSection>
-            ))}
+          {isLoading || (isFetching && <Loading />)}
         </Tbody>
       </Table>
     </>
