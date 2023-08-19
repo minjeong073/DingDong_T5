@@ -8,3 +8,15 @@ export const LoginState = atom({
   default: false,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const UserState = atom({
+  key: 'UserState',
+  default: {
+    _id: '',
+    email: '',
+    username: '',
+    phoneNumber: '',
+    bookmarkedQuestions: [],
+  },
+  effects_UNSTABLE: [persistAtom],
+});

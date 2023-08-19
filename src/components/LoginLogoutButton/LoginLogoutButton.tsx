@@ -1,10 +1,11 @@
 import { UserSection, LoginTypo, LogoutTypo, SignUpTypo } from './styled';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { LoginState } from 'stores/login-store';
+import { LoginState, UserState } from 'stores/login-store';
 
 export const LoginLogoutButton = () => {
   const isLogin = useRecoilValue(LoginState);
+  const user = useRecoilValue(UserState);
   const [loginState, setLoginState] = useRecoilState(LoginState);
 
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const LoginLogoutButton = () => {
   return (
     <>
       {isLogin ? (
-        <UserSection onClick={() => navigate('/mypage')}>딩동</UserSection>
+        <UserSection onClick={() => navigate('/mypage')}>{user?.username}</UserSection>
       ) : (
         <LoginTypo onClick={() => navigate('/signin')}> 로그인 </LoginTypo>
       )}

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { LogoSection, LogoImg, LogoTypo } from '../../components/Header/styled';
 import { Root, Container, IDbox, PWbox, ActionContainer, Button1, Button2 } from './styled';
-import { LoginState } from '../../stores/login-store';
+import { LoginState, UserState } from '../../stores/login-store';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
@@ -9,6 +9,7 @@ import axios from 'axios';
 
 export const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState);
+  const [userState, setUserState] = useRecoilState(UserState);
   const [name, setName] = useState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +27,7 @@ export const Login = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
+      const tokenResponse = await axios.post(
         '/api/auth/signin',
         {
           email: email,
@@ -36,14 +37,24 @@ export const Login = () => {
           withCredentials: true,
         },
       );
-      const { token } = response.data;
+      const { token } = tokenResponse.data;
       const expirationDate = new Date(new Date().getTime() + 60 * 60 * 1000);
       localStorage.setItem('token', token);
       localStorage.setItem('expirationDate', expirationDate.toString());
-      console.log('로그인 성공:', response.data);
+      console.log('로그인 성공:', tokenResponse.data);
 
-      // 로그인 성공 후 LoginState atom을 true로 변경
+      // 유저 정보 받아오기
+      const userResponse = await axios.get('/api/mypage', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const user = userResponse.data;
+      console.log('유저정보:', user);
+
+      // 로그인 성공 후
       setIsLoggedIn(true);
+      setUserState(user);
 
       navigate('/');
       window.location.reload();
