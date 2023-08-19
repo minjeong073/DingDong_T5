@@ -1,36 +1,20 @@
 import { useState } from 'react';
 import { SearchBar } from './SearchBar';
-import {
-  LogoImg,
-  LogoSection,
-  LogoTypo,
-  NotificationSection,
-  Root,
-  SearchInput,
-  UserSection,
-  LoginTypo,
-  SignUpTypo,
-  LogoutTypo,
-} from './styled';
+import { LogoImg, LogoSection, LogoTypo, Root, SearchInput } from './styled';
 import { useNavigate } from 'react-router-dom';
+import { LoginLogoutButton } from 'components';
 
 export const Header = () => {
-  const [isLogin, setIsLogin] = useState(false);
   const navigate = useNavigate();
 
   return (
     <Root>
-      <LogoSection onClick={()=>navigate('/')}>
+      <LogoSection onClick={() => navigate('/')}>
         <LogoImg />
         <LogoTypo>DINGDONG</LogoTypo>
       </LogoSection>
       <SearchInput />
-      {isLogin ? <UserSection>딩동</UserSection> : <LoginTypo onClick={() => navigate('/signin')}>로그인</LoginTypo>}
-      {isLogin ? (
-        <LogoutTypo>로그아웃</LogoutTypo>
-      ) : (
-        <SignUpTypo onClick={() => navigate('/signup')}>회원가입</SignUpTypo>
-      )}
+      <LoginLogoutButton />
     </Root>
   );
 };

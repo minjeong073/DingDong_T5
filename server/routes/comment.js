@@ -5,28 +5,6 @@ const Vote = require('../models/Vote');
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 
-// GET BY COMMENT ID
-router.get('/:id', async (req, res) => {
-  try {
-    const comment = await Comment.findById(req.params.id);
-    if (!comment) {
-      res.status(404).json('Comment not found!');
-    }
-    const updatedComment = {
-      ...comment._doc,
-      createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
-        timeZone: 'Asia/Seoul',
-      }),
-      updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
-        timeZone: 'Asia/Seoul',
-      }),
-    };
-    res.status(200).json(updatedComment);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
 // GET BY QUESTION ID OR ANSWER ID
 router.get('/', async (req, res) => {
   try {
@@ -79,7 +57,7 @@ router.get('/all', async (req, res) => {
   const startIndex = (page - 1) * pageSize;
 
   try {
-    const totalComments = await Comment.countDocuments();
+    const totalComments = await Comment.countDocuments({});
     const totalPages = Math.ceil(totalComments / pageSize);
 
     const comments = await Comment.find().sort({ votes: -1 }).skip(startIndex).limit(pageSize).exec();
@@ -89,9 +67,24 @@ router.get('/all', async (req, res) => {
         const user = await User.findById(comment.userId);
         const author = user ? user.username : 'unknown';
 
-        const updatedComment = {
+        let questionHashtags;
+
+        if (comment.answerId) {
+          const answer = await Answer.findById(comment.answerId);
+          if (answer && answer.questionId) {
+            const question = await Question.findById(answer.questionId);
+            questionHashtags = question ? question.hashtags : [];
+          }
+        }
+        if (comment.questionId) {
+          const question = await Question.findById(comment.questionId);
+          questionHashtags = question ? question.hashtags : [];
+        }
+
+        return {
           ...comment._doc,
           author,
+          questionHashtags,
           createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
           }),
@@ -99,18 +92,40 @@ router.get('/all', async (req, res) => {
             timeZone: 'Asia/Seoul',
           }),
         };
-        return updatedComment;
       }),
     );
 
     const hasNextPage = page < totalPages;
     const nextPage = hasNextPage ? page + 1 : null;
-    const nextPageUrl = nextPage ? `http://localhost:5001/api/comments/all?page=${nextPage}` : null;
+    const nextPageUrl = nextPage ? `http://localhost:5001/api/comment/all?page=${nextPage}` : null;
 
     res.status(200).json({
       comments: updatedComments,
       nextPageUrl,
     });
+  } catch (err) {
+    console.error(err); // Log the error for debugging purposes
+    res.status(500).json(err);
+  }
+});
+
+// GET BY COMMENT ID
+router.get('/:id', async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) {
+      res.status(404).json('Comment not found!');
+    }
+    const updatedComment = {
+      ...comment._doc,
+      createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+      updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+    };
+    res.status(200).json(updatedComment);
   } catch (err) {
     res.status(500).json(err);
   }

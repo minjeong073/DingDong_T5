@@ -5,8 +5,6 @@ import {
   LogoTypo,
   Header,
   Div,
-  Login,
-  SignUp,
   Container,
   Button1,
   Button2,
@@ -17,13 +15,11 @@ import {
   QuestionTypo,
   TitleText,
   TopItems,
-  DotTypo,
   TopItem,
   ButtonBar,
   HashBody,
 } from './styled';
-import { SearchBar } from 'components/Header';
-import { RealCarousel } from '../../components/HashtagBar/';
+import { SearchBar, LoginLogoutButton, RealCarousel } from 'components';
 import { Link, useNavigate } from 'react-router-dom';
 import Articles from '../../db/articles.json';
 import axios from 'axios';
@@ -101,12 +97,7 @@ export const Home = () => {
           <LogoTypo>DINGDONG</LogoTypo>
         </LogoSection>
         <Div>
-          <Login>
-            <Link to={'/signin'}>로그인</Link>
-          </Login>
-          <SignUp>
-            <Link to={'/signup'}>회원가입</Link>
-          </SignUp>
+          <LoginLogoutButton />
         </Div>
       </Header>
       <Container>

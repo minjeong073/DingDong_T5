@@ -38,23 +38,6 @@ export const LogoTypo = styled.div`
   letter-spacing: -1px;
 `;
 
-export const UserSection = styled.div`
-  display: flex;
-  width: 72px;
-  height: 47px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  margin-left: 35px;
-  background: #f1f5f9;
-  color: #64748b;
-  font-size: 20px;
-  /* font-weight: 500; */
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
 export const NotificationSection = styled.img.attrs({
   src: NotificationIcon,
 })`
@@ -64,29 +47,6 @@ export const NotificationSection = styled.img.attrs({
   &:hover {
     cursor: pointer;
   }
-`;
-
-export const LoginTypo = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 72px;
-  height: 47px;
-  margin-left: 45px;
-  color: #64748b;
-  font-size: 15px;
-  &:hover {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-`;
-
-export const LogoutTypo = styled(LoginTypo)`
-  margin-left: 15px;
-`;
-
-export const SignUpTypo = styled(LoginTypo)`
-  margin-left: 0;
 `;
 
 export const Fragment = styled.div`
@@ -101,13 +61,13 @@ interface IWrapper {
 
 export const Wrapper = styled.div<IWrapper>`
   display: flex;
-  flex-direction: row;
-  width: ${props => (props.$ishome ? '686px' : '611px')};
+  justify-content: center;
+  width: ${props => (props.$ishome ? '686px' : '661px')};
   height: ${props => (props.$ishome ? '68px' : '48px')};
   border-radius: ${props => (props.$ishome ? '50px' : '20px')};
   background: #fff;
-  box-shadow: 0px 0px ${props => (props.$ishome ? '30px' : '8px')} 0px
-    ${props => (props.$ishome ? 'rgba(100, 116, 139, 0.18)' : 'rgba(100, 116, 139, 0.3)')};
+  box-shadow: 0px 0px ${props => (props.$ishome ? '30px' : '8px')} 0px rgba(100, 116, 139, 0.18);
+  margin-left: ${props => (props.$ishome ? '0' : '16px')};
 
   .SearchInput {
     width: 100%;
@@ -155,11 +115,12 @@ export const SearchInput = styled.input`
   /* border: 0.2px solid #e2e8f0; */
   border-radius: 20px;
   background: #fff;
-  box-shadow: 0px 0px 8px 0px #e2e8f0;
+  box-shadow: 0px 0px 8px 0px rgba(100, 116, 139, 0.18);
   background-image: url(${SearchIcon});
   background-repeat: no-repeat;
   background-position: 20px 50%;
   font-size: 16px;
+  margin-left: 16px;
 `;
 
 export const DataResult = styled.div`
@@ -197,10 +158,10 @@ export const DataResult = styled.div`
       background-color: lightgrey;
       cursor: pointer;
     }
-    .title{
+    .title {
       font-weight: 600;
     }
-    .content{
+    .content {
       font-size: 13px;
     }
   }

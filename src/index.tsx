@@ -3,19 +3,11 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import GlobalStyle from './GlobalStyle';
 import { Layout } from './routes/Layout';
-import { WriteQuestion } from './pages/WriteQuestion';
-import { List } from './pages/List/List';
-import { SearchPage } from './pages/List';
-import { SearchTagPage } from './pages/List';
-import { Home } from './pages/Home/Home';
 import { RecoilRoot } from 'recoil';
-import { Detail } from './pages/Detail';
-import { Replies } from './pages/Replies';
-import { ModifyQuestion } from './pages/ModifyQuestion';
-import { Login } from './pages/Login';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { Home, Login, List, Detail, WriteQuestion, ModifyQuestion, Replies, SearchPage, SearchTagPage } from './pages';
 
 axios.defaults.baseURL = 'http://localhost:3000';
 axios.defaults.withCredentials = true;
@@ -42,10 +34,10 @@ root.render(
             <Route path="/replies" element={<Layout />}>
               <Route index element={<Replies />} />
             </Route>
-            <Route path="/search" element={<Layout/>}>
-              <Route index element={<SearchPage/>} />
-              <Route index element={<SearchTagPage/>} />
-            </Route> 
+            <Route path="/search" element={<Layout />}>
+              <Route index element={<SearchPage />} />
+              <Route index element={<SearchTagPage />} />
+            </Route>
             <Route path="/mypage" element={<Layout />}></Route>
           </Routes>
         </BrowserRouter>
