@@ -6,10 +6,7 @@ import { LoginState } from '../../stores/login-store';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { useUserActions } from '../../api/userAPI';
 import axios from 'axios';
-import { response } from 'express';
-import { stringify } from 'querystring';
 
 export const Login = () => {
   const [ isLoggedIn, setIsLoggedIn ] = useRecoilState(LoginState);
