@@ -245,11 +245,14 @@ router.get('/valid/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', authenticateToken, authorizeUser, async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
     if (!question) {
       return res.status(404).json('Question not found!');
+    }
+    if (question.userId.toString() !== req.user.id) {
+      return res.status(403).json('You can update only your question!');
     }
     try {
       const updatedQuestion = await Question.findByIdAndUpdate(
@@ -284,7 +287,7 @@ router.put('/:id/delete', authenticateToken, async (req, res) => {
       return res.status(403).json('Access denied');
     }
     await Question.findByIdAndUpdate(
-      req.params.id,
+      questionId,
       {
         content: '',
         isDeleted: true,
@@ -308,18 +311,13 @@ router.put('/:id/delete', authenticateToken, async (req, res) => {
 // UPDATE ETC
 
 // Comment
-router.put('/:id/comment', authenticateToken, authorizeUser, async (req, res) => {
+router.put('/:id/comment', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
+  const userId = req.user.id;
   try {
     const question = await Question.findById(questionId);
-    const userId = req.body.userId;
-    const user = await User.findById(userId);
-
     if (!question) {
       res.status(404).json('Question not found!');
-    }
-    if (!user) {
-      res.status(404).json('User not found!');
     }
 
     const newComment = new Comment({
@@ -337,14 +335,18 @@ router.put('/:id/comment', authenticateToken, authorizeUser, async (req, res) =>
 });
 
 // Votes
-router.put('/:id/vote', async (req, res) => {
+router.put('/:id/vote', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
-  const userId = req.body.userId;
+  const userId = req.user.id;
   try {
     const question = await Question.findById(questionId);
-
+    let isVoted = false;
     if (!question) {
       res.status(404).json('Question not found!');
+    }
+    // token userId 와 question userId 가 같은 경우 투표할 수 없음
+    if (question.userId.toString() === userId) {
+      return res.status(403).json('You cannot vote your own question!');
     }
     const existingVote = await Vote.findOne({
       questionId,
@@ -357,26 +359,32 @@ router.put('/:id/vote', async (req, res) => {
         userId: userId,
       });
       question.votes += 1;
+      isVoted = true;
     } else {
       await Vote.deleteOne({ _id: existingVote._id });
       question.votes -= 1;
+      isVoted = false;
     }
     await question.save();
-    res.status(200).json(question);
+    // 해당 사용자의 투표 여부 전달
+    res.status(200).json(isVoted);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
 // Bookmark
-router.put('/:id/bookmark', async (req, res) => {
+router.put('/:id/bookmark', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
-  const userId = req.body.userId;
+  const userId = req.user.id;
   try {
     const question = await Question.findById(questionId);
-
+    let isBookmarked = false;
     if (!question) {
       res.status(404).json('Question not found!');
+    }
+    if (question.userId.toString() === userId) {
+      return res.status(403).json('You cannot bookmark your own question');
     }
     const existingBookmark = await Bookmark.findOne({
       questionId,
@@ -389,12 +397,14 @@ router.put('/:id/bookmark', async (req, res) => {
         userId,
       });
       question.saves += 1;
+      isBookmarked = true;
     } else {
       await Bookmark.deleteOne({ _id: existingBookmark._id });
       question.saves -= 1;
+      isBookmarked = false;
     }
     await question.save();
-    res.status(200).json('Question has been bookmarked');
+    res.status(200).json(isBookmarked);
   } catch (err) {
     res.status(500).json(err);
   }
