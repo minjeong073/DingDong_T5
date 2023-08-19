@@ -12,9 +12,9 @@ import { encode } from 'punycode';
 export const HashTagNav = () => {
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(false);
+  const [clicked, setClicked] = useState(false);
   const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
   const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([true, ...Array(0).fill(false)]);
-  // const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([...Array(0).fill(false)]);
   const [hashtag, setHashtag] = useState<string[]>([]);
   const [onlyHashtag, setOnlyHashtag] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -38,14 +38,22 @@ export const HashTagNav = () => {
   const handleClick = useCallback(
     (index: number) => {
       const newClickedHashtags = [...clickedHashtags];
+      setClicked(true);
       newClickedHashtags.fill(false);
       newClickedHashtags[index] = true;
       setClickedHashtags(newClickedHashtags);
-      navigate(`/search?query=${encodeURIComponent(onlyHashtag[index])}`);
     },
     [clickedHashtags, navigate],
   );
+  
 
+  useEffect(() => {
+    const target: boolean = true;
+    let targetIndex:number = clickedHashtags.indexOf(target);
+    if(clicked)
+    navigate(`/search/hashtag?hashtag=${encodeURIComponent(onlyHashtag[targetIndex])}`);
+  }, [clickedHashtags, handleClick]);
+  
   const toggleExpanded = useCallback(() => {
     setExpanded(prevExpanded => !prevExpanded);
   }, []);

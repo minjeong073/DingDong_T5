@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import type { QuestionDataType } from 'stores/page-store';
 import { QuestionRow } from "../../components/QuestionRow";
 import { Table, Tbody } from "../../components/List/ArticlesTable/styled";
+import { Div} from './styled';
 
 export const SearchPage = () => {
   const [SearchData, setSearchData] = useState<QuestionDataType[]>([]);
@@ -31,7 +32,7 @@ export const SearchPage = () => {
   return (
     <>
       {isLoading ? (
-        <div> Loading ... </div>
+        <Div> Loading ... </Div>
           ) : (
             <Table>
               <Tbody>
