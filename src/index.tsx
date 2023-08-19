@@ -36,7 +36,7 @@ root.render(
             </Route>
             <Route path="/search" element={<Layout />}>
               <Route index element={<SearchPage />} />
-              <Route index element={<SearchTagPage />} />
+              <Route path="/search/hashtag" element={<SearchTagPage />} />
             </Route>
             <Route path="/mypage" element={<Layout />}></Route>
           </Routes>
