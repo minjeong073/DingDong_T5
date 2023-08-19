@@ -1,39 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import axios from 'axios';
-import {
-  LButton,
-  Button1,
-  Button2,
-  Table,
-  TableCell,
-  TableRow,
-  Tbody,
-  HashTagWrapper,
-  HashTag,
-  Upper,
-  HeartFillIcon,
-  Icon,
-  Content,
-  Text,
-  Title,
-  Addition,
-  AuthorInfo,
-  Author,
-  Date,
-  Comment,
-  LoadingSection,
-  LoadingIcon,
-  MoreTypo,
-} from './styled';
+import { Tbody, Table, LButton, Button1, Button2, LoadingSection, LoadingIcon } from './styled';
 import { useNavigate } from 'react-router-dom';
-import dummy from '../../db/comment.json';
 import WhiteLogo from '../../assets/icon/white_logo.svg';
 import { Holder, Img, Span } from '../List/ArticleList/styled';
 import { Button } from '../Button';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroller';
-import DOMPurify from 'dompurify';
-import { QuestionDataType } from 'stores/page-store';
+import { ReplyRow } from '../ReplyRow';
 
 const fetchUrl = async (url: string) => {
   const response = await fetch(url);
@@ -42,8 +15,8 @@ const fetchUrl = async (url: string) => {
 };
 
 export const RepliesList = () => {
-  const [result, setResult] = useState('answer');
   const [expandedStates, setExpandedStates] = useState<{ [itemId: string]: boolean }>({});
+  const [result, setResult] = useState('answer');
 
   const navigate = useNavigate();
 
@@ -69,21 +42,14 @@ export const RepliesList = () => {
     navigate('/articles/write');
   };
 
-  const onClickNavigateQuestion = async (item: any) => {
-    try {
-      if (item.answerId) {
-        const answerResponse = await axios.get(`/api/answer/${item.answerId}`);
-        const answerData = answerResponse.data;
-        navigate(`/articles/${answerData.questionId}`);
-        return;
-      }
-      if (item.questionId) {
-        navigate(`/articles/${item.questionId}`);
-      }
-    } catch (error) {
-      alert('삭제된 질문글입니다.');
-    }
-  };
+  const onClickExpanded = useCallback(
+    (itemId: string) =>
+      setExpandedStates(prevStates => ({
+        ...prevStates,
+        [itemId]: !prevStates[itemId],
+      })),
+    [],
+  );
 
   useEffect(() => {
     if (data) {
@@ -98,15 +64,8 @@ export const RepliesList = () => {
       });
       setExpandedStates(initialExpandedStates);
     }
-    console.log(data);
   }, [data]);
 
-  if (isLoading)
-    return (
-      <LoadingSection>
-        <LoadingIcon />
-      </LoadingSection>
-    );
   if (isError) return <div>{error instanceof Error ? error.message : 'An error occurred'}</div>;
 
   return (
@@ -129,63 +88,23 @@ export const RepliesList = () => {
         <Tbody>
           <InfiniteScroll loadMore={fetchNextPage} hasMore={hasNextPage}>
             {data?.pages?.map(pageData => {
-              const items = pageData.answers || pageData.comments; // Choose items based on availability
+              const items = pageData.answers || pageData.comments;
+              const type = pageData.answers ? 'answer' : 'comment';
               return items?.map((item: any) => (
-                <TableRow key={item._id}>
-                  <TableCell>
-                    <Upper>
-                      <Icon>
-                        <HeartFillIcon />
-                        <Text>{item.votes}</Text>
-                      </Icon>
-                    </Upper>
-                    <Content>
-                      {items === pageData.answers ? (
-                        <Title
-                          dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(
-                              item.content.length > 200
-                                ? expandedStates[item._id]
-                                  ? item.content
-                                  : `${item.content.slice(0, 200)}...`
-                                : item.content,
-                            ),
-                          }}
-                          $isExpanded={expandedStates[item._id]}
-                          onClick={() => onClickNavigateQuestion(item)}
-                        />
-                      ) : (
-                        <Title onClick={() => onClickNavigateQuestion(item)}>{item.content}</Title>
-                      )}
-                      {item.content.length > 200 && (
-                        <MoreTypo
-                          onClick={() =>
-                            setExpandedStates(prevStates => ({ ...prevStates, [item._id]: !prevStates[item._id] }))
-                          }>
-                          {expandedStates[item._id] ? '접기' : '더보기'}
-                        </MoreTypo>
-                      )}
-                      <Addition>
-                        <HashTagWrapper>
-                          {item.questionHashtags?.map((hashtag: string) => (
-                            <HashTag key={hashtag}>{hashtag}</HashTag>
-                          ))}
-                        </HashTagWrapper>
-                        <AuthorInfo>
-                          <Author>{item.author}</Author>
-                          <Date>{item.createdAt}</Date>
-                        </AuthorInfo>
-                      </Addition>
-                    </Content>
-                  </TableCell>
-                </TableRow>
+                <ReplyRow
+                  type={type}
+                  item={item}
+                  expandedStates={expandedStates}
+                  onClickExpanded={() => onClickExpanded(item._id)}
+                />
               ));
             })}
-            {isFetching && (
-              <LoadingSection>
-                <LoadingIcon />
-              </LoadingSection>
-            )}
+            {isLoading ||
+              (isFetching && (
+                <LoadingSection>
+                  <LoadingIcon />
+                </LoadingSection>
+              ))}
           </InfiniteScroll>
         </Tbody>
       </Table>

@@ -5,28 +5,9 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { QuestionListState } from '../../../stores/page-store';
 import type { QuestionDataType } from '../../../stores/page-store';
 import { Link } from 'react-router-dom';
-import {
-  Table,
-  TableCell,
-  TableRow,
-  Info,
-  Box,
-  Div,
-  Span,
-  Context,
-  Title,
-  Addition,
-  HashTagWrapper,
-  HashTag,
-  Author,
-  Date,
-  ForPage,
-  PurpleBox,
-  PurpleDiv,
-  PurpleSpan,
-  Tbody,
-} from './styled';
+import { Table, Tbody } from './styled';
 import { Pagination } from '../Pagination';
+import { QuestionRow } from 'components/QuestionRow';
 
 type Props = {
   selectedOrder: {
@@ -123,55 +104,15 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
   //   fetchData();
   // }, [setArticles]);
 
-  //해시태그 클릭하면 그 기능을 확인할 수 있음
-  const onClickHashtag = () => {};
+  /*   //해시태그 클릭하면 그 기능을 확인할 수 있음
+  const onClickHashtag = () => {}; */
 
   return (
     <>
       <Table>
         <Tbody>
-          {QuestionData?.map((item, idx) => (
-            <TableRow key={`${item._id}`}>
-              <TableCell>
-                <Info>
-                  <Box>
-                    <Div>{item.votes}</Div>
-                    <Span>투표수</Span>
-                  </Box>
-                  {item.answers === 0 ? (
-                    <Box>
-                      <Div>{item.answers}</Div>
-                      <Span>답변수</Span>
-                    </Box>
-                  ) : (
-                    <PurpleBox>
-                      <PurpleDiv>{item.answers}</PurpleDiv>
-                      <PurpleSpan>답변수</PurpleSpan>
-                    </PurpleBox>
-                  )}
-                  <Box>
-                    <Div>{item.views}</Div>
-                    <Span>조회수</Span>
-                  </Box>
-                </Info>
-                <Context>
-                  <Title>
-                    <Link to={`/articles/${item._id}`}>{item.title}</Link>
-                  </Title>
-                  <Addition>
-                    <HashTagWrapper>
-                      {item.hashtags.map((content, index) => (
-                        <HashTag onClick={onClickHashtag} key={content}>
-                          {content}
-                        </HashTag>
-                      ))}
-                    </HashTagWrapper>
-                    <Author>{item.author}</Author>
-                    <Date>{item.createdAt}</Date>
-                  </Addition>
-                </Context>
-              </TableCell>
-            </TableRow>
+          {QuestionData?.map((question, idx) => (
+            <QuestionRow item={question} />
           ))}
         </Tbody>
       </Table>
