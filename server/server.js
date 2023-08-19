@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
+const cookieParser = require('cookie-parser');
 
 const port = process.env.PORT || 5001;
 
@@ -22,7 +23,7 @@ dotenv.config();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
-
+app.use(cookieParser());
 app.use(
   cors({
     origin: 'http://localhost:3000',
