@@ -11,10 +11,3 @@ exports.authenticateToken = (req, res, next) => {
     next();
   });
 };
-
-exports.authorizeUser = (req, res, next) => {
-  if (req.user.id !== req.body.userId) {
-    return res.status(403).json({ message: 'Access Denied' });
-  }
-  next();
-};
