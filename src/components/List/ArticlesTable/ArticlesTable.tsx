@@ -15,10 +15,9 @@ type Props = {
     view: boolean;
     vote: boolean;
   };
-  data?: QuestionDataType[];
 };
 
-export const ArticlesTable: React.FC<Props> = ({ selectedOrder,data }) => {
+export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
   const [page, setPage] = useState<number>(1);
   const [QuestionData, setQuestionData] = useState<QuestionDataType[]>([]);
   const [totalQuestions, setTotalQuestions] = useState<number>(0);
@@ -38,8 +37,6 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder,data }) => {
       alert('게시판 정보 가져오기 실패!');
     }
   };
-
-  console.log(data? data[0] : null);
 
   const fetchViewQuestionData = async (page: number) => {
     try {
@@ -111,7 +108,7 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder,data }) => {
       <Table>
         <Tbody>
           {QuestionData?.map((question, idx) => (
-            <QuestionRow item={question} />
+            <QuestionRow key={idx} item={question} />
           ))}
         </Tbody>
       </Table>
