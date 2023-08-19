@@ -12,7 +12,6 @@ export const SearchPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const keyword = queryParams.get('keyword');
 
-
   useEffect(() => {
     const fetchSearchData = async(keyword:string) => {
       try{

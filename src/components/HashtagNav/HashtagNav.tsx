@@ -35,25 +35,6 @@ export const HashTagNav = () => {
     fetchData();
   }, [setQuestionData]);
 
-  /* useEffect(() => {
-    // let getHashtags: string[] = [];
-    // hashtag.forEach(item => {
-    //   const values = item?.join(',');
-    //   getHashtags.push(values);
-    // });
-    const oneHashtag = hashtag.flatMap(item => item.split(',').map(part => part.trim()));
-    const realHash = oneHashtag.filter(item => item.trim() !== '');
-    const sortByFrequency = (arr: any[]) => {
-      const frequencyMap = arr.reduce((map, item) => {
-        map.set(item, (map.get(item) || 0) + 1);
-        return map;
-      }, new Map());
-      return arr.sort((a, b) => frequencyMap.get(b) - frequencyMap.get(a));
-    };
-    const sortedHash = sortByFrequency(realHash);
-    setOnlyHashtag(['ALL', ...new Set(sortedHash)]);
-  }, [hashtag]); */
-
   const handleClick = useCallback(
     (index: number) => {
       const newClickedHashtags = [...clickedHashtags];
