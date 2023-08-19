@@ -82,10 +82,6 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
     setPage(1);
   }, [selectedOrder]);
 
-  /*  useEffect(() => {
-    console.log(QuestionData);
-  }, [QuestionData]); */
-
   const handlePaginationChange = (e: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -112,7 +108,7 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
       <Table>
         <Tbody>
           {QuestionData?.map((question, idx) => (
-            <QuestionRow item={question} />
+            <QuestionRow key={idx} item={question} />
           ))}
         </Tbody>
       </Table>

@@ -5,14 +5,20 @@ const Vote = require('../models/Vote');
 const Comment = require('../models/Comment');
 const Bookmark = require('../models/Bookmark');
 
-// TODO : 로그인한 유저만 질문을 작성할 수 있도록
-//        create, update, delete 미들웨어 추가
+const authMiddleware = require('../middlewares/authenticates');
+const authenticateToken = authMiddleware.authenticateToken;
+const authorizeUser = authMiddleware.authorizeUser;
 
 // Question CRUD
 // CREATE
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
+  const userId = req.body.userId;
+  const userIdFromToken = req.user.id;
   const newQuestion = new Question(req.body);
   try {
+    if (userId !== userIdFromToken) {
+      return res.status(403).json({ message: 'Authentication failed' });
+    }
     const savedQuestion = await newQuestion.save();
     res.status(200).json(savedQuestion);
   } catch (err) {
@@ -54,46 +60,6 @@ router.get('/', async (req, res) => {
     const hashtagsList = questions.flatMap(question => question.hashtags);
 
     res.status(200).json({ updatedQuestions, totalQuestions, hashtags: hashtagsList });
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-//get All hashtags
-router.get('/allhashtags', async (req, res) => {
-  try {
-    const allQuestions = await Question.find({ isDeleted: false });
-
-    // Create an array of hashtag objects with their creation dates
-    const hashtagObjects = allQuestions.flatMap(question => {
-      return question.hashtags.map(hashtag => {
-        return {
-          hashtag,
-          createdAt: question.createdAt,
-        };
-      });
-    });
-
-    // Count hashtag frequencies
-    const hashtagFrequencies = hashtagObjects.reduce((map, obj) => {
-      map.set(obj.hashtag, (map.get(obj.hashtag) || 0) + 1);
-      return map;
-    }, new Map());
-
-    // Sort hashtag objects by frequency and then by creation date
-    const sortedHashtagObjects = hashtagObjects.sort((a, b) => {
-      const frequencyComparison = hashtagFrequencies.get(b.hashtag) - hashtagFrequencies.get(a.hashtag);
-      if (frequencyComparison === 0) {
-        // If frequencies are the same, sort by creation date (newest first)
-        return b.createdAt - a.createdAt;
-      }
-      return frequencyComparison;
-    });
-
-    // Extract the sorted hashtags and remove duplicates
-    const uniqueSortedHashtags = [...new Set(sortedHashtagObjects.map(obj => obj.hashtag))];
-
-    res.status(200).json({ hashtags: uniqueSortedHashtags });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -184,9 +150,47 @@ router.get('/all', async (req, res) => {
         }),
       };
     });
-    // updatedQuestions.forEach((question) => console.log(question.createdAt));
-
     res.status(200).json(updatedQuestions);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//get All hashtags
+router.get('/allhashtags', async (req, res) => {
+  try {
+    const allQuestions = await Question.find({ isDeleted: false });
+
+    // Create an array of hashtag objects with their creation dates
+    const hashtagObjects = allQuestions.flatMap(question => {
+      return question.hashtags.map(hashtag => {
+        return {
+          hashtag,
+          createdAt: question.createdAt,
+        };
+      });
+    });
+
+    // Count hashtag frequencies
+    const hashtagFrequencies = hashtagObjects.reduce((map, obj) => {
+      map.set(obj.hashtag, (map.get(obj.hashtag) || 0) + 1);
+      return map;
+    }, new Map());
+
+    // Sort hashtag objects by frequency and then by creation date
+    const sortedHashtagObjects = hashtagObjects.sort((a, b) => {
+      const frequencyComparison = hashtagFrequencies.get(b.hashtag) - hashtagFrequencies.get(a.hashtag);
+      if (frequencyComparison === 0) {
+        // If frequencies are the same, sort by creation date (newest first)
+        return b.createdAt - a.createdAt;
+      }
+      return frequencyComparison;
+    });
+
+    // Extract the sorted hashtags and remove duplicates
+    const uniqueSortedHashtags = [...new Set(sortedHashtagObjects.map(obj => obj.hashtag))];
+
+    res.status(200).json({ hashtags: uniqueSortedHashtags });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -241,15 +245,15 @@ router.get('/valid/:id', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
-
     if (!question) {
-      res.status(404).json('Question not found!');
+      return res.status(404).json('Question not found!');
     }
-
-    // if (question.author === req.body.author) {
+    if (question.userId.toString() !== req.user.id) {
+      return res.status(403).json('You can update only your question!');
+    }
     try {
       const updatedQuestion = await Question.findByIdAndUpdate(
         req.params.id,
@@ -265,19 +269,25 @@ router.put('/:id', async (req, res) => {
     } catch (err) {
       res.status(500).json(err);
     }
-    // } else {
-    //   res.status(401).json('You can update only your Question!');
-    // }
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
 // DELETE
-router.put('/:id/delete', async (req, res) => {
+router.put('/:id/delete', authenticateToken, async (req, res) => {
+  const questionId = req.params.id;
+  const userIdFromToken = req.user.id;
   try {
+    const question = await Question.findById(questionId);
+    if (!question) {
+      return res.status(404).json('Question not found');
+    }
+    if (question.userId.toString() !== userIdFromToken) {
+      return res.status(403).json('Access denied');
+    }
     await Question.findByIdAndUpdate(
-      req.params.id,
+      questionId,
       {
         content: '',
         isDeleted: true,
@@ -301,18 +311,13 @@ router.put('/:id/delete', async (req, res) => {
 // UPDATE ETC
 
 // Comment
-router.put('/:id/comment', async (req, res) => {
+router.put('/:id/comment', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
+  const userId = req.user.id;
   try {
     const question = await Question.findById(questionId);
-    const userId = req.body.userId;
-    const user = await User.findById(userId);
-
     if (!question) {
       res.status(404).json('Question not found!');
-    }
-    if (!user) {
-      res.status(404).json('User not found!');
     }
 
     const newComment = new Comment({
@@ -330,14 +335,18 @@ router.put('/:id/comment', async (req, res) => {
 });
 
 // Votes
-router.put('/:id/vote', async (req, res) => {
+router.put('/:id/vote', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
-  const userId = req.body.userId;
+  const userId = req.user.id;
   try {
     const question = await Question.findById(questionId);
-
+    let isVoted = false;
     if (!question) {
       res.status(404).json('Question not found!');
+    }
+    // token userId 와 question userId 가 같은 경우 투표할 수 없음
+    if (question.userId.toString() === userId) {
+      return res.status(403).json('You cannot vote your own question!');
     }
     const existingVote = await Vote.findOne({
       questionId,
@@ -350,28 +359,32 @@ router.put('/:id/vote', async (req, res) => {
         userId: userId,
       });
       question.votes += 1;
+      isVoted = true;
     } else {
       await Vote.deleteOne({ _id: existingVote._id });
       question.votes -= 1;
+      isVoted = false;
     }
     await question.save();
-    res.status(200).json(question);
+    // 해당 사용자의 투표 여부 전달
+    res.status(200).json(isVoted);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
 // Bookmark
-// login 구현 후에 userId 수정 예정
-router.put('/:id/bookmark', async (req, res) => {
+router.put('/:id/bookmark', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
-  const userId = req.body.userId;
-
+  const userId = req.user.id;
   try {
     const question = await Question.findById(questionId);
-
+    let isBookmarked = false;
     if (!question) {
       res.status(404).json('Question not found!');
+    }
+    if (question.userId.toString() === userId) {
+      return res.status(403).json('You cannot bookmark your own question');
     }
     const existingBookmark = await Bookmark.findOne({
       questionId,
@@ -384,12 +397,14 @@ router.put('/:id/bookmark', async (req, res) => {
         userId,
       });
       question.saves += 1;
+      isBookmarked = true;
     } else {
       await Bookmark.deleteOne({ _id: existingBookmark._id });
       question.saves -= 1;
+      isBookmarked = false;
     }
     await question.save();
-    res.status(200).json('Question has been bookmarked');
+    res.status(200).json(isBookmarked);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -408,6 +423,26 @@ router.put('/:id/view', async (req, res) => {
     question.views += 1;
     await question.save();
     res.status(200).json('Question has been viewed');
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get('/:id/votelist', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const votelist = await Vote.find({ questionId: questionId });
+    res.status(200).json(votelist);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get('/:id/bookmarklist', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const bookmarklist = await Bookmark.find({ questionId: questionId });
+    res.status(200).json(bookmarklist);
   } catch (err) {
     res.status(500).json(err);
   }

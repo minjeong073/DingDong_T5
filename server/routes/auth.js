@@ -10,6 +10,8 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+// TODO : httpOnly cookie 에 jwt 토큰 저장 (refresh token)
+
 //jwt
 passport.use(
   'jwt',
@@ -32,6 +34,7 @@ passport.use(
   new passportLocal.Strategy({ usernameField: 'email', passwordField: 'password' }, async (email, password, done) => {
     try {
       const user = await User.findOne({ email: email });
+      console.log(user);
       if (!user) {
         return done(null, false, { reason: 'User not found' });
       }
@@ -43,20 +46,6 @@ passport.use(
     } catch (err) {
       return done(err);
     }
-  //   async (email, password, done) => {
-  //     const client = await pool.connect();
-  //     const result = await client.query(
-  //         "select * from public.user where email=$1 and password = $2",
-  //         [email, password]
-  //     );
-  //     client.release();
-  //     if (result.rows.length > 0) {
-  //         return done(null, { email });
-  //     }
-  //     return done(null, false, {
-  //         reason: "Invalid username or password",
-  //     });
-  // }
   }),
 );
 
@@ -86,9 +75,17 @@ router.post('/signin', async (req, res, next) => {
     return req.login(user, { session: false }, err => {
       if (err) return next(err);
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+      // const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn: '7d' });
+      // res.cookie('refreshToken', refreshToken, { httpOnly: true });
       return res.status(200).json({ token: token });
     });
   })(req, res, next);
+});
+
+// SIGNOUT
+router.get('/signout', (req, res) => {
+  // client에서 token 지움
+  res.status(200).json({ message: 'Signout success' });
 });
 
 module.exports = router;

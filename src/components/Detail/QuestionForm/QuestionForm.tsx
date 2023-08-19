@@ -37,6 +37,8 @@ type Props = {
 
 export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null); // Change initial state to null
+  const [isVoted, setIsVoted] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const navigate = useNavigate();
 
@@ -63,6 +65,9 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   };
 
   const deleteQuestion = async () => {
+    const token = localStorage.getItem('token');
+    // token 없을 경우 로그인 알림 추가해주세요!
+
     try {
       //삭제할건지 확인
       if (!window.confirm('정말 삭제하시겠습니까?')) {
@@ -70,8 +75,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       }
       //삭제
       await axios
-        .put(`/api/articles/${_id}/delete`, {
-          ...currentQuestion,
+        .put(`/api/articles/${_id}/delete`, null, {
+          headers: { Authorization: `Bearer ${token}` },
         })
         .then(() => {
           alert('질문 삭제 성공!');
@@ -79,19 +84,23 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         });
     } catch (error) {
       console.error(error);
+      // TODO : access denied 일 경우 다른 알림
       alert('질문 삭제 실패!');
     }
   };
 
   // 투표수 업데이트
   const handleVote = async () => {
+    const token = localStorage.getItem('token');
+    // token 없을 경우 알림 추가해주세요!
     try {
       /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
       투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
        -> Vote 테이블에 userId와 questionId를 쿼리하여 이미 투표했는지 여부 확인 */
-      await axios.put(`/api/articles/${_id}/vote`, {
-        ...currentQuestion,
+      const isVoted = await axios.put(`/api/articles/${_id}/vote`, null, {
+        headers: { Authorization: `Bearer ${token}` },
       });
+      setIsVoted(isVoted.data);
       fetchQuestionData();
     } catch (error) {
       console.error('Error updating votes:', error);
@@ -101,13 +110,17 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
 
   // 저장수 업데이트
   const handleSave = async () => {
+    const token = localStorage.getItem('token');
+    // token 없을 경우 알림 추가해주세요!
+
     /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
     저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
      -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
     try {
-      await axios.put(`/api/articles/${_id}/bookmark`, {
-        ...currentQuestion,
+      const isSaved = await axios.put(`/api/articles/${_id}/bookmark`, null, {
+        headers: { Authorization: `Bearer ${token}` },
       });
+      setIsSaved(isSaved.data);
       fetchQuestionData();
     } catch (error) {
       console.error('Error updating saves:', error);
@@ -130,10 +143,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         <TopContainer>
           <ItemContainer>
             {/* 투표 */}
-            {true ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
+            {isVoted ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
             <ItemTypo>{currentQuestion?.votes}</ItemTypo>
             {/* 저장 */}
-            {true ? <SaveFillIcon onClick={handleSave} /> : <SaveIcon onClick={handleSave} />}
+            {isSaved ? <SaveFillIcon onClick={handleSave} /> : <SaveIcon onClick={handleSave} />}
             <ItemTypo>{currentQuestion?.saves}</ItemTypo>
           </ItemContainer>
           <ItemContainer>
