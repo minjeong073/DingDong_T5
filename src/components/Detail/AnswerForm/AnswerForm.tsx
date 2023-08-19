@@ -29,7 +29,8 @@ import axios, { AxiosError } from 'axios';
 import { WriteAnswerForm } from '../WriteAnswerForm';
 import { CommentForm } from '../CommentForm';
 import { useRecoilValue } from 'recoil';
-import { LoginState } from 'stores/login-store';
+import { LoginState, UserState } from 'stores/login-store';
+import { QuestionDataType } from 'stores/page-store';
 
 interface AnswerDataType {
   _id: string;
@@ -48,20 +49,32 @@ type Props = {
 };
 
 export const AnswerForm: React.FC<Props> = ({ _id }) => {
-  // 답변 내용
   const [contents, setContents] = useState('');
-  // 답변게시글 배열
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null);
   const [answerData, setAnswerData] = useState<AnswerDataType[]>([]);
-  // State to keep track of the new answer being created
   const [newAnswer, setNewAnswer] = useState({
     content: '',
   });
-  // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
   const isLogin = useRecoilValue(LoginState);
+  const user = useRecoilValue(UserState);
+  const token = useMemo(() => localStorage.getItem('token'), []);
 
   // to get the reference of the Quill editor
   const writeAnswerFormRef = useRef<HTMLFormElement>(null);
+
+  const fetchCurrentQuestion = async () => {
+    try {
+      const response = await axios.get(`/api/articles/${_id}`);
+      const foundQuestion = response.data;
+      if (foundQuestion) {
+        setCurrentQuestion(foundQuestion);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('질문 정보 가져오기 실패!');
+    }
+  };
 
   const fetchAnswerData = async () => {
     try {
@@ -77,7 +90,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   };
 
   const postAnswer = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const token = localStorage.getItem('token');
     try {
       e.preventDefault();
       if (newAnswer.content === '') {
@@ -96,10 +108,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then(res => {
-            // Update the answerData array with the updated answer
-            setAnswerData((prevAnswerData: AnswerDataType[]) =>
-              prevAnswerData.map(item => (item._id === editingAnswerId ? res.data.updateAnswer : item)),
-            );
             alert('답변 수정 성공!');
             setContents('');
             setEditingAnswerId(null);
@@ -124,7 +132,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then(res => {
-          // setAnswerData((prevAnswerData: AnswerDataType[]) => [...prevAnswerData, res.data]);
           alert('답변 등록 성공!');
           setContents('');
           fetchAnswerData();
@@ -134,9 +141,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       if ((error as AxiosError).response && (error as AxiosError).response!.status === 401) {
         alert('자신이 작성한 글만 수정할 수 있습니다.'); // 401 Unauthorized 에러 시 알림
       }
-      if ((error as AxiosError).response && (error as AxiosError).response!.status === 500) {
-        alert('답변 등록 실패!'); // 500 Internal Server Error 에러 시 알림
-      }
+      alert('답변 등록 실패!');
     }
   };
 
@@ -217,6 +222,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   }, [contents]);
 
   useEffect(() => {
+    fetchCurrentQuestion();
     fetchAnswerData();
   }, []);
 
@@ -285,7 +291,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           {isLogin && <CommentForm _id={answer._id} selected="answer" />}
         </BodySection>
       ))}
-      {isLogin && (
+      {isLogin && user._id !== currentQuestion?.userId && (
         <WriteAnswerForm
           ref={writeAnswerFormRef}
           contents={contents}
