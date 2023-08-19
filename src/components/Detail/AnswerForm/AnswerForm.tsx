@@ -28,6 +28,8 @@ import DOMPurify from 'dompurify';
 import axios, { AxiosError } from 'axios';
 import { WriteAnswerForm } from '../WriteAnswerForm';
 import { CommentForm } from '../CommentForm';
+import { useRecoilValue } from 'recoil';
+import { LoginState } from 'stores/login-store';
 
 interface AnswerDataType {
   _id: string;
@@ -56,6 +58,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   });
   // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
+  const isLogin = useRecoilValue(LoginState);
 
   // to get the reference of the Quill editor
   const writeAnswerFormRef = useRef<HTMLFormElement>(null);
@@ -279,17 +282,19 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               </AuthorBox>
             </BottomRightContainer>
           </BottomContainer>
-          <CommentForm _id={answer._id} selected="answer" />
+          {isLogin && <CommentForm _id={answer._id} selected="answer" />}
         </BodySection>
       ))}
-      <WriteAnswerForm
-        ref={writeAnswerFormRef}
-        contents={contents}
-        onContentsChange={setContents}
-        postAnswer={postAnswer}
-        editingAnswerId={editingAnswerId}
-        onClickEditingCancel={onClickEditingCancel}
-      />
+      {isLogin && (
+        <WriteAnswerForm
+          ref={writeAnswerFormRef}
+          contents={contents}
+          onContentsChange={setContents}
+          postAnswer={postAnswer}
+          editingAnswerId={editingAnswerId}
+          onClickEditingCancel={onClickEditingCancel}
+        />
+      )}
     </>
   );
 };

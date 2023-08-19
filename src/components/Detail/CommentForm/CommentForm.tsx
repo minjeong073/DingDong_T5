@@ -17,6 +17,8 @@ import {
 import { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import { set } from 'mongoose';
+import { useRecoilValue } from 'recoil';
+import { LoginState } from 'stores/login-store';
 
 type Props = {
   _id?: string | null;

@@ -1,17 +1,19 @@
-import { useCallback, useState } from 'react';
 import { UserSection, LoginTypo, LogoutTypo, SignUpTypo } from './styled';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { LoginState } from 'stores/login-store';
 
 export const LoginLogoutButton = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(!!localStorage.getItem('token'));
+  const isLogin = useRecoilValue(LoginState);
+  const [loginState, setLoginState] = useRecoilState(LoginState);
 
   const navigate = useNavigate();
 
-  const handleLogout = useCallback(() => {
-    // 로그아웃 로직 수행 후 토큰 삭제
+  const handleLogout = () => {
+    // 로그아웃 로직 수행 후 LoginState atom 값을 false로 변경
     localStorage.removeItem('token');
-    setIsLogin(false);
-  }, []);
+    setLoginState(false);
+  };
 
   return (
     <>

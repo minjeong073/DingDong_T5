@@ -7,7 +7,7 @@ export const UserSection = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  margin-left: 55px;
+  margin-left: 45px;
   background: #f1f5f9;
   color: #64748b;
   font-size: 20px;

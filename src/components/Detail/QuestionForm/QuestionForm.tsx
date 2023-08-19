@@ -30,6 +30,8 @@ import DOMPurify from 'dompurify';
 import axios from 'axios';
 import type { QuestionDataType } from '../../../stores/page-store';
 import { CommentForm } from '../CommentForm';
+import { useRecoilValue } from 'recoil';
+import { LoginState } from 'stores/login-store';
 
 type Props = {
   _id?: string | null;
@@ -39,6 +41,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null); // Change initial state to null
   const [isVoted, setIsVoted] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const isLogin = useRecoilValue(LoginState);
 
   const navigate = useNavigate();
 
@@ -213,7 +216,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             </AuthorBox>
           </BottomRightContainer>
         </BottomContainer>
-        <CommentForm _id={_id} selected="articles" />
+        {isLogin && <CommentForm _id={_id} selected="articles" />}
       </BodySection>
     </>
   );

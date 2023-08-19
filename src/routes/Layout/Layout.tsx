@@ -19,7 +19,7 @@ export const Layout = () => {
         <LeftWrapper>
           <Nav />
           {/* {showHashTagNav && <HashTagNav />} */}
-          <HashTagNav />
+          {/* <HashTagNav /> */}
         </LeftWrapper>
         <Main>
           <Outlet />

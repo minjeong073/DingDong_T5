@@ -14,7 +14,9 @@ import {
   VoteOrder,
 } from './styled';
 import { Button } from '../../Button';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { LoginState } from 'stores/login-store';
 
 export const Articles = () => {
   const [selectedOrder, setSelectedOrder] = useState({
@@ -22,12 +24,19 @@ export const Articles = () => {
     view: false,
     vote: false,
   });
+  const isLogin = useRecoilValue(LoginState);
 
   const navigate = useNavigate();
 
-  const onClickWrite = () => {
-    navigate('/articles/write');
-  };
+  const onClickWrite = useCallback(() => {
+    // 로그인 상태에 따라 페이지 이동 여부 결정
+    if (isLogin) {
+      navigate('/articles/write');
+    } else {
+      // 로그인이 필요한 알림 등을 처리할 수 있습니다.
+      alert('로그인이 필요합니다.');
+    }
+  }, [isLogin]);
 
   const onClickSelected = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;

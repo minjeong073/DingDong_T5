@@ -41,6 +41,10 @@ export const Login = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('expirationDate', expirationDate.toString());
       console.log('로그인 성공:', response.data);
+
+      // 로그인 성공 후 LoginState atom을 true로 변경
+      setIsLoggedIn(true);
+
       navigate('/');
       window.location.reload();
     } catch (error) {
