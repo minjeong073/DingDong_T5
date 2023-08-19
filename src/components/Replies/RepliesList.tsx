@@ -87,25 +87,34 @@ export const RepliesList = () => {
       <Table>
         <Tbody>
           <InfiniteScroll loadMore={fetchNextPage} hasMore={hasNextPage}>
-            {data?.pages?.map(pageData => {
-              const items = pageData.answers || pageData.comments;
-              const type = pageData.answers ? 'answer' : 'comment';
-              return items?.map((item: any) => (
-                <ReplyRow
-                  type={type}
-                  item={item}
-                  expandedStates={expandedStates}
-                  onClickExpanded={() => onClickExpanded(item._id)}
-                />
-              ));
-            })}
-            {isLoading ||
-              (isFetching && (
-                <LoadingSection>
-                  <LoadingIcon />
-                </LoadingSection>
-              ))}
+            {data?.pages ? (
+              data?.pages?.map((pageData, index) => {
+                const items = pageData.answers || pageData.comments;
+                const type = pageData.answers ? 'answer' : 'comment';
+                return (
+                  <React.Fragment key={index}>
+                    {items?.map((item: any) => (
+                      <ReplyRow
+                        key={item._id}
+                        type={type}
+                        item={item}
+                        expandedStates={expandedStates}
+                        onClickExpanded={() => onClickExpanded(item._id)}
+                      />
+                    ))}
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <></>
+            )}
           </InfiniteScroll>
+          {isLoading ||
+            (isFetching && (
+              <LoadingSection>
+                <LoadingIcon />
+              </LoadingSection>
+            ))}
         </Tbody>
       </Table>
     </>

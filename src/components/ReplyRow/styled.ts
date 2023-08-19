@@ -1,14 +1,14 @@
 import { styled } from 'styled-components';
 import heartFillImg from 'assets/icon/heart_fill.svg';
 
-export const TableRow = styled.tr`
+export const TableRow = styled.div`
   display: flex;
   &:last-child {
     margin-bottom: 80px;
   }
 `;
 
-export const TableCell = styled.td`
+export const TableCell = styled.div`
   flex: 1;
   display: flex;
   width: 683px;

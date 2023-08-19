@@ -35,7 +35,7 @@ export const Button2 = styled.button<{ $result?: string }>`
   justify-content: center;
 `;
 
-export const Table = styled.table`
+export const Table = styled.div`
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 100px;
@@ -45,7 +45,7 @@ export const Table = styled.table`
   }
 `;
 
-export const Tbody = styled.tbody`
+export const Tbody = styled.div`
   border-top: 1px solid #e2e8f0;
 `;
 
