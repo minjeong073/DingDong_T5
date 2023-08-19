@@ -82,18 +82,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   const fetchAnswerData = async () => {
     try {
-      const token = localStorage.getItem('token');
       const answerResponse = await axios.get(`/api/answer/all/${_id}`);
-      if (token) {
-        const voteResponse = await axios.get(`/api/answer/${_id}/isVoted`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const saveResponse = await axios.get(`/api/answer/${_id}/isBookmarked`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setIsVoted(voteResponse.data);
-        setIsSaved(saveResponse.data);
-      }
 
       const foundAnswer = answerResponse.data;
       if (foundAnswer) {
@@ -190,15 +179,11 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // Function to handle voting
   const handleVote = async (answerId: string) => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
     }
     try {
-      /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
-      투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
-       -> Vote 테이블에 userId와 answerId를 쿼리하여 이미 투표했는지 여부 확인 */
       const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
@@ -207,7 +192,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      const isVoted = response.data;
+      const { isVoted } = response.data;
       setIsVoted(isVoted);
       fetchAnswerData();
     } catch (error) {
@@ -221,14 +206,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // Function to handle saving
   const handleSave = async (answerId: string) => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
     }
-    /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
-    저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
-     -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
     try {
       const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
@@ -238,8 +219,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      const isSaved = response.data;
-      setIsSaved(isSaved);
+      const { isBookmarked } = response.data;
+      setIsSaved(isBookmarked);
       fetchAnswerData();
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
@@ -264,6 +245,30 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     fetchAnswerData();
   }, []);
 
+  // answerData로부터 user가 투표한 답변인지 확인, 저장한 답변인지 확인
+  useEffect(() => {
+    if (token) {
+      answerData.forEach(answer => {
+        axios
+          .get(`/api/answer/${answer._id}/isVoted`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(res => {
+            setIsVoted(res.data);
+          });
+      });
+      answerData.forEach(answer => {
+        axios
+          .get(`/api/answer/${answer._id}/isBookmarked`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(res => {
+            setIsSaved(res.data);
+          });
+      });
+    }
+  }, [answerData]);
+
   return (
     <>
       {answerData.length > 0 && (
@@ -278,14 +283,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
             <TopContainer>
               <ItemContainer>
                 {/* 투표 */}
-                {true ? (
+                {isVoted ? (
                   <HeartFillIcon onClick={() => handleVote(answer._id)} />
                 ) : (
                   <HeartIcon onClick={() => handleVote(answer._id)} />
                 )}
                 <ItemTypo>{answer.votes}</ItemTypo>
                 {/* 저장 */}
-                {true ? (
+                {isSaved ? (
                   <SaveFillIcon onClick={() => handleSave(answer._id)} />
                 ) : (
                   <SaveIcon onClick={() => handleSave(answer._id)} />
@@ -294,7 +299,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               </ItemContainer>
               <ItemContainer>
                 <ViewDateContainer>
-                  {/* <Typo>조회수 {current?.views}</Typo> */}
                   <Typo>{answer.createdAt}</Typo>
                 </ViewDateContainer>
                 <ContentTypo
