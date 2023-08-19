@@ -53,8 +53,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   // State to keep track of the new answer being created
   const [newAnswer, setNewAnswer] = useState({
     content: '',
-    userId: '64cf5480c07a5fb842cb501e', // user5
-    author: 'unknown',
   });
   // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
@@ -76,6 +74,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   };
 
   const postAnswer = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const token = localStorage.getItem('token');
     try {
       e.preventDefault();
       if (newAnswer.content === '') {
@@ -84,16 +83,19 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       }
 
       if (editingAnswerId) {
+        if (!token) {
+          alert('로그인 후 이용해주세요!');
+          return;
+        }
         // If editingAnswerId is not null, it means we are editing an existing answer
         await axios
-          .put(`/api/answer/${editingAnswerId}`, {
-            ...newAnswer,
-            content: contents,
+          .put(`/api/answer/${editingAnswerId}`, newAnswer, {
+            headers: { Authorization: `Bearer ${token}` },
           })
           .then(res => {
             // Update the answerData array with the updated answer
             setAnswerData((prevAnswerData: AnswerDataType[]) =>
-              prevAnswerData.map(item => (item._id === editingAnswerId ? res.data : item)),
+              prevAnswerData.map(item => (item._id === editingAnswerId ? res.data.updateAnswer : item)),
             );
             alert('답변 수정 성공!');
             setContents('');
@@ -105,20 +107,25 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
       // question의 작성자와 answer의 작성자가 같으면 작성 불가
       // TODO : 로그인 구현시, WriteAnswerForm을 없애는 식으로 구현 예정
-      const currentQuestion = await axios.get(`/api/articles/${_id}`);
-      if (currentQuestion.data.userId === newAnswer.userId) {
-        alert('질문자는 답변할 수 없습니다.');
-        setContents('');
-        return;
-      }
+
+      // const currentQuestion = await axios.get(`/api/articles/${_id}`);
+      // if (currentQuestion.data.userId === newAnswer.userId) {
+      //   alert('질문자는 답변할 수 없습니다.');
+      //   setContents('');
+      //   return;
+      // }
 
       // If editingAnswerId is null, it means we are creating a new answer
-      await axios.post(`/api/answer/${_id}`, newAnswer).then(res => {
-        // setAnswerData((prevAnswerData: AnswerDataType[]) => [...prevAnswerData, res.data]);
-        alert('답변 등록 성공!');
-        setContents('');
-        fetchAnswerData();
-      });
+      await axios
+        .post(`/api/answer/${_id}`, newAnswer, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+          // setAnswerData((prevAnswerData: AnswerDataType[]) => [...prevAnswerData, res.data]);
+          alert('답변 등록 성공!');
+          setContents('');
+          fetchAnswerData();
+        });
     } catch (error) {
       console.error(error);
       if ((error as AxiosError).response && (error as AxiosError).response!.status === 401) {
