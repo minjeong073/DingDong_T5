@@ -7,9 +7,26 @@ const Bookmark = require('../models/Bookmark');
 
 const authMiddleware = require('../middlewares/authenticates');
 const authenticateToken = authMiddleware.authenticateToken;
-const authorizeUser = authMiddleware.authorizeUser;
 
-// Question CRUD
+/*
+  Question 메서드
+  - createQuestion
+  - getQuestions
+  - getLatestQuestions
+  - getPopularQuestions
+  - getInterestingQuestions
+  - getQuestion
+  - updateQuestion
+  - deleteQuestion
+  - getAllHashtags
+  - comment
+  - vote
+  - bookmark
+  - updateViews
+  - getVoteList
+  - getBookmarkList
+*/
+
 // CREATE
 router.post('/', authenticateToken, async (req, res) => {
   const userId = req.body.userId;
@@ -373,6 +390,26 @@ router.put('/:id/vote', authenticateToken, async (req, res) => {
   }
 });
 
+// isVoted - 투표 여부 확인
+router.get('/:id/vote', authenticateToken, async (req, res) => {
+  const questionId = req.params.id;
+  const userId = req.user.id;
+  try {
+    const vote = await Vote.findOne({
+      questionId,
+      userId,
+    });
+
+    if (!vote) {
+      res.status(200).json(false);
+    } else {
+      res.status(200).json(true);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // Bookmark
 router.put('/:id/bookmark', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
@@ -410,6 +447,26 @@ router.put('/:id/bookmark', authenticateToken, async (req, res) => {
   }
 });
 
+// isBookmarked - 북마크 여부 확인
+router.get('/:id/bookmark', authenticateToken, async (req, res) => {
+  const questionId = req.params.id;
+  const userId = req.user.id;
+  try {
+    const bookmark = await Bookmark.findOne({
+      questionId,
+      userId,
+    });
+
+    if (!bookmark) {
+      res.status(200).json(false);
+    } else {
+      res.status(200).json(true);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // Views
 router.put('/:id/view', async (req, res) => {
   const questionId = req.params.id;
@@ -428,6 +485,7 @@ router.put('/:id/view', async (req, res) => {
   }
 });
 
+// GET VOTE LIST
 router.get('/:id/votelist', async (req, res) => {
   const questionId = req.params.id;
   try {
@@ -438,6 +496,7 @@ router.get('/:id/votelist', async (req, res) => {
   }
 });
 
+// GET BOOKMARK LIST
 router.get('/:id/bookmarklist', async (req, res) => {
   const questionId = req.params.id;
   try {
