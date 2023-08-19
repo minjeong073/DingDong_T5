@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { LogoSection, LogoImg, LogoTypo } from '../../components/Header/styled';
 import { Root, Container, IDbox, PWbox, ActionContainer, Button1, Button2 } from './styled';
-// import { authAtom, userAtom } from "../../stores/login-store";
 import { LoginState } from '../../stores/login-store';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
@@ -9,12 +8,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export const Login = () => {
-<<<<<<< HEAD
-  const [ isLoggedIn, setIsLoggedIn ] = useRecoilState(LoginState);
-=======
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState);
   const [name, setName] = useState();
->>>>>>> f5f9764a789cb6dfe6cac8f8b2d2d4a04f38f9df
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
