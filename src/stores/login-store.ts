@@ -1,25 +1,20 @@
 import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
-const authAtom = atom({
+export const authAtom = atom({
   key: 'auth',
-  default: JSON.parse(localStorage.getItem('user') as string)
+  default: JSON.parse(localStorage.getItem('user') as string),
 });
 
-const userAtom = atom({
+export const userAtom = atom({
   key: 'user',
-  default: null
+  default: null,
 });
-
-export {
-  authAtom,
-  userAtom
-};
 
 const { persistAtom } = recoilPersist();
 
 export const LoginState = atom({
-  key: "LoginState",
+  key: 'LoginState',
   default: false,
   effects_UNSTABLE: [persistAtom],
 });
