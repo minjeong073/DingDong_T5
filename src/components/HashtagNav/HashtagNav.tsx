@@ -73,6 +73,9 @@ export const HashTagNav = () => {
     if(selectedNav.includes('replies')){
       setClickedHashtags([true, ...Array(0).fill(false)]);
       setSelectedNav(`/replies`);
+    }else if(selectedNav.includes(`articles`)){
+      setClickedHashtags([true, ...Array(0).fill(false)]);
+      setSelectedNav(`/articles`);
     }
   }, [selectedNav]);
 
