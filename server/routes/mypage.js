@@ -5,8 +5,10 @@ const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 const Comment = require('../models/Comment');
 const Bookmark = require('../models/Bookmark');
+const CopyQuestion = require('../models/CopyQuestion');
 
 const athenticates = require('../middlewares/authenticates');
+const CopyAnswer = require('../models/CopyAnswer');
 const authenticateToken = athenticates.authenticateToken;
 
 // mypage - user 정보
@@ -170,7 +172,13 @@ router.get('/comments', authenticateToken, async (req, res) => {
   }
 });
 
-// 북마크한 질문
+const getFormattedDate = date => {
+  return new Date(date).toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+  });
+};
+
+// GET BOOKMARKED QUESTIONS WITH PAGINATION
 router.get('/bookmarks/questions', authenticateToken, async (req, res) => {
   const userIdFromToken = req.user.id;
   const page = parseInt(req.query.page) || 1;
@@ -181,34 +189,42 @@ router.get('/bookmarks/questions', authenticateToken, async (req, res) => {
     const bookmarks = await Bookmark.find({ userId: userIdFromToken });
     const questionIdList = bookmarks.map(bookmark => bookmark.questionId);
 
-    const totalBookmarkedQuestions = questionIdList.length;
-    const bookmarkedQuestions = await Question.find({ _id: { $in: questionIdList }, isDeleted: false })
-      .sort({ createdAt: -1 })
-      .skip(startIndex)
-      .limit(pageSize)
-      .exec();
+    const [questions, copyQuestions] = await Promise.all([
+      Question.find({ _id: { $in: questionIdList }, isDeleted: false })
+        .sort({ createdAt: -1 })
+        .skip(startIndex)
+        .limit(pageSize)
+        .exec(),
+      CopyQuestion.find({ _id: { $in: questionIdList }, userId: userIdFromToken }),
+    ]);
 
-    const updatedBookmarkedQuestions = await Promise.all(
-      bookmarkedQuestions.map(async question => {
-        const updatedQuestion = {
-          ...question._doc,
-          createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
-          updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
+    console.log(questions);
+    console.log(copyQuestions);
+
+    const populatedQuestions = await Promise.all(
+      copyQuestions.map(async copyQuestion => {
+        const originalQuestion = questions.find(question => question._id.toString() === copyQuestion._id.toString());
+        if (originalQuestion && originalQuestion.isDeleted) {
+          copyQuestion.isDeleted = true;
+          await copyQuestion.save();
+        }
+        const user = await User.findById(copyQuestion.userId);
+        const author = user ? user.username : 'unknown';
+        return {
+          ...copyQuestion._doc,
+          author,
+          createdAt: getFormattedDate(copyQuestion.createdAt),
+          updatedAt: getFormattedDate(copyQuestion.updatedAt),
         };
-        return updatedQuestion;
       }),
     );
 
-    res.status(200).json({
-      updatedBookmarkedQuestions,
-      totalBookmarkedQuestions,
-    });
+    const totalQuestions = populatedQuestions.length;
+
+    res.status(200).json({ updatedQuestions: populatedQuestions, totalQuestions });
   } catch (err) {
     res.status(500).json(err);
+    console.log(err);
   }
 });
 
@@ -222,42 +238,33 @@ router.get('/bookmarks/answers', authenticateToken, async (req, res) => {
   try {
     const bookmarks = await Bookmark.find({ userId: userIdFromToken });
     const answerIdList = bookmarks.map(bookmark => bookmark.answerId);
-
-    const totalBookmarkedAnswers = answerIdList.length;
-    const totalPages = Math.ceil(totalBookmarkedAnswers / pageSize);
-
-    const answers = await Answer.find({ _id: { $in: answerIdList } })
+    const answers = await CopyAnswer.find({ _id: { $in: answerIdList }, userId: userIdFromToken })
       .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(pageSize)
       .exec();
 
-    const updatedAnswers = await Promise.all(
-      answers.map(async answer => {
-        const question = await Question.findById(answer.questionId);
-        const questionHashtags = question ? question.hashtags : [];
+    console.log(answerIdList);
+    console.log(answers);
 
+    const populatedAnswers = await Promise.all(
+      answers.map(async answer => {
+        const user = await User.findById(answer.userId);
+        const author = user ? user.username : 'unknown';
         return {
           ...answer._doc,
-          questionHashtags,
-          createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
-          updatedAt: new Date(answer.updatedAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
+          author,
+          createdAt: getFormattedDate(answer.createdAt),
+          updatedAt: getFormattedDate(answer.updatedAt),
         };
       }),
     );
 
-    const hasNextPage = page < totalPages;
+    const hasNextPage = answers.length === pageSize;
     const nextPage = hasNextPage ? page + 1 : null;
-    const nextPageUrl = nextPage ? `/api/answer/bookmarks/answers?page=${nextPage}` : null;
+    const nextPageUrl = nextPage ? `/api/mypage/bookmarks/answers?page=${nextPage}` : null;
 
-    res.status(200).json({
-      answers: updatedAnswers,
-      nextPageUrl,
-    });
+    res.status(200).json({ answers: populatedAnswers, nextPageUrl });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -273,59 +280,34 @@ router.get('/bookmarks/comments', authenticateToken, async (req, res) => {
   try {
     const bookmarks = await Bookmark.find({ userId: userIdFromToken });
     const commentIdList = bookmarks.map(bookmark => bookmark.commentId);
-
-    const totalBookmarkedComments = commentIdList.length;
-    const totalPages = Math.ceil(totalBookmarkedComments / pageSize);
-
     const comments = await Comment.find({ _id: { $in: commentIdList } })
-      .sort({ votes: -1 })
+      .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(pageSize)
       .exec();
 
-    const updatedComments = await Promise.all(
+    console.log(commentIdList);
+    console.log(comments);
+
+    const populatedComments = await Promise.all(
       comments.map(async comment => {
         const user = await User.findById(comment.userId);
         const author = user ? user.username : 'unknown';
-
-        let questionHashtags;
-
-        if (comment.answerId) {
-          const answer = await Answer.findById(comment.answerId);
-          if (answer && answer.questionId) {
-            const question = await Question.findById(answer.questionId);
-            questionHashtags = question ? question.hashtags : [];
-          }
-        }
-        if (comment.questionId) {
-          const question = await Question.findById(comment.questionId);
-          questionHashtags = question ? question.hashtags : [];
-        }
-
         return {
           ...comment._doc,
           author,
-          questionHashtags,
-          createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
-          updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
+          createdAt: getFormattedDate(comment.createdAt),
+          updatedAt: getFormattedDate(comment.updatedAt),
         };
       }),
     );
 
-    const hasNextPage = page < totalPages;
+    const hasNextPage = comments.length === pageSize;
     const nextPage = hasNextPage ? page + 1 : null;
     const nextPageUrl = nextPage ? `/api/mypage/bookmarks/comments?page=${nextPage}` : null;
 
-    res.status(200).json({
-      comments: updatedComments,
-      nextPageUrl,
-    });
+    res.status(200).json({ comments: populatedComments, nextPageUrl });
   } catch (err) {
-    console.error(err); // Log the error for debugging purposes
     res.status(500).json(err);
   }
 });

@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Comment = require('../models/Comment');
 const Bookmark = require('../models/Bookmark');
+const CopyQuestion = require('../models/CopyQuestion');
 
 const authMiddleware = require('../middlewares/authenticates');
 const authenticateToken = authMiddleware.authenticateToken;
@@ -433,10 +434,27 @@ router.put('/:id/bookmark', authenticateToken, async (req, res) => {
         questionId,
         userId,
       });
+      await CopyQuestion.create({
+        questionId,
+        title: question.title,
+        content: question.content,
+        votes: question.votes,
+        answers: question.answers,
+        views: question.views,
+        saves: question.saves,
+        comments: question.comments,
+        authorId: question.userId, // Question 작성자 id
+        hashtags: question.hashtags,
+        isDeleted: question.isDeleted,
+        createdAt: question.createdAt,
+        updatedAt: question.updatedAt,
+        userId: userId, // Bookmark 한 사용자 id
+      });
       question.saves += 1;
       isBookmarked = true;
     } else {
       await Bookmark.deleteOne({ _id: existingBookmark._id });
+      await CopyQuestion.deleteOne({ questionId, userId });
       question.saves -= 1;
       isBookmarked = false;
     }

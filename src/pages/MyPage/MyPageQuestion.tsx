@@ -33,9 +33,9 @@ export const MyPageQuestion = () => {
     const response = await axios.get(`/api/mypage/bookmarks/questions`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    setTotalQuestions(response.data.totalBookmarkedQuestions);
+    setTotalQuestions(response.data.totalQuestions);
 
-    const updatedQuestions = response.data.updatedBookmarkedQuestions;
+    const updatedQuestions = response.data.updatedQuestions;
     setQuestionData(updatedQuestions);
     setIsLoading(true);
   };

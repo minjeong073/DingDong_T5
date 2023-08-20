@@ -36,7 +36,8 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
       setIsLoading(true);
     } catch (error) {
       console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      setQuestionData([]);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 
@@ -50,7 +51,8 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
       setIsLoading(true);
     } catch (error) {
       console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      setQuestionData([]);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 
@@ -64,7 +66,8 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
       setIsLoading(true);
     } catch (error) {
       console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      setQuestionData([]);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 

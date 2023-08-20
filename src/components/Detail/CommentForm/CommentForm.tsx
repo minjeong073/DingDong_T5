@@ -16,10 +16,8 @@ import {
 } from './styled';
 import { useState, useEffect, useMemo } from 'react';
 import axios, { AxiosError } from 'axios';
-import { set } from 'mongoose';
 import { useRecoilValue } from 'recoil';
 import { LoginState, UserState } from 'stores/login-store';
-import { isLVal } from '@babel/types';
 
 type Props = {
   _id?: string | null;
@@ -45,8 +43,6 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   const [commentList, setCommentList] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState({ content: '' });
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null); // 수정중인 댓글의 id
-  const [isVoted, setIsVoted] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const isLogin = useRecoilValue(LoginState);
   const user = useRecoilValue(UserState);
   const token = useMemo(() => localStorage.getItem('token'), []);
@@ -68,8 +64,8 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
         }
       }
     } catch (error) {
-      console.error("Error fetching comment's data:", error); // "Error fetching comment's data: Error: Request failed with status code 401
-      alert('댓글 정보 가져오기 실패!');
+      console.error('댓글 정보 가져오기 실패 :', error); // "Error fetching comment's data: Error: Request failed with status code 401
+      setCommentList([]);
     }
   };
 
@@ -150,12 +146,10 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      const response = await axios.put(`/api/comment/${commentId}/vote`, null, {
+      await axios.put(`/api/comment/${commentId}/vote`, null, {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      const isVoted = response.data;
-      setIsVoted(isVoted);
       fetchCommentList();
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
@@ -171,17 +165,15 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       alert('로그인 후 이용해주세요!');
       return;
     }
-    const answerResponse = await axios.get<Comment>(`/api/comment/${commentId}`);
-    const answerToUpdate = answerResponse.data;
-    if (!answerToUpdate) return;
-
     try {
-      const response = await axios.put(`/api/comment/${commentId}`, null, {
+      const answerResponse = await axios.get<Comment>(`/api/comment/${commentId}`);
+      const answerToUpdate = answerResponse.data;
+      if (!answerToUpdate) return;
+
+      await axios.put(`/api/comment/${commentId}`, null, {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      const isSaved = response.data;
-      setIsSaved(isSaved);
       fetchCommentList();
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {

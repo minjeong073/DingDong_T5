@@ -59,7 +59,7 @@ export const Header = () => {
 
   const navigateSearchPage = () => {
     if (filteredData) {
-      navigate(`/articles?keyword=${encodeURIComponent(wordEntered.trim())}`);
+      navigate(`/search?keyword=${encodeURIComponent(wordEntered.trim())}`);
       // console.log(wordEntered.trim());
     } else {
       navigate(`/articles`);

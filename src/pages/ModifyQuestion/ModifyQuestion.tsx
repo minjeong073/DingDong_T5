@@ -46,7 +46,8 @@ export const ModifyQuestion = () => {
       }
     } catch (error) {
       console.error(error);
-      alert('게시글 정보 가져오기 실패!');
+      setModifiedArticle(null);
+      // alert('게시글 정보 가져오기 실패!');
     }
   };
 
@@ -67,11 +68,8 @@ export const ModifyQuestion = () => {
         alert('키워드를 입력해주세요.');
         return;
       }
-      await axios.put(`/api/articles/${_id}`, {
+      await axios.put(`/api/articles/${_id}`, modifiedArticle, {
         headers: { Authorization: `Bearer ${token}` },
-        ...modifiedArticle,
-        content: contents,
-        hashtags: selected,
       });
       setQuestionData((prevQuestionData: QuestionDataType[]) => {
         const updatedData = prevQuestionData.map(item =>

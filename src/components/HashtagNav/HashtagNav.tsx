@@ -1,16 +1,17 @@
 import { NavBar, Table, Tr, Td, HashTag, Button, Img } from './styled';
 import { useRecoilState } from 'recoil';
 import { QuestionListState } from '../../stores/page-store';
+import { PageState } from '../../stores/link-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import unfold from '../../assets/icon/unfold.svg';
 import fold from '../../assets/icon/fold.svg';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { encode } from 'punycode';
+import { useNavigate, useLocation  } from 'react-router-dom';
 
 export const HashTagNav = () => {
   const [page, setPage] = useState(1);
+  const [selectedNav, setSelectedNav] = useRecoilState(PageState);
   const [expanded, setExpanded] = useState(false);
   const [clicked, setClicked] = useState(false);
   const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
@@ -19,7 +20,8 @@ export const HashTagNav = () => {
   const [onlyHashtag, setOnlyHashtag] = useState<string[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const filterTag = location.pathname.includes(`/replies`);
+
+  // console.log(selectedNav);
 
   const fetchData = async () => {
     try {
@@ -28,8 +30,10 @@ export const HashTagNav = () => {
       setQuestionData(questionResponse.data.updatedQuestions);
       setOnlyHashtag(['ALL', ...hashtagsResponse.data.hashtags]);
     } catch (error) {
-      console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      console.error('게시판 정보 가져오기 실패 : ' + error);
+      setQuestionData([]);
+      setOnlyHashtag(['ALL']);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 
@@ -47,18 +51,36 @@ export const HashTagNav = () => {
     },
     [clickedHashtags, navigate],
   );
-  
+  const filterTag = location.pathname ==='/articles' || location.pathname === '/replies';
+  //boolean값
   useEffect(() => {
+    
     const target: boolean = true;
     let targetIndex:number = clickedHashtags.indexOf(target);
-    if(clicked && onlyHashtag[targetIndex]!='ALL')
+
+    // 'ALL'이 아닌 다른 hashtag를 누른 경우
+    if(clicked && onlyHashtag[targetIndex]!='ALL'){
       navigate(`/search/hashtag?hashtag=${encodeURIComponent(onlyHashtag[targetIndex])}`);
-    else if(onlyHashtag[targetIndex] === 'ALL')
+      setSelectedNav(`/search`);
+    }
+    // hashtag 'ALL'누른 경우
+    else if( !selectedNav.includes('/replies') && onlyHashtag[targetIndex] === 'ALL'){
       navigate(`/articles`);
-    if(filterTag)
-      setClickedHashtags([true, ...Array(0).fill(false)]); 
-  }, [clickedHashtags, handleClick]);
-  
+      setSelectedNav(`/articles`);
+    }
+
+  }, [clickedHashtags ]);
+
+  useEffect(() => {
+    if(selectedNav.includes('replies')){
+      setClickedHashtags([true, ...Array(0).fill(false)]);
+      setSelectedNav(`/replies`);
+    }else if(selectedNav.includes(`articles`)){
+      setClickedHashtags([true, ...Array(0).fill(false)]);
+      setSelectedNav(`/articles`);
+    }
+  }, [selectedNav]);
+
   const toggleExpanded = useCallback(() => {
     setExpanded(prevExpanded => !prevExpanded);
   }, []);
