@@ -194,9 +194,6 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
                 <HashTag key={index}>{hashtag}</HashTag>
               ))}
             </HashTagContainer>
-            <Typo underline="true" pointer="true">
-              공유
-            </Typo>
             {user._id === currentQuestion?.userId && (
               <Typo underline="true" pointer="true" onClick={() => navigate(`/articles/modify/${_id}`)}>
                 수정

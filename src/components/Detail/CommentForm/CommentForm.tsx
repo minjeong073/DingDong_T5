@@ -218,9 +218,6 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
             <InfoContainer>
               <Typo size="12px">{comment?.author}</Typo>
               <Typo size="12px">{comment?.updatedAt || comment?.createdAt}</Typo>
-              <Typo pointer="true" underline="true" size="12px">
-                공유
-              </Typo>
               {user._id === comment.userId && (
                 <Typo onClick={() => onClickCommentEdit(comment._id!)} pointer="true" underline="true" size="12px">
                   수정

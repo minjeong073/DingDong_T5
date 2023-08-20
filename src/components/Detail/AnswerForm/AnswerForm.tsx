@@ -295,9 +295,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           </TopContainer>
           <BottomContainer>
             <BottomLeftContainer>
-              <Typo underline="true" pointer="true">
-                공유
-              </Typo>
               {user._id === answer.userId && (
                 <Typo underline="true" pointer="true" onClick={() => editAnswer(answer._id)}>
                   수정
