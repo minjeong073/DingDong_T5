@@ -60,8 +60,6 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     content: '',
   });
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
-  const [isVoted, setIsVoted] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const isLogin = useRecoilValue(LoginState);
   const user = useRecoilValue(UserState);
   const token = useMemo(() => localStorage.getItem('token'), []);
@@ -77,8 +75,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         setCurrentQuestion(foundQuestion);
       }
     } catch (error) {
-      console.error(error);
-      alert('질문 정보 가져오기 실패!');
+      console.error('질문 정보 가져오기 실패 : ' + error);
+      setCurrentQuestion(null);
     }
   };
 
@@ -98,8 +96,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         }
       }
     } catch (error) {
-      console.error(error);
-      alert('답변 정보 가져오기 실패!');
+      console.error('댓글 정보 가져오기 실패 : ' + error);
+      setAnswerData([]);
     }
   };
 
@@ -197,12 +195,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      const response = await axios.put(`/api/answer/${answerId}/vote`, null, {
+      await axios.put(`/api/answer/${answerId}/vote`, null, {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      const { isVoted } = response.data;
-      setIsVoted(isVoted);
       fetchAnswerData();
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
@@ -224,12 +220,10 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      const response = await axios.put(`/api/answer/${answerId}/bookmark`, null, {
+      await axios.put(`/api/answer/${answerId}/bookmark`, null, {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      const { isBookmarked } = response.data;
-      setIsSaved(isBookmarked);
       fetchAnswerData();
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
@@ -263,7 +257,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         </TitleSection>
       )}
       {answerData?.map((answer, index) => (
-        <BodySection>
+        <BodySection key={answer._id}>
           <TopContainer>
             <ItemContainer>
               {/* 투표 */}
