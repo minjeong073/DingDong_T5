@@ -50,7 +50,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const fetchQuestionData = useCallback(async () => {
     try {
       const response = await axios.get(`/api/articles/${_id}`);
-      if (token) {
+      if (isLogin) {
         const voteResponse = await axios.get(`/api/articles/${_id}/isVoted`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -138,7 +138,6 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       alert('로그인 후 이용해주세요!');
       return;
     }
-    // token 없을 경우 알림 추가해주세요!
 
     try {
       const response = await axios.put(`/api/articles/${_id}/bookmark`, null, {

@@ -38,10 +38,11 @@ router.post('/:questionId', authenticateToken, async (req, res) => {
 });
 
 // GET ALL
-router.get('/all/:questionId', async (req, res) => {
+router.get('/all/public/:questionId', async (req, res) => {
+  const questionId = req.params.questionId;
   try {
-    const questionId = req.params.questionId;
     const answers = await Answer.find({ questionId: questionId });
+
     const updatedAnswers = await Promise.all(
       answers.map(async answer => {
         const user = await User.findById(answer.userId);
@@ -49,6 +50,38 @@ router.get('/all/:questionId', async (req, res) => {
         return {
           ...answer._doc,
           author,
+          createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(answer.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+      }),
+    );
+    res.status(200).json(updatedAnswers);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET ALL - LoggedIn
+router.get('/all/:questionId', authenticateToken, async (req, res) => {
+  const questionId = req.params.questionId;
+  const userIdFromToken = req.user.id;
+  try {
+    const answers = await Answer.find({ questionId: questionId });
+    const updatedAnswers = await Promise.all(
+      answers.map(async answer => {
+        const user = await User.findById(answer.userId);
+        const author = user ? user.username : 'unknown';
+        const vote = await Vote.findOne({ userId: userIdFromToken, answerId: answer._id });
+        const save = await Bookmark.findOne({ userId: userIdFromToken, answerId: answer._id });
+        return {
+          ...answer._doc,
+          author,
+          isVoted: vote ? true : false,
+          isSaved: save ? true : false,
           createdAt: new Date(answer.createdAt).toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
           }),

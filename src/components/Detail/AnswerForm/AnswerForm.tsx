@@ -42,6 +42,8 @@ interface AnswerDataType {
   votes: number;
   saves: number;
   comments: number;
+  isVoted: boolean;
+  isSaved: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -82,11 +84,18 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   const fetchAnswerData = async () => {
     try {
-      const answerResponse = await axios.get(`/api/answer/all/${_id}`);
-
-      const foundAnswer = answerResponse.data;
-      if (foundAnswer) {
-        setAnswerData(foundAnswer);
+      if (isLogin) {
+        const answerResponse = await axios.get(`/api/answer/all/${_id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (answerResponse.data) {
+          setAnswerData(answerResponse.data);
+        }
+      } else {
+        const answerResponse = await axios.get(`/api/answer/all/public/${_id}`);
+        if (answerResponse.data) {
+          setAnswerData(answerResponse.data);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -243,7 +252,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   useEffect(() => {
     fetchCurrentQuestion();
     fetchAnswerData();
-  }, []);
+  }, [isLogin, isSaved, isVoted]);
 
   // answerData로부터 user가 투표한 답변인지 확인, 저장한 답변인지 확인
   useEffect(() => {
@@ -283,14 +292,14 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
             <TopContainer>
               <ItemContainer>
                 {/* 투표 */}
-                {isVoted ? (
+                {answer.isVoted ? (
                   <HeartFillIcon onClick={() => handleVote(answer._id)} />
                 ) : (
                   <HeartIcon onClick={() => handleVote(answer._id)} />
                 )}
                 <ItemTypo>{answer.votes}</ItemTypo>
                 {/* 저장 */}
-                {isSaved ? (
+                {answer.isSaved ? (
                   <SaveFillIcon onClick={() => handleSave(answer._id)} />
                 ) : (
                   <SaveIcon onClick={() => handleSave(answer._id)} />
