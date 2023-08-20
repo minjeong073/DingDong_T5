@@ -130,6 +130,13 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         return;
       }
 
+      // Check if the current user has already posted an answer
+      const hasPostedAnswer = answerData.some(answer => answer.userId === user._id);
+      if (hasPostedAnswer) {
+        alert('이미 답변을 작성했습니다.');
+        return;
+      }
+
       // If editingAnswerId is null, it means we are creating a new answer
       await axios
         .post(`/api/answer/${_id}`, newAnswer, {
