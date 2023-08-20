@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import type { QuestionDataType } from 'stores/page-store';
@@ -6,7 +6,7 @@ import { QuestionRow } from "../../components/QuestionRow";
 import { Table, Tbody } from "../../components/List/ArticlesTable/styled";
 import { Div } from "./styled";
 import { Loading } from 'components/Loading';
-import { Nav } from 'components/Nav';
+import { Default } from './Default';
 
 export const SearchTagPage = () => {
   const [SearchData, setSearchData] = useState<QuestionDataType[]>([]);
@@ -14,8 +14,10 @@ export const SearchTagPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const hashtag = queryParams.get('hashtag');
+  const navigate = useNavigate();
 
   useEffect(() => {
+
     const fetchSearchData = async(hashtag:string) => {
       try{
         setIsLoading(true);
@@ -32,7 +34,7 @@ export const SearchTagPage = () => {
   }, [hashtag]);
 
   return (
-    <>
+    <>   
       {isLoading ? (
         <Div> Loading ... <Loading/> </Div>
           ) : (
@@ -43,7 +45,8 @@ export const SearchTagPage = () => {
                 ))}
               </Tbody>
             </Table>
-      )}          
+      )}   
+      <Default/>
     </>
   );
 };

@@ -1,11 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { MdClose } from 'react-icons/md';
 import { Fragment, DataResult, Wrapper } from './styled';
 import type { QuestionDataType } from '../../stores/page-store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
-//autocomplete
-import { useLocation } from 'react-router-dom';
 //autocomplete
 
 interface SearchProps {
@@ -16,12 +14,10 @@ interface SearchProps {
 export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Element => {
   const [filteredData, setFilteredData] = useState<QuestionDataType[]>([]);
   const [wordEntered, setWordEntered] = useState<string>('');
-
   const location = useLocation();
+  const navigate = useNavigate();
 
   const ishome = location.pathname === '/';
-
-  const navigate = useNavigate();
 
   const inputRef: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
   window.addEventListener('load', () => inputRef.current?.focus());
