@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   HeartIcon,
   ItemContainer,
@@ -27,9 +27,11 @@ import {
   HashTag,
 } from './styled';
 import DOMPurify from 'dompurify';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import type { QuestionDataType } from '../../../stores/page-store';
 import { CommentForm } from '../CommentForm';
+import { useRecoilValue } from 'recoil';
+import { LoginState, UserState } from 'stores/login-store';
 
 type Props = {
   _id?: string | null;
@@ -39,23 +41,24 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null); // Change initial state to null
   const [isVoted, setIsVoted] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const isLogin = useRecoilValue(LoginState);
+  const user = useRecoilValue(UserState);
+  const token = useMemo(() => localStorage.getItem('token'), []);
 
   const navigate = useNavigate();
 
   const fetchQuestionData = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
-      console.log('token:', token);
       const response = await axios.get(`/api/articles/${_id}`);
       if (token) {
-        const isVoted = await axios.get(`/api/articles/${_id}/vote`, {
+        const voteResponse = await axios.get(`/api/articles/${_id}/isVoted`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const isSaved = await axios.get(`/api/articles/${_id}/bookmark`, {
+        const saveResponse = await axios.get(`/api/articles/${_id}/isBookmarked`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setIsVoted(isVoted.data);
-        setIsSaved(isSaved.data);
+        setIsVoted(voteResponse.data);
+        setIsSaved(saveResponse.data);
       }
       const foundQuestion = response.data;
       if (foundQuestion) {
@@ -63,7 +66,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       }
     } catch (error) {
       console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      alert('질문 불러오기 실패!');
     }
   }, [_id]);
 
@@ -77,7 +80,6 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   };
 
   const deleteQuestion = async () => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
@@ -114,40 +116,43 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     }
     // token 없을 경우 알림 추가해주세요!
     try {
-      /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
-      투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
-       -> Vote 테이블에 userId와 questionId를 쿼리하여 이미 투표했는지 여부 확인 */
-      const isVoted = await axios.put(`/api/articles/${_id}/vote`, null, {
+      const response = await axios.put(`/api/articles/${_id}/vote`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsVoted(isVoted.data);
+      const isVoted = response.data;
+      setIsVoted(isVoted);
       fetchQuestionData();
     } catch (error) {
       console.error('Error updating votes:', error);
+      if ((error as AxiosError).response!.status === 403) {
+        alert('본인의 글은 투표할 수 없습니다.');
+        return;
+      }
       alert('투표 실패!');
     }
   };
 
   // 저장수 업데이트
   const handleSave = async () => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
     }
     // token 없을 경우 알림 추가해주세요!
 
-    /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
-    저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
-     -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
     try {
-      const isSaved = await axios.put(`/api/articles/${_id}/bookmark`, null, {
+      const response = await axios.put(`/api/articles/${_id}/bookmark`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsSaved(isSaved.data);
+      const isSaved = response.data;
+      setIsSaved(isSaved);
       fetchQuestionData();
     } catch (error) {
       console.error('Error updating saves:', error);
+      if ((error as AxiosError).response!.status === 403) {
+        alert('본인의 글은 저장할 수 없습니다.');
+        return;
+      }
       alert('저장 실패!');
     }
   };
@@ -195,12 +200,16 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             <Typo underline="true" pointer="true">
               공유
             </Typo>
-            <Typo underline="true" pointer="true" onClick={() => navigate(`/articles/modify/${_id}`)}>
-              수정
-            </Typo>
-            <Typo underline="true" pointer="true" onClick={deleteQuestion}>
-              삭제
-            </Typo>
+            {user._id === currentQuestion?.userId && (
+              <Typo underline="true" pointer="true" onClick={() => navigate(`/articles/modify/${_id}`)}>
+                수정
+              </Typo>
+            )}
+            {user._id === currentQuestion?.userId && (
+              <Typo underline="true" pointer="true" onClick={deleteQuestion}>
+                삭제
+              </Typo>
+            )}
           </BottomLeftContainer>
           <BottomRightContainer>
             <AuthorBox>
@@ -213,7 +222,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             </AuthorBox>
           </BottomRightContainer>
         </BottomContainer>
-        <CommentForm _id={_id} selected="articles" />
+        {isLogin && <CommentForm _id={_id} selected="articles" />}
       </BodySection>
     </>
   );

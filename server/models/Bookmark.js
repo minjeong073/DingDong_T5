@@ -10,6 +10,10 @@ const BookmarkSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Answer',
     },
+    commentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment',
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

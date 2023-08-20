@@ -13,27 +13,29 @@ import {
 } from './styled';
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { QuestionData } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import modules from '../../utils/quillModules';
 import { TagsInput } from 'react-tag-input-component';
 import { stringify } from 'querystring';
+import { UserState } from 'stores/login-store';
 
 export const WriteQuestion = () => {
+  const token = localStorage.getItem('token');
+  const user = useRecoilValue(UserState);
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState('');
   const [selected, setSelected] = useState<string[]>([]);
   const [newArticle, setNewArticle] = useState({
     title: '',
     content: '',
-    userId: '64d24cb479cd50b639db526a', //user6
+    userId: user._id,
     hashtags: selected,
     isDeleted: false,
   });
   const navigate = useNavigate();
-
-  const setQuestionData = useSetRecoilState(QuestionData); // Recoil setter
+  // const setQuestionData = useSetRecoilState(QuestionData); // Recoil setter
 
   const postQuestion = async () => {
     try {
@@ -49,15 +51,15 @@ export const WriteQuestion = () => {
         alert('키워드를 입력해주세요.');
         return;
       }
-      await axios.post('/api/articles/', newArticle).then(res => {
-        setQuestionData((prevQuestionData: QuestionDataType[]) => [
-          ...prevQuestionData,
-          res.data, // Add the new question to the Recoil state
-        ]);
-        alert('질문 등록 성공!');
-        navigate(`/articles/${res.data._id}`);
-        // navigate(`/articles`);
-      });
+      await axios
+        .post('/api/articles/', newArticle, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+          alert('질문이 등록되었습니다.');
+          navigate(`/articles/${res.data._id}`);
+          // navigate(`/articles`);
+        });
     } catch (error) {
       console.error(error);
       if ((error as AxiosError).response!.status === 413) {
@@ -73,7 +75,7 @@ export const WriteQuestion = () => {
   };
 
   const handleTagsChange = (newTags: string[]) => {
-    // 글자수 제한을 10으로 가정한 예시
+    // 글자수 제한을 6으로 가정
     const maxLength = 6;
     const validTags = newTags.filter(tag => {
       if (tag.length > maxLength) {
@@ -84,6 +86,14 @@ export const WriteQuestion = () => {
     });
     setSelected(validTags);
   };
+
+  useEffect(() => {
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      navigate('/signin');
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     // console.log(contents);

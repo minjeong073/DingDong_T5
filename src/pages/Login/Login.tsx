@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { LogoSection, LogoImg, LogoTypo } from '../../components/Header/styled';
 import { Root, Container, IDbox, PWbox, ActionContainer, Button1, Button2 } from './styled';
-import { LoginState } from '../../stores/login-store';
+import { LoginState, UserState } from '../../stores/login-store';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
@@ -9,6 +9,7 @@ import axios from 'axios';
 
 export const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState);
+  const [userState, setUserState] = useRecoilState(UserState);
   const [name, setName] = useState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +27,7 @@ export const Login = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
+      const tokenResponse = await axios.post(
         '/api/auth/signin',
         {
           email: email,
@@ -36,11 +37,25 @@ export const Login = () => {
           withCredentials: true,
         },
       );
-      const { token } = response.data;
+      const { token } = tokenResponse.data;
       const expirationDate = new Date(new Date().getTime() + 60 * 60 * 1000);
       localStorage.setItem('token', token);
       localStorage.setItem('expirationDate', expirationDate.toString());
-      console.log('로그인 성공:', response.data);
+      console.log('로그인 성공:', tokenResponse.data);
+
+      // 유저 정보 받아오기
+      const userResponse = await axios.get('/api/mypage', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const user = userResponse.data;
+      console.log('유저정보:', user);
+
+      // 로그인 성공 후
+      setIsLoggedIn(true);
+      setUserState(user);
+
       navigate('/');
       window.location.reload();
     } catch (error) {
@@ -57,16 +72,13 @@ export const Login = () => {
             <LogoTypo>DINGDONG</LogoTypo>
           </LogoSection>
         </Link>
-
         <IDbox placeholder="이메일" value={email} type="text" id="email" onChange={handleEmailChange} />
         <PWbox placeholder="비밀번호" value={password} type="password" id="password" onChange={handlePasswordChange} />
         <ActionContainer>
-          <Button1 width="144px" height="52px" type="submit" onClick={handleLogin}>
+          <Button1 type="submit" onClick={handleLogin}>
             로그인
           </Button1>
-          <Button2 width="144px" height="52px">
-            회원가입
-          </Button2>
+          <Button2>회원가입</Button2>
         </ActionContainer>
       </Container>
     </Root>

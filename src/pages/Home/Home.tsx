@@ -121,8 +121,8 @@ export const Home = () => {
             </TitleBlock>
             <TopItems>
               {topQuestion?.map(question => (
-                <TopItem key={question?._id} onClick={() => navigate(`/articles/${question._id}`)}>
-                  {question?.title.length > 27 ? question?.title.slice(0, 27) + '...' : question?.title}
+                <TopItem key={question?._id} onClick={() => navigate(`/articles/${question._id}`)} $ellipsis={true}>
+                  {question?.title}
                 </TopItem>
               ))}
             </TopItems>
