@@ -320,7 +320,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
               </AuthorBox>
             </BottomRightContainer>
           </BottomContainer>
-          {isLogin && <CommentForm _id={answer._id} selected="answer" />}
+          <CommentForm _id={answer._id} selected="answer" />
         </BodySection>
       ))}
       {isLogin && user._id !== currentQuestion?.userId && (

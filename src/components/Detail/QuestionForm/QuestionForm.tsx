@@ -219,7 +219,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             </AuthorBox>
           </BottomRightContainer>
         </BottomContainer>
-        {isLogin && <CommentForm _id={_id} selected="articles" />}
+        <CommentForm _id={_id} selected="articles" />
       </BodySection>
     </>
   );

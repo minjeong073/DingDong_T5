@@ -235,24 +235,26 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
           </ContentContainer>
         </Container>
       ))}
-      <Input placeholder="댓글을 입력하세요" value={newComment.content} onChange={onChangeCommentInput} />
-      <ButtonContainer>
-        <Button onClick={onSubmitComment} width="88px" height="38px" fontsize="15px" top="5px" borderradius="8px">
-          {editingCommentId ? '댓글수정' : '댓글작성'}
-        </Button>
-        {editingCommentId && (
-          <Button
-            onClick={onClickEditingCancel}
-            width="58px"
-            height="38px"
-            fontsize="15px"
-            top="5px"
-            left="2px"
-            borderradius="8px">
-            취소
+      {isLogin && <Input placeholder="댓글을 입력하세요" value={newComment.content} onChange={onChangeCommentInput} />}
+      {isLogin && (
+        <ButtonContainer>
+          <Button onClick={onSubmitComment} width="88px" height="38px" fontsize="15px" top="5px" borderradius="8px">
+            {editingCommentId ? '댓글수정' : '댓글작성'}
           </Button>
-        )}
-      </ButtonContainer>
+          {editingCommentId && (
+            <Button
+              onClick={onClickEditingCancel}
+              width="58px"
+              height="38px"
+              fontsize="15px"
+              top="5px"
+              left="2px"
+              borderradius="8px">
+              취소
+            </Button>
+          )}
+        </ButtonContainer>
+      )}
     </Root>
   );
 };
