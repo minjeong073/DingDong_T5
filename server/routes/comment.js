@@ -9,8 +9,59 @@ const Bookmark = require('../models/Bookmark');
 const authMiddleware = require('../middlewares/authenticates');
 const authenticateToken = authMiddleware.authenticateToken;
 
-// GET BY QUESTION ID OR ANSWER ID
-router.get('/', async (req, res) => {
+// GET ALL BY QUESTION ID OR ANSWER ID
+router.get('/', authenticateToken, async (req, res) => {
+  const userIdFromToken = req.user.id;
+  try {
+    let comments;
+
+    if (req.query.questionId) {
+      comments = await Comment.find({ questionId: req.query.questionId });
+    }
+    if (req.query.answerId) {
+      comments = await Comment.find({ answerId: req.query.answerId });
+    }
+    if (!req.query.questionId && !req.query.answerId) {
+      res.status(400).json('Invalid query parameters');
+      return;
+    }
+
+    if (!comments) {
+      res.status(404).json('Comments not found!');
+      return;
+    }
+
+    const updatedComments = await Promise.all(
+      comments.map(async comment => {
+        const user = await User.findById(comment.userId);
+        const author = user ? user.username : 'unknown';
+
+        const vote = await Vote.findOne({ userId: userIdFromToken, commentId: comment._id });
+        const save = await Bookmark.findOne({ userId: userIdFromToken, commentId: comment._id });
+        const updatedComment = {
+          ...comment._doc,
+          author,
+          isVoted: vote ? true : false,
+          isSaved: save ? true : false,
+          createdAt: new Date(comment.createdAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+          updatedAt: new Date(comment.updatedAt).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+          }),
+        };
+        return updatedComment;
+      }),
+    );
+
+    res.status(200).json(updatedComments);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET ALL BY QUESTION ID OR ANSWER ID
+router.get('/all/public', async (req, res) => {
   try {
     let comments;
 
