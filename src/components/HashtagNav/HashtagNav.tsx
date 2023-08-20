@@ -30,8 +30,10 @@ export const HashTagNav = () => {
       setQuestionData(questionResponse.data.updatedQuestions);
       setOnlyHashtag(['ALL', ...hashtagsResponse.data.hashtags]);
     } catch (error) {
-      console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      console.error('게시판 정보 가져오기 실패 : ' + error);
+      setQuestionData([]);
+      setOnlyHashtag(['ALL']);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 

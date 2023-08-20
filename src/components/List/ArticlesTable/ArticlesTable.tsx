@@ -36,7 +36,8 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
       setIsLoading(true);
     } catch (error) {
       console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      setQuestionData([]);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 
@@ -50,7 +51,8 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
       setIsLoading(true);
     } catch (error) {
       console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      setQuestionData([]);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 
@@ -64,7 +66,8 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
       setIsLoading(true);
     } catch (error) {
       console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      setQuestionData([]);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 
@@ -92,18 +95,17 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
 
   return (
     <>
-
-          {isLoading ? (            
-            <Table>
-              <Tbody>
-                {QuestionData?.map((question, idx) => (
-                  <QuestionRow key={idx} item={question} />
-                ))}
-              </Tbody>                
-            </Table>
-          ) : (
-            <Loading />
-          )}
+      {isLoading ? (
+        <Table>
+          <Tbody>
+            {QuestionData?.map((question, idx) => (
+              <QuestionRow key={idx} item={question} />
+            ))}
+          </Tbody>
+        </Table>
+      ) : (
+        <Loading />
+      )}
       <Pagination
         page={page}
         QuestionData={QuestionData}

@@ -66,8 +66,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         setCurrentQuestion(foundQuestion);
       }
     } catch (error) {
-      console.error(error);
-      alert('질문 불러오기 실패!');
+      console.error('질문 불러오기 실패 : ' + error);
+      // alert('질문 불러오기 실패!');
     }
   }, [_id]);
 
@@ -85,7 +85,6 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       alert('로그인 후 이용해주세요!');
       return;
     }
-    // token 없을 경우 로그인 알림 추가해주세요!
 
     try {
       //삭제할건지 확인
@@ -110,12 +109,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
 
   // 투표수 업데이트
   const handleVote = async () => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
     }
-    // token 없을 경우 알림 추가해주세요!
     try {
       const response = await axios.put(`/api/articles/${_id}/vote`, null, {
         headers: { Authorization: `Bearer ${token}` },
