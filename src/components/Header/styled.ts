@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import SearchIcon from '../../assets/icon/search.svg';
 import Logo from '../../assets/icon/logo.svg';
 import NotificationIcon from '../../assets/icon/notification.svg';
+import { SearchBar } from './SearchBar';
 
 export const Root = styled.header`
   padding-top: 32px;
@@ -111,8 +112,10 @@ export const Wrapper = styled.div<IWrapper>`
 export const SearchInput = styled.input`
   width: 661px;
   height: 48px;
+  display:flex;
+  flex-direction: row;
   padding-left: 60px;
-  /* border: 0.2px solid #e2e8f0; */
+  place-holder:none;
   border-radius: 20px;
   background: #fff;
   box-shadow: 0px 0px 8px 0px rgba(100, 116, 139, 0.18);
@@ -121,6 +124,7 @@ export const SearchInput = styled.input`
   background-position: 20px 50%;
   font-size: 16px;
   margin-left: 16px;
+
 `;
 
 export const DataResult = styled.div`

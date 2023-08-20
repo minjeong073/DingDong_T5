@@ -5,6 +5,8 @@ import type { QuestionDataType } from 'stores/page-store';
 import { QuestionRow } from "../../components/QuestionRow";
 import { Table, Tbody } from "../../components/List/ArticlesTable/styled";
 import { Div } from "./styled";
+import { Loading } from 'components/Loading';
+import { Nav } from 'components/Nav';
 
 export const SearchTagPage = () => {
   const [SearchData, setSearchData] = useState<QuestionDataType[]>([]);
@@ -32,7 +34,7 @@ export const SearchTagPage = () => {
   return (
     <>
       {isLoading ? (
-        <Div> Loading ... </Div>
+        <Div> Loading ... <Loading/> </Div>
           ) : (
             <Table>
               <Tbody>

@@ -30,6 +30,7 @@ root.render(
               <Route path="/articles/:_id" element={<Detail />} />
               <Route path="/articles/write" element={<WriteQuestion />} />
               <Route path="/articles/modify/:_id" element={<ModifyQuestion />} />
+              <Route path="/articles" element={<SearchPage />} />
             </Route>
             <Route path="/replies" element={<Layout />}>
               <Route index element={<Replies />} />

@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import unfold from '../../assets/icon/unfold.svg';
 import fold from '../../assets/icon/fold.svg';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { encode } from 'punycode';
 
 export const HashTagNav = () => {
@@ -18,6 +18,8 @@ export const HashTagNav = () => {
   const [hashtag, setHashtag] = useState<string[]>([]);
   const [onlyHashtag, setOnlyHashtag] = useState<string[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const filterTag = location.pathname.includes(`/replies`);
 
   const fetchData = async () => {
     try {
@@ -46,7 +48,6 @@ export const HashTagNav = () => {
     [clickedHashtags, navigate],
   );
   
-
   useEffect(() => {
     const target: boolean = true;
     let targetIndex:number = clickedHashtags.indexOf(target);
@@ -54,6 +55,8 @@ export const HashTagNav = () => {
       navigate(`/search/hashtag?hashtag=${encodeURIComponent(onlyHashtag[targetIndex])}`);
     else if(onlyHashtag[targetIndex] === 'ALL')
       navigate(`/articles`);
+    if(filterTag)
+      setClickedHashtags([true, ...Array(0).fill(false)]); 
   }, [clickedHashtags, handleClick]);
   
   const toggleExpanded = useCallback(() => {
