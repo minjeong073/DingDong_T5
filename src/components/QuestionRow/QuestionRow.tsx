@@ -55,7 +55,7 @@ export const QuestionRow = ({ item }: QuestionRowProps) => {
           </Title>
           <Addition>
             <HashTagWrapper>
-              {item.hashtags.map(content => (
+              {item.hashtags?.map(content => (
                 <HashTag key={content}>{content}</HashTag>
               ))}
             </HashTagWrapper>

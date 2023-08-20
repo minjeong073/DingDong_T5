@@ -30,6 +30,8 @@ export const SearchPage = () => {
     if(keyword)
       fetchSearchData(keyword);
 
+    // console.log(keyword);
+
   }, []);
 
   return (
@@ -37,11 +39,11 @@ export const SearchPage = () => {
       {isLoading ? (
         <Div> Loading ... <Loading/> </Div>
           ) : ( 
-            SearchData.length != 0 ?
+            SearchData.length > 0 ?
               ( 
                 <Table>
                   <Tbody>
-                    {SearchData?.map((item, idx) => (
+                    {SearchData && SearchData.map((item, idx) => (
                     <QuestionRow key={idx} item={item} />
                     ))}
                   </Tbody>
