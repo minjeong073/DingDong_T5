@@ -58,8 +58,8 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     content: '',
   });
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
-  const [isVoted, setIsVoted] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isVoted, setIsVoted] = useState<{ [key: string]: boolean }>({});
+  const [isSaved, setIsSaved] = useState<{ [key: string]: boolean }>({});
   const isLogin = useRecoilValue(LoginState);
   const user = useRecoilValue(UserState);
   const token = useMemo(() => localStorage.getItem('token'), []);
@@ -192,8 +192,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      const { isVoted } = response.data;
-      setIsVoted(isVoted);
+      // setIsVoted({ ...isVoted, [answerId]: response.data.isVoted });
       fetchAnswerData();
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
@@ -219,8 +218,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
-      const { isBookmarked } = response.data;
-      setIsSaved(isBookmarked);
+      // setIsSaved({ ...isSaved, [answerId]: response.data.isBookmarked });
       fetchAnswerData();
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
@@ -245,29 +243,25 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     fetchAnswerData();
   }, []);
 
-  // answerData로부터 user가 투표한 답변인지 확인, 저장한 답변인지 확인
-  useEffect(() => {
-    if (token) {
-      answerData.forEach(answer => {
-        axios
-          .get(`/api/answer/${answer._id}/isVoted`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then(res => {
-            setIsVoted(res.data);
-          });
-      });
-      answerData.forEach(answer => {
-        axios
-          .get(`/api/answer/${answer._id}/isBookmarked`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then(res => {
-            setIsSaved(res.data);
-          });
-      });
-    }
-  }, [answerData]);
+  /*   useEffect(() => {
+    if (answerData.length === 0) return;
+    answerData.forEach(async answer => {
+      try {
+        const voteResponse = await axios.get(`/api/answer/${answer._id}/isVoted`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const voted = voteResponse.data;
+        const saveResponse = await axios.get(`/api/answer/${_id}/isBookmarked`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const saved = saveResponse.data;
+        setIsVoted({ ...isVoted, [answer._id]: voted });
+        setIsSaved({ ...isSaved, [answer._id]: saved });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  }, [answerData]); */
 
   return (
     <>
@@ -278,77 +272,75 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         </TitleSection>
       )}
       {answerData?.map((answer, index) => (
-        <React.Fragment key={answer._id}>
-          <BodySection>
-            <TopContainer>
-              <ItemContainer>
-                {/* 투표 */}
-                {isVoted ? (
-                  <HeartFillIcon onClick={() => handleVote(answer._id)} />
-                ) : (
-                  <HeartIcon onClick={() => handleVote(answer._id)} />
-                )}
-                <ItemTypo>{answer.votes}</ItemTypo>
-                {/* 저장 */}
-                {isSaved ? (
-                  <SaveFillIcon onClick={() => handleSave(answer._id)} />
-                ) : (
-                  <SaveIcon onClick={() => handleSave(answer._id)} />
-                )}
-                <ItemTypo>{answer.saves}</ItemTypo>
-              </ItemContainer>
-              <ItemContainer>
-                <ViewDateContainer>
-                  <Typo>{answer.createdAt}</Typo>
-                </ViewDateContainer>
-                <ContentTypo
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(answer.content as string),
-                  }}
-                />
-              </ItemContainer>
-            </TopContainer>
-            <BottomContainer>
-              <BottomLeftContainer>
-                <Typo underline="true" pointer="true">
-                  공유
+        <BodySection>
+          <TopContainer>
+            <ItemContainer>
+              {/* 투표 */}
+              {isVoted[answer._id] ? (
+                <HeartFillIcon onClick={() => handleVote(answer._id)} />
+              ) : (
+                <HeartIcon onClick={() => handleVote(answer._id)} />
+              )}
+              <ItemTypo>{answer.votes}</ItemTypo>
+              {/* 저장 */}
+              {isSaved[answer._id] ? (
+                <SaveFillIcon onClick={() => handleSave(answer._id)} />
+              ) : (
+                <SaveIcon onClick={() => handleSave(answer._id)} />
+              )}
+              <ItemTypo>{answer.saves}</ItemTypo>
+            </ItemContainer>
+            <ItemContainer>
+              <ViewDateContainer>
+                <Typo>{answer.createdAt}</Typo>
+              </ViewDateContainer>
+              <ContentTypo
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(answer.content as string),
+                }}
+              />
+            </ItemContainer>
+          </TopContainer>
+          <BottomContainer>
+            <BottomLeftContainer>
+              <Typo underline="true" pointer="true">
+                공유
+              </Typo>
+              {user._id === answer.userId && (
+                <Typo underline="true" pointer="true" onClick={() => editAnswer(answer._id)}>
+                  수정
                 </Typo>
-                {user._id === answer.userId && (
-                  <Typo underline="true" pointer="true" onClick={() => editAnswer(answer._id)}>
-                    수정
-                  </Typo>
-                )}
-                {user._id === answer.userId && (
-                  <Typo underline="true" pointer="true" onClick={() => deleteAnswer(answer._id)}>
-                    삭제
-                  </Typo>
-                )}
-              </BottomLeftContainer>
-              <BottomRightContainer>
-                <AuthorBox>
-                  <AskedTypo>Answered</AskedTypo>
-                  <AuthorContainer>
-                    <AuthorProfile>{answer.author}</AuthorProfile>
-                    <UserStateCircle color={answer.votes < 15 ? '#D1D5DB' : '#ffd700'} />
-                    <Typo>{answer.votes}</Typo>
-                  </AuthorContainer>
-                </AuthorBox>
-              </BottomRightContainer>
-            </BottomContainer>
-            {isLogin && <CommentForm _id={answer._id} selected="answer" />}
-          </BodySection>
-          {isLogin && user._id !== currentQuestion?.userId && user._id !== answer.userId && (
-            <WriteAnswerForm
-              ref={writeAnswerFormRef}
-              contents={contents}
-              onContentsChange={setContents}
-              postAnswer={postAnswer}
-              editingAnswerId={editingAnswerId}
-              onClickEditingCancel={onClickEditingCancel}
-            />
-          )}
-        </React.Fragment>
+              )}
+              {user._id === answer.userId && (
+                <Typo underline="true" pointer="true" onClick={() => deleteAnswer(answer._id)}>
+                  삭제
+                </Typo>
+              )}
+            </BottomLeftContainer>
+            <BottomRightContainer>
+              <AuthorBox>
+                <AskedTypo>Answered</AskedTypo>
+                <AuthorContainer>
+                  <AuthorProfile>{answer.author}</AuthorProfile>
+                  <UserStateCircle color={answer.votes < 15 ? '#D1D5DB' : '#ffd700'} />
+                  <Typo>{answer.votes}</Typo>
+                </AuthorContainer>
+              </AuthorBox>
+            </BottomRightContainer>
+          </BottomContainer>
+          {isLogin && <CommentForm _id={answer._id} selected="answer" />}
+        </BodySection>
       ))}
+      {isLogin && user._id !== currentQuestion?.userId && (
+        <WriteAnswerForm
+          ref={writeAnswerFormRef}
+          contents={contents}
+          onContentsChange={setContents}
+          postAnswer={postAnswer}
+          editingAnswerId={editingAnswerId}
+          onClickEditingCancel={onClickEditingCancel}
+        />
+      )}
     </>
   );
 };

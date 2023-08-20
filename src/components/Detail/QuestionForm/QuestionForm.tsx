@@ -50,6 +50,7 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const fetchQuestionData = useCallback(async () => {
     try {
       const response = await axios.get(`/api/articles/${_id}`);
+      const foundQuestion = response.data;
       if (token) {
         const voteResponse = await axios.get(`/api/articles/${_id}/isVoted`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -60,7 +61,6 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         setIsVoted(voteResponse.data);
         setIsSaved(saveResponse.data);
       }
-      const foundQuestion = response.data;
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
       }
