@@ -53,6 +53,12 @@ const CopyQuestionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    createdAt: {
+      type: Date,
+    },
+    updatedAt: {
+      type: Date,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
