@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import type { QuestionDataType } from 'stores/page-store';
 import { QuestionRow } from '../../components/QuestionRow';
 import { Table, Tbody } from '../../components/List/ArticlesTable/styled';
-import { Div, NoData, SorryImg, Title } from './styled';
+import { Div, NoData, SorryImg, Title, Root } from './styled';
 import { Loading } from 'components/Loading';
 
 export const SearchPage = () => {
@@ -32,7 +32,7 @@ export const SearchPage = () => {
   }, []);
 
   return (
-    <>
+    <Root>
       <Title>검색결과</Title>
       {isLoading ? (
         <Loading />
@@ -42,10 +42,10 @@ export const SearchPage = () => {
         </Table>
       ) : (
         <NoData>
-          관련된 글이 존재하지 않습니다.
           <SorryImg />
+          관련된 글이 존재하지 않습니다.
         </NoData>
       )}
-    </>
+    </Root>
   );
 };

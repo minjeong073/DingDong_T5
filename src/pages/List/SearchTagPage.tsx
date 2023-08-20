@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import type { QuestionDataType } from 'stores/page-store';
 import { QuestionRow } from '../../components/QuestionRow';
 import { Table, Tbody } from '../../components/List/ArticlesTable/styled';
-import { Div, Title } from './styled';
+import { Div, Title, Root } from './styled';
 import { Loading } from 'components/Loading';
 import { Default } from './Default';
 
@@ -32,7 +32,7 @@ export const SearchTagPage = () => {
   }, [hashtag]);
 
   return (
-    <>
+    <Root>
       <Title>검색결과</Title>
       {isLoading ? (
         <Loading />
@@ -46,6 +46,6 @@ export const SearchTagPage = () => {
         </Table>
       )}
       <Default />
-    </>
+    </Root>
   );
 };

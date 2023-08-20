@@ -13,14 +13,18 @@ export const NoData = styled(Div)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 30px;
+  font-size: 17px;
+  color: #475569;
 `;
 
 export const SorryImg = styled.img.attrs({
   src: Sorry,
 })`
-  margin-top: 30px;
-  width: 40px;
-  height: 40px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  width: 30px;
+  height: 30px;
 `;
 
 export const Title = styled.div`
@@ -31,4 +35,8 @@ export const Title = styled.div`
   margin-top: 7px;
   margin-left: 20px;
   padding-bottom: 10px;
+`;
+
+export const Root = styled.div`
+  width: 683px;
 `;
