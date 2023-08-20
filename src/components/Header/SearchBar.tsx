@@ -34,9 +34,9 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
       ({ title, content }: QuestionDataType): boolean =>
         title.toLowerCase().includes(searchWord) || content.toLowerCase().includes(searchWord),
     );
-
     if (!searchWord) return setFilteredData([]);
     setFilteredData(newFilter);
+    
   };
 
   const truncateText = (text: string, selectedWord: string, maxLength: number) => {

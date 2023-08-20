@@ -101,7 +101,6 @@ export const ArticlesTable: React.FC<Props> = ({ selectedOrder }) => {
                 ))}
               </Tbody>                
             </Table>
-                          
           ) : (
             <Loading />
           )}
