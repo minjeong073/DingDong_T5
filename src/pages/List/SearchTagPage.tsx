@@ -1,10 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import type { QuestionDataType } from 'stores/page-store';
-import { QuestionRow } from "../../components/QuestionRow";
-import { Table, Tbody } from "../../components/List/ArticlesTable/styled";
-import { Div } from "./styled";
+import { QuestionRow } from '../../components/QuestionRow';
+import { Table, Tbody } from '../../components/List/ArticlesTable/styled';
+import { Div, Title } from './styled';
 import { Loading } from 'components/Loading';
 import { Default } from './Default';
 
@@ -17,36 +17,35 @@ export const SearchTagPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    const fetchSearchData = async(hashtag:string) => {
-      try{
+    const fetchSearchData = async (hashtag: string) => {
+      try {
         setIsLoading(true);
         const response = await axios.get(`/api/search/hashtag/?hashtag=${encodeURIComponent(hashtag)}`);
         setSearchData(response.data);
-      }catch(error){
+      } catch (error) {
         console.error('Error fetching data: ', error);
-      }finally{
+      } finally {
         setIsLoading(false);
       }
     };
-    if(hashtag)
-      fetchSearchData(hashtag);
+    if (hashtag) fetchSearchData(hashtag);
   }, [hashtag]);
 
   return (
-    <>   
+    <>
+      <Title>검색결과</Title>
       {isLoading ? (
-        <Div> Loading ... <Loading/> </Div>
-          ) : (
-            <Table>
-              <Tbody>
-                {SearchData?.map((item, idx) => (
-                <QuestionRow key={idx} item={item} />
-                ))}
-              </Tbody>
-            </Table>
-      )}   
-      <Default/>
+        <Loading />
+      ) : (
+        <Table>
+          <Tbody>
+            {SearchData?.map((item, idx) => (
+              <QuestionRow key={idx} item={item} />
+            ))}
+          </Tbody>
+        </Table>
+      )}
+      <Default />
     </>
   );
 };

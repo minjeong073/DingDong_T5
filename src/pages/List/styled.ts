@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import Sorry from "../../assets/icon/sorryEmoji.svg";
-
+import Sorry from '../../assets/icon/sorryEmoji.svg';
 
 export const ListContainer = styled.div`
   /* margin-right: 40px; */
@@ -22,4 +21,14 @@ export const SorryImg = styled.img.attrs({
   margin-top: 30px;
   width: 40px;
   height: 40px;
+`;
+
+export const Title = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  color: #475569;
+  margin-top: 7px;
+  margin-left: 20px;
+  padding-bottom: 10px;
 `;
