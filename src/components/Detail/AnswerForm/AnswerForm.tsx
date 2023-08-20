@@ -252,7 +252,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   useEffect(() => {
     fetchCurrentQuestion();
     fetchAnswerData();
-  }, [isLogin, isSaved, isVoted]);
+  }, []);
 
   // answerData로부터 user가 투표한 답변인지 확인, 저장한 답변인지 확인
   useEffect(() => {

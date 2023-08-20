@@ -14,11 +14,12 @@ import {
   SaveFillIcon,
   ButtonContainer,
 } from './styled';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axios, { AxiosError } from 'axios';
 import { set } from 'mongoose';
 import { useRecoilValue } from 'recoil';
-import { LoginState } from 'stores/login-store';
+import { LoginState, UserState } from 'stores/login-store';
+import { isLVal } from '@babel/types';
 
 type Props = {
   _id?: string | null;
@@ -34,6 +35,8 @@ type Comment = {
   content: string;
   votes?: number;
   saves?: number;
+  isVoted: boolean;
+  isSaved: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -44,27 +47,25 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null); // 수정중인 댓글의 id
   const [isVoted, setIsVoted] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const isLogin = useRecoilValue(LoginState);
+  const user = useRecoilValue(UserState);
+  const token = useMemo(() => localStorage.getItem('token'), []);
 
   const fetchCommentList = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`/api/comment?${selected === 'articles' ? 'question' : 'answer'}Id=${_id}`);
-      // TODO : commentId로 vote, save 여부 가져오기
-      /*
-      if (token) {
-        const voteResponse = await axios.get(`/api/comment/`, {
+      const model = selected === 'articles' ? 'question' : 'answer';
+      if (isLogin) {
+        const response = await axios.get(`/api/comment?${model}Id=${_id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const saveResponse = await axios.get(`/api/comment/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setIsVoted(voteResponse.data);
-        setIsSaved(saveResponse.data);
-      }
-      */
-      const foundComments = response.data;
-      if (foundComments) {
-        setCommentList(foundComments);
+        if (response.data) {
+          setCommentList(response.data);
+        }
+      } else {
+        const response = await axios.get(`/api/comment/all/public?${model}Id=${_id}`);
+        if (response.data) {
+          setCommentList(response.data);
+        }
       }
     } catch (error) {
       console.error("Error fetching comment's data:", error); // "Error fetching comment's data: Error: Request failed with status code 401
@@ -80,7 +81,6 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   };
 
   const onSubmitComment = async () => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
@@ -99,17 +99,21 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
         fetchCommentList();
         return;
       }
-      await axios.put(`/api/${selected}/${_id}/comment`, newComment);
+      await axios.put(`/api/${selected}/${_id}/comment`, newComment, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       fetchCommentList();
       setNewComment({ content: '' });
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신의 댓글만 수정할 수 있습니다.');
+      }
       console.error('Error posting comment:', error);
       alert('댓글 등록에 실패했습니다.');
     }
   };
 
   const onClickCommentDelete = async (commentId: string) => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
@@ -137,14 +141,10 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   };
 
   const onClickCommentVote = async (commentId: string) => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
     }
-    /* TODO : user가 이미 투표했는지 여부를 GET하여 확인하고
-      투표하지 않았다면 빈 아이콘, 투표했다면 채워진 아이콘를 보여주도록 구현 
-       -> Vote 테이블에 userId와 answerId를 쿼리하여 이미 투표했는지 여부 확인 */
     try {
       const answerResponse = await axios.get(`/api/comment/${commentId}`);
       const answerToUpdate = answerResponse.data;
@@ -167,14 +167,10 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
   };
 
   const onClickCommentSave = async (commentId: string) => {
-    const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인 후 이용해주세요!');
       return;
     }
-    /* TODO : user가 이미 저장했는지 여부를 GET하여 확인하고
-    저장하지 않았다면 빈 아이콘, 저장했다면 채워진 아이콘을 보여주도록 구현
-     -> /api/users/mypage/bookmark/:userId에서 확인하여 이미 저장했는지 여부 확인 */
     const answerResponse = await axios.get<Comment>(`/api/comment/${commentId}`);
     const answerToUpdate = answerResponse.data;
     if (!answerToUpdate) return;
@@ -210,7 +206,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       {commentList?.map(comment => (
         <Container key={comment._id}>
           <ItemContainer left="10px" right="8px">
-            {isVoted ? (
+            {comment.isVoted ? (
               <HeartFillIcon onClick={() => onClickCommentVote(comment._id)} />
             ) : (
               <HeartIcon onClick={() => onClickCommentVote(comment._id)} />
@@ -218,7 +214,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
             <ItemTypo>{comment.votes}</ItemTypo>
           </ItemContainer>
           <ItemContainer right="10px">
-            {isSaved ? (
+            {comment.isSaved ? (
               <SaveFillIcon onClick={() => onClickCommentSave(comment._id)} top="1px" bottom="2px" />
             ) : (
               <SaveIcon onClick={() => onClickCommentSave(comment._id)} top="1px" bottom="2px" />
@@ -233,12 +229,16 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
               <Typo pointer="true" underline="true" size="12px">
                 공유
               </Typo>
-              <Typo onClick={() => onClickCommentEdit(comment._id!)} pointer="true" underline="true" size="12px">
-                수정
-              </Typo>
-              <Typo onClick={() => onClickCommentDelete(comment._id!)} pointer="true" underline="true" size="12px">
-                삭제
-              </Typo>
+              {user._id === comment.userId && (
+                <Typo onClick={() => onClickCommentEdit(comment._id!)} pointer="true" underline="true" size="12px">
+                  수정
+                </Typo>
+              )}
+              {user._id === comment.userId && (
+                <Typo onClick={() => onClickCommentDelete(comment._id!)} pointer="true" underline="true" size="12px">
+                  삭제
+                </Typo>
+              )}
             </InfoContainer>
           </ContentContainer>
         </Container>
