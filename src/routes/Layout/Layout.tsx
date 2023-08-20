@@ -22,7 +22,7 @@ export const Layout = () => {
       <Container>
         <LeftWrapper>
           <Nav />
-          {/* {showHashTagNav && <HashTagNav />} */}
+          {showHashTagNav && <HashTagNav />}
         </LeftWrapper>
         <Main>
           <Outlet />
