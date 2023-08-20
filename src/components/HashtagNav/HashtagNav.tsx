@@ -21,7 +21,7 @@ export const HashTagNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(selectedNav);
+  // console.log(selectedNav);
 
   const fetchData = async () => {
     try {
