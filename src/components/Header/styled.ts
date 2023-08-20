@@ -68,7 +68,7 @@ export const Wrapper = styled.div<IWrapper>`
   border-radius: ${props => (props.$ishome ? '50px' : '20px')};
   background: #fff;
   box-shadow: 0px 0px ${props => (props.$ishome ? '30px' : '8px')} 0px rgba(100, 116, 139, 0.18);
-  margin-left: ${props => (props.$ishome ? '0' : '16px')};
+  margin-left: ${props => (props.$ishome ? '0' : '27px')};
 
   .SearchInput {
     width: 100%;
@@ -112,10 +112,10 @@ export const Wrapper = styled.div<IWrapper>`
 export const SearchInput = styled.input`
   width: 661px;
   height: 48px;
-  display:flex;
+  display: flex;
   flex-direction: row;
   padding-left: 60px;
-  place-holder:none;
+  place-holder: none;
   border-radius: 20px;
   background: #fff;
   box-shadow: 0px 0px 8px 0px rgba(100, 116, 139, 0.18);
@@ -124,7 +124,6 @@ export const SearchInput = styled.input`
   background-position: 20px 50%;
   font-size: 16px;
   margin-left: 16px;
-
 `;
 
 export const DataResult = styled.div`
