@@ -21,7 +21,8 @@
       "pages/*": ["./pages/*"],
       "assets/*": ["./assets/*"],
       "utils/*": ["./utils/*"],
-      "stores/*": ["./stores/*"]
+      "stores/*": ["./stores/*"],
+      "types/*": ["./types/*"]
     }
   },
   "include": ["src", "src/custom.d.ts"],

@@ -8,11 +8,11 @@ import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroller';
 import { ReplyRow } from '../ReplyRow';
 import { Loading } from 'components/Loading';
+import axios from 'axios';
 
 const fetchUrl = async (url: string) => {
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
+  const response = await axios.get(url);
+  return response.data;
 };
 
 export const RepliesList = () => {
@@ -21,7 +21,7 @@ export const RepliesList = () => {
 
   const navigate = useNavigate();
 
-  const initialUrl = useMemo(() => `http://localhost:5001/api/${result}/all`, [result]);
+  const initialUrl = useMemo(() => `/api/${result}/all`, [result]);
 
   const { data, fetchNextPage, hasNextPage, isLoading, isFetching, isError, error } = useInfiniteQuery(
     result,
@@ -64,6 +64,7 @@ export const RepliesList = () => {
         });
       });
       setExpandedStates(initialExpandedStates);
+      console.log(data.pages);
     }
   }, [data]);
 

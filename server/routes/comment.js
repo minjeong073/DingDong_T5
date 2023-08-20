@@ -152,7 +152,7 @@ router.get('/all', async (req, res) => {
 
     const hasNextPage = page < totalPages;
     const nextPage = hasNextPage ? page + 1 : null;
-    const nextPageUrl = nextPage ? `http://localhost:5001/api/comment/all?page=${nextPage}` : null;
+    const nextPageUrl = nextPage ? `/api/comment/all?page=${nextPage}` : null;
 
     res.status(200).json({
       comments: updatedComments,

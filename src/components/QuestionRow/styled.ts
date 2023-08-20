@@ -2,6 +2,7 @@ import { styled } from 'styled-components';
 
 export const TableRow = styled.tr`
   display: flex;
+  width: 683px;
 `;
 
 export const TableCell = styled.td`
@@ -11,6 +12,8 @@ export const TableCell = styled.td`
   /* height: 180px; */
   overflow: hidden;
   text-overflow: ellipsis;
+  min-height: 150px;
+  border-bottom: 1px solid #e2e8f0;
   /* white-space: nowrap;*/
 `;
 
