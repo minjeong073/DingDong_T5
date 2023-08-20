@@ -28,8 +28,10 @@ export const HashTagNav = () => {
       setQuestionData(questionResponse.data.updatedQuestions);
       setOnlyHashtag(['ALL', ...hashtagsResponse.data.hashtags]);
     } catch (error) {
-      console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      console.error('게시판 정보 가져오기 실패 : ' + error);
+      setQuestionData([]);
+      setOnlyHashtag(['ALL']);
+      // alert('게시판 정보 가져오기 실패!');
     }
   };
 
@@ -47,18 +49,16 @@ export const HashTagNav = () => {
     },
     [clickedHashtags, navigate],
   );
-  
+
   useEffect(() => {
     const target: boolean = true;
-    let targetIndex:number = clickedHashtags.indexOf(target);
-    if(clicked && onlyHashtag[targetIndex]!='ALL')
+    let targetIndex: number = clickedHashtags.indexOf(target);
+    if (clicked && onlyHashtag[targetIndex] != 'ALL')
       navigate(`/search/hashtag?hashtag=${encodeURIComponent(onlyHashtag[targetIndex])}`);
-    else if(onlyHashtag[targetIndex] === 'ALL')
-      navigate(`/articles`);
-    if(filterTag)
-      setClickedHashtags([true, ...Array(0).fill(false)]); 
+    else if (onlyHashtag[targetIndex] === 'ALL') navigate(`/articles`);
+    if (filterTag) setClickedHashtags([true, ...Array(0).fill(false)]);
   }, [clickedHashtags, handleClick]);
-  
+
   const toggleExpanded = useCallback(() => {
     setExpanded(prevExpanded => !prevExpanded);
   }, []);
