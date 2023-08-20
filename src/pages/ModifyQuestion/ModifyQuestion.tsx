@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Button } from '../../components';
@@ -14,16 +14,21 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { QuestionData } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import modules from '../../utils/quillModules';
 import { TagsInput } from 'react-tag-input-component';
+import { UserState } from 'stores/login-store';
 
 export const ModifyQuestion = () => {
+  const user = useRecoilValue(UserState);
   const QuillRef = useRef<ReactQuill | null>(null);
   const [contents, setContents] = useState('');
   const [modifiedArticle, setModifiedArticle] = useState<QuestionDataType | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
+
   const { _id } = useParams<{ _id: string }>();
+  const token = useMemo(() => localStorage.getItem('token'), []);
+
   const navigate = useNavigate();
 
   const setQuestionData = useSetRecoilState(QuestionData); // Recoil setter
@@ -34,9 +39,15 @@ export const ModifyQuestion = () => {
       setModifiedArticle(response.data);
       setContents(response.data.content);
       setSelected(response.data.hashtags);
+
+      if (user._id !== response.data.userId) {
+        alert('본인의 글만 수정할 수 있습니다.');
+        navigate(`/articles/${_id}`);
+      }
     } catch (error) {
       console.error(error);
-      alert('게시글 정보 가져오기 실패!');
+      setModifiedArticle(null);
+      // alert('게시글 정보 가져오기 실패!');
     }
   };
 
@@ -45,14 +56,20 @@ export const ModifyQuestion = () => {
       if (!modifiedArticle) {
         return;
       }
-      if (modifiedArticle.title === '' || contents === '') {
-        alert('제목과 내용을 모두 입력해주세요.');
+      if (modifiedArticle.title === '') {
+        alert('제목을 입력해주세요.');
         return;
       }
-      await axios.put(`/api/articles/${_id}`, {
-        ...modifiedArticle,
-        content: contents,
-        hashtags: selected,
+      if (contents === '') {
+        alert('내용을 입력해주세요.');
+        return;
+      }
+      if (selected.length === 0) {
+        alert('키워드를 입력해주세요.');
+        return;
+      }
+      await axios.put(`/api/articles/${_id}`, modifiedArticle, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setQuestionData((prevQuestionData: QuestionDataType[]) => {
         const updatedData = prevQuestionData.map(item =>
@@ -60,7 +77,7 @@ export const ModifyQuestion = () => {
         );
         return updatedData;
       });
-      alert('질문 수정 성공!');
+      alert('수정되었습니다.');
       navigate(`/articles/${_id}`);
     } catch (error) {
       console.error(error);
@@ -80,7 +97,11 @@ export const ModifyQuestion = () => {
 
   useEffect(() => {
     fetchArticleData();
-  }, [_id]);
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     setModifiedArticle(prevState => ({ ...prevState, content: contents } as QuestionDataType | null));
@@ -112,7 +133,7 @@ export const ModifyQuestion = () => {
         <HashtagIcon />
         <TagsInput value={selected} onChange={setSelected} name="hashtags" placeHolder="키워드를 입력해주세요." />
       </QuestionKeywordSection>
-      <Button alignself="flex-end" type="button" onClick={updateQuestion}>
+      <Button type="button" onClick={updateQuestion}>
         수정 완료
       </Button>
     </QuestionForm>

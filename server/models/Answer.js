@@ -2,9 +2,6 @@ const mongoose = require('mongoose');
 
 const AnswerSchema = new mongoose.Schema(
   {
-    id: {
-      type: Number,
-    },
     content: {
       type: String,
       required: true,
@@ -22,12 +19,17 @@ const AnswerSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
     },
     votes: {
       type: Number,
       default: 0,
     },
     saves: {
+      type: Number,
+      default: 0,
+    },
+    comments: {
       type: Number,
       default: 0,
     },

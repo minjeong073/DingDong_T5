@@ -45,6 +45,9 @@ const QuestionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    hardDeleteAt: {
+      type: Date,
+    },
   },
   { timestamps: true },
 );

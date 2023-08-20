@@ -1,20 +1,20 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   HeartIcon,
   ItemContainer,
   ItemTypo,
-  QuestionBodySection,
-  QuestionTitle,
-  QuestionTitleSection,
-  QuestionTopContainer,
-  QuestionTypo,
+  BodySection,
+  Title,
+  TitleSection,
+  TopContainer,
+  QTypo,
   SaveIcon,
   ContentTypo,
-  QuestionBottomLeftContainer,
-  QuestionBottomContainer,
+  BottomLeftContainer,
+  BottomContainer,
   Typo,
-  QuestionBottomRightContainer,
+  BottomRightContainer,
   AuthorBox,
   ViewDateContainer,
   AskedTypo,
@@ -27,8 +27,11 @@ import {
   HashTag,
 } from './styled';
 import DOMPurify from 'dompurify';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import type { QuestionDataType } from '../../../stores/page-store';
+import { CommentForm } from '../CommentForm';
+import { useRecoilValue } from 'recoil';
+import { LoginState, UserState } from 'stores/login-store';
 
 type Props = {
   _id?: string | null;
@@ -36,11 +39,11 @@ type Props = {
 
 export const QuestionForm: React.FC<Props> = ({ _id }) => {
   const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null); // Change initial state to null
-  const [isVoteClicked, setIsVoteClicked] = useState(false); // Local state for vote button (로그인 구현 전까지 임시로 사용)
-  const [isSaveClicked, setIsSaveClicked] = useState(false); // Local state for save button (로그인 구현 전까지 임시로 사용)
-  const [votes, setVotes] = useState<number | null>(null); // Local state for vote count
-  const [saves, setSaves] = useState<number | null>(null); // Local state for save count
-  const [views, setViews] = useState<number | null>(null); // Local state for view count
+  const [isVoted, setIsVoted] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const isLogin = useRecoilValue(LoginState);
+  const user = useRecoilValue(UserState);
+  const token = useMemo(() => localStorage.getItem('token'), []);
 
   const navigate = useNavigate();
 
@@ -48,36 +51,41 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
     try {
       const response = await axios.get(`/api/articles/${_id}`);
       const foundQuestion = response.data;
+
+      if (isLogin) {
+        const voteResponse = await axios.get(`/api/articles/${_id}/isVoted`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const saveResponse = await axios.get(`/api/articles/${_id}/isBookmarked`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setIsVoted(voteResponse.data);
+        setIsSaved(saveResponse.data);
+      }
       if (foundQuestion) {
         setCurrentQuestion(foundQuestion);
-        setViews(foundQuestion.views); // Update the local state with the current view count
-        setVotes(foundQuestion.votes); // Set the votes value when fetching the question data
-        setSaves(foundQuestion.saves); // Set the saves value when fetching the question data
       }
     } catch (error) {
-      console.error(error);
-      alert('게시판 정보 가져오기 실패!');
+      console.error('질문 불러오기 실패 : ' + error);
+      // alert('질문 불러오기 실패!');
     }
   }, [_id]);
 
-  // Function to update the view count locally and on the server
   const updateViews = async () => {
     try {
-      if (currentQuestion) {
-        const updatedViews = currentQuestion.views + 1;
-        setViews(updatedViews); // Update the local state immediately
-        await axios.put(`/api/articles/${_id}`, {
-          ...currentQuestion,
-          views: updatedViews, // Update the view count on the server
-        });
-      }
+      await axios.put(`/api/articles/${_id}/view`);
+      fetchQuestionData();
     } catch (error) {
       console.error('Error updating views:', error);
-      alert('조회수 업데이트 실패!');
     }
   };
 
   const deleteQuestion = async () => {
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
+
     try {
       //삭제할건지 확인
       if (!window.confirm('정말 삭제하시겠습니까?')) {
@@ -85,8 +93,8 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
       }
       //삭제
       await axios
-        .put(`/api/articles/${_id}/delete`, {
-          ...currentQuestion,
+        .put(`/api/articles/${_id}/delete`, null, {
+          headers: { Authorization: `Bearer ${token}` },
         })
         .then(() => {
           alert('질문 삭제 성공!');
@@ -94,85 +102,82 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
         });
     } catch (error) {
       console.error(error);
+      // TODO : access denied 일 경우 다른 알림
       alert('질문 삭제 실패!');
     }
   };
 
   // 투표수 업데이트
   const handleVote = async () => {
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     try {
-      if (isVoteClicked) {
-        await axios.put(`/api/articles/${_id}`, {
-          ...currentQuestion,
-          votes: votes! - 1,
-        });
-        setVotes(prev => prev! - 1);
-        setIsVoteClicked(false);
-        return;
-      }
-      await axios.put(`/api/articles/${_id}`, {
-        ...currentQuestion,
-        votes: votes! + 1,
+      const response = await axios.put(`/api/articles/${_id}/vote`, null, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setVotes(prev => prev! + 1);
-      setIsVoteClicked(true);
+      const isVoted = response.data;
+      setIsVoted(isVoted);
+      fetchQuestionData();
     } catch (error) {
       console.error('Error updating votes:', error);
+      if ((error as AxiosError).response!.status === 403) {
+        alert('본인의 글은 투표할 수 없습니다.');
+        return;
+      }
       alert('투표 실패!');
     }
   };
 
   // 저장수 업데이트
   const handleSave = async () => {
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
+
     try {
-      if (isSaveClicked) {
-        await axios.put(`/api/articles/${_id}`, {
-          ...currentQuestion,
-          saves: saves! - 1,
-        });
-        setSaves(prev => prev! - 1);
-        setIsSaveClicked(false);
-        return;
-      }
-      await axios.put(`/api/articles/${_id}`, {
-        ...currentQuestion,
-        saves: saves! + 1,
+      const response = await axios.put(`/api/articles/${_id}/bookmark`, null, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setSaves(prev => prev! + 1);
-      setIsSaveClicked(true);
+      const isSaved = response.data;
+      setIsSaved(isSaved);
+      fetchQuestionData();
     } catch (error) {
       console.error('Error updating saves:', error);
+      if ((error as AxiosError).response!.status === 403) {
+        alert('본인의 글은 저장할 수 없습니다.');
+        return;
+      }
       alert('저장 실패!');
     }
   };
 
   useEffect(() => {
     fetchQuestionData();
-  }, []);
-
-  useEffect(() => {
     updateViews();
-  }, [currentQuestion]);
+  }, []);
 
   return (
     <>
-      <QuestionTitleSection>
-        <QuestionTypo>Q</QuestionTypo>
-        <QuestionTitle>{currentQuestion?.title}</QuestionTitle>
-      </QuestionTitleSection>
-      <QuestionBodySection>
-        <QuestionTopContainer>
+      <TitleSection>
+        <QTypo>Q</QTypo>
+        <Title>{currentQuestion?.title}</Title>
+      </TitleSection>
+      <BodySection>
+        <TopContainer>
           <ItemContainer>
             {/* 투표 */}
-            {isVoteClicked ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
-            <ItemTypo>{votes}</ItemTypo>
+            {isVoted ? <HeartFillIcon onClick={handleVote} /> : <HeartIcon onClick={handleVote} />}
+            <ItemTypo>{currentQuestion?.votes}</ItemTypo>
             {/* 저장 */}
-            {isSaveClicked ? <SaveFillIcon onClick={handleSave} /> : <SaveIcon onClick={handleSave} />}
-            <ItemTypo>{saves}</ItemTypo>
+            {isSaved ? <SaveFillIcon onClick={handleSave} /> : <SaveIcon onClick={handleSave} />}
+            <ItemTypo>{currentQuestion?.saves}</ItemTypo>
           </ItemContainer>
           <ItemContainer>
             <ViewDateContainer>
-              <Typo>조회수 {views}</Typo>
+              <Typo>조회수 {currentQuestion?.views}</Typo>
               <Typo>{currentQuestion?.createdAt}</Typo>
             </ViewDateContainer>
             <ContentTypo
@@ -181,9 +186,9 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
               }}
             />
           </ItemContainer>
-        </QuestionTopContainer>
-        <QuestionBottomContainer>
-          <QuestionBottomLeftContainer>
+        </TopContainer>
+        <BottomContainer>
+          <BottomLeftContainer>
             <HashTagContainer>
               {currentQuestion?.hashtags.map((hashtag, index) => (
                 <HashTag key={index}>{hashtag}</HashTag>
@@ -192,14 +197,18 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
             <Typo underline="true" pointer="true">
               공유
             </Typo>
-            <Typo underline="true" pointer="true" onClick={() => navigate(`/articles/modify/${_id}`)}>
-              수정
-            </Typo>
-            <Typo underline="true" pointer="true" onClick={deleteQuestion}>
-              삭제
-            </Typo>
-          </QuestionBottomLeftContainer>
-          <QuestionBottomRightContainer>
+            {user._id === currentQuestion?.userId && (
+              <Typo underline="true" pointer="true" onClick={() => navigate(`/articles/modify/${_id}`)}>
+                수정
+              </Typo>
+            )}
+            {user._id === currentQuestion?.userId && (
+              <Typo underline="true" pointer="true" onClick={deleteQuestion}>
+                삭제
+              </Typo>
+            )}
+          </BottomLeftContainer>
+          <BottomRightContainer>
             <AuthorBox>
               <AskedTypo>Asked</AskedTypo>
               <AuthorContainer>
@@ -208,13 +217,10 @@ export const QuestionForm: React.FC<Props> = ({ _id }) => {
                 <Typo>{currentQuestion?.votes}</Typo>
               </AuthorContainer>
             </AuthorBox>
-          </QuestionBottomRightContainer>
-        </QuestionBottomContainer>
-        {/* <p>Answers: {currentQuestion?.answers}</p> */}
-        {/*         <p>Hashtags: {currentQuestion?.hashtags}</p>
-        <p>Created: {currentQuestion?.createdAt}</p> */}
-        {/* <p>Updated: {currentQuestion?.updatedAt}</p> */}
-      </QuestionBodySection>
+          </BottomRightContainer>
+        </BottomContainer>
+        {isLogin && <CommentForm _id={_id} selected="articles" />}
+      </BodySection>
     </>
   );
 };

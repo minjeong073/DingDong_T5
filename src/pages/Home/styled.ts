@@ -1,6 +1,4 @@
 import styled, { keyframes } from 'styled-components';
-// import SearchIcon from 'assets/icon/search.svg';
-// import Logo from 'assets/icon/logo.svg';
 import SearchIcon from '../../assets/icon/search.svg';
 import Logo from '../../assets/icon/logo.svg';
 
@@ -8,7 +6,7 @@ export const Root = styled.div`
   display: flex;
   flex-direction: column;
   // border: 1px solid black;
-  height: 840px;
+  height: 100%;
 `;
 
 export const Header = styled.header`
@@ -55,23 +53,10 @@ export const Div = styled.div`
   justify-content: center;
 `;
 
-export const Login = styled.button`
-  width: 72px;
-  color: #64748b;
-  font-size: 15px;
-`;
-
-export const SignUp = styled.button`
-  width: 72px;
-  color: #64748b;
-  font-size: 15px;
-`;
-
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   align-items: center;
   margin-top: 91px;
 `;
@@ -147,12 +132,12 @@ export const Block = styled.div`
 
 export const QuestionBlock = styled.div`
   width: 323px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 `;
 
 export const AnswerBlock = styled.div`
   width: 323px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 `;
 
 export const TitleBlock = styled.div`
@@ -180,11 +165,58 @@ export const TitleText = styled.div`
   color: #475569;
   text-align: center;
   font-style: normal;
+  font-weight: 500;
   font-size: 17px;
 `;
 
-export const TopItems = styled.div`
+export const TopItems = styled.ul`
   margin-top: 14px;
+  padding-left: 5px;
+`;
+
+interface TopItemProps {
+  $ellipsis?: boolean;
+}
+
+export const TopItem = styled.li<TopItemProps>`
+  display: block;
+  color: #475569;
+  font-family: Noto Sans KR;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ${({ $ellipsis }) => ($ellipsis ? 'ellipsis' : 'clip')};
+  margin: 10px 0px;
+  cursor: pointer;
+  &:before {
+    content: '•';
+    display: inline-block;
+    margin-right: 5px;
+    color: #475569;
+  }
+  &:hover {
+    /* text-decoration: underline; */
+    color: #7c3aed;
+  }
+  * {
+    all: unset;
+    display: inline-block;
+    margin-right: 2px;
+    color: inherit !important;
+  }
+  *:hover {
+    color: #7c3aed !important;
+  }
+`;
+
+export const DotTypo = styled(TopItem)`
+  font-weight: 600;
+  &:hover {
+    text-decoration: none;
+  }
 `;
 
 export const slideInAnimation = keyframes`
@@ -207,7 +239,7 @@ export const HashBody = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-top: 60px;
+  /* margin-top: 60px; */
   // border: 1px solid black;
-  height: 100px;
+  height: 60px;
 `;

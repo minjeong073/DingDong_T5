@@ -3,15 +3,40 @@ const Question = require('../models/Question');
 const User = require('../models/User');
 const Vote = require('../models/Vote');
 const Comment = require('../models/Comment');
+const Bookmark = require('../models/Bookmark');
+const CopyQuestion = require('../models/CopyQuestion');
 
-// TODO : 로그인한 유저만 질문을 작성할 수 있도록
-//        create, update, delete 미들웨어 추가
+const authMiddleware = require('../middlewares/authenticates');
+const authenticateToken = authMiddleware.authenticateToken;
 
-// Question CRUD
+/*
+  Question 메서드
+  - createQuestion
+  - getQuestions
+  - getLatestQuestions
+  - getPopularQuestions
+  - getInterestingQuestions
+  - getQuestion
+  - updateQuestion
+  - deleteQuestion
+  - getAllHashtags
+  - comment
+  - vote
+  - bookmark
+  - updateViews
+  - getVoteList
+  - getBookmarkList
+*/
+
 // CREATE
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
+  const userId = req.body.userId;
+  const userIdFromToken = req.user.id;
   const newQuestion = new Question(req.body);
   try {
+    if (userId !== userIdFromToken) {
+      return res.status(403).json({ message: 'Authentication failed' });
+    }
     const savedQuestion = await newQuestion.save();
     res.status(200).json(savedQuestion);
   } catch (err) {
@@ -49,7 +74,10 @@ router.get('/', async (req, res) => {
       }),
     );
 
-    res.status(200).json({ updatedQuestions, totalQuestions });
+    //extract hashtags list in one page
+    const hashtagsList = questions.flatMap(question => question.hashtags);
+
+    res.status(200).json({ updatedQuestions, totalQuestions, hashtags: hashtagsList });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -125,6 +153,67 @@ router.get('/interest', async (req, res) => {
   }
 });
 
+//GET ALL - without pagination
+router.get('/all', async (req, res) => {
+  try {
+    const questions = await Question.find();
+    const updatedQuestions = questions.map(question => {
+      return {
+        ...question._doc,
+        createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+        updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+      };
+    });
+    res.status(200).json(updatedQuestions);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//get All hashtags
+router.get('/allhashtags', async (req, res) => {
+  try {
+    const allQuestions = await Question.find({ isDeleted: false });
+
+    // Create an array of hashtag objects with their creation dates
+    const hashtagObjects = allQuestions.flatMap(question => {
+      return question.hashtags.map(hashtag => {
+        return {
+          hashtag,
+          createdAt: question.createdAt,
+        };
+      });
+    });
+
+    // Count hashtag frequencies
+    const hashtagFrequencies = hashtagObjects.reduce((map, obj) => {
+      map.set(obj.hashtag, (map.get(obj.hashtag) || 0) + 1);
+      return map;
+    }, new Map());
+
+    // Sort hashtag objects by frequency and then by creation date
+    const sortedHashtagObjects = hashtagObjects.sort((a, b) => {
+      const frequencyComparison = hashtagFrequencies.get(b.hashtag) - hashtagFrequencies.get(a.hashtag);
+      if (frequencyComparison === 0) {
+        // If frequencies are the same, sort by creation date (newest first)
+        return b.createdAt - a.createdAt;
+      }
+      return frequencyComparison;
+    });
+
+    // Extract the sorted hashtags and remove duplicates
+    const uniqueSortedHashtags = [...new Set(sortedHashtagObjects.map(obj => obj.hashtag))];
+
+    res.status(200).json({ hashtags: uniqueSortedHashtags });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // GET
 router.get('/:id', async (req, res) => {
   try {
@@ -153,16 +242,36 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// GET - 클라이언트에서 요청한 질문 ID의 유효성을 검증
+router.get('/valid/:id', async (req, res) => {
+  try {
+    const questionId = req.params.id;
+
+    const question = await Question.findById(questionId);
+
+    if (question) {
+      // 유효한 질문 ID인 경우
+      res.status(200).json({ isValid: true });
+    } else {
+      // 유효하지 않은 질문 ID인 경우
+      res.status(200).json({ isValid: false });
+    }
+  } catch (error) {
+    console.error('Error checking question ID validity:', error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
-
     if (!question) {
-      res.status(404).json('Question not found!');
+      return res.status(404).json('Question not found!');
     }
-
-    // if (question.author === req.body.author) {
+    if (question.userId.toString() !== req.user.id) {
+      return res.status(403).json('You can update only your question!');
+    }
     try {
       const updatedQuestion = await Question.findByIdAndUpdate(
         req.params.id,
@@ -178,23 +287,32 @@ router.put('/:id', async (req, res) => {
     } catch (err) {
       res.status(500).json(err);
     }
-    // } else {
-    //   res.status(401).json('You can update only your Question!');
-    // }
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
 // DELETE
-router.put('/:id/delete', async (req, res) => {
+router.put('/:id/delete', authenticateToken, async (req, res) => {
+  const questionId = req.params.id;
+  const userIdFromToken = req.user.id;
   try {
+    const question = await Question.findById(questionId);
+    if (!question) {
+      return res.status(404).json({ error: 'Question not found' });
+    }
+    if (question.userId.toString() !== userIdFromToken) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
     await Question.findByIdAndUpdate(
-      req.params.id,
+      questionId,
       {
         content: '',
         isDeleted: true,
         updatedAt: new Date().toLocaleString('ko-KR', {
+          timeZone: 'Asia/Seoul',
+        }),
+        hardDeletedAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toLocaleString('ko-KR', {
           timeZone: 'Asia/Seoul',
         }),
       },
@@ -202,7 +320,7 @@ router.put('/:id/delete', async (req, res) => {
     );
     await Vote.deleteMany({ questionId: req.params.id });
 
-    res.status(200).json('Question has been deleted');
+    res.status(200).json({ message: 'Question has been deleted' });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -211,18 +329,13 @@ router.put('/:id/delete', async (req, res) => {
 // UPDATE ETC
 
 // Comment
-router.put('/:id/comment', async (req, res) => {
+router.put('/:id/comment', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
+  const userId = req.user.id;
   try {
     const question = await Question.findById(questionId);
-    const userId = req.body.userId;
-    const user = await User.findById(userId);
-
     if (!question) {
-      res.status(404).json('Question not found!');
-    }
-    if (!user) {
-      res.status(404).json('User not found!');
+      res.status(404).json({ error: 'Question not found!' });
     }
 
     const newComment = new Comment({
@@ -240,14 +353,18 @@ router.put('/:id/comment', async (req, res) => {
 });
 
 // Votes
-router.put('/:id/vote', async (req, res) => {
+router.put('/:id/vote', authenticateToken, async (req, res) => {
   const questionId = req.params.id;
-  const userId = req.body.userId;
+  const userId = req.user.id;
   try {
     const question = await Question.findById(questionId);
-
+    let isVoted = false;
     if (!question) {
-      res.status(404).json('Question not found!');
+      res.status(404).json({ error: 'Question not found!' });
+    }
+    // token userId 와 question userId 가 같은 경우 투표할 수 없음
+    if (question.userId.toString() === userId) {
+      return res.status(403).json({ error: 'You cannot vote your own question!' });
     }
     const existingVote = await Vote.findOne({
       questionId,
@@ -260,31 +377,149 @@ router.put('/:id/vote', async (req, res) => {
         userId: userId,
       });
       question.votes += 1;
+      isVoted = true;
     } else {
       await Vote.deleteOne({ _id: existingVote._id });
       question.votes -= 1;
+      isVoted = false;
     }
     await question.save();
-    res.status(200).json(question);
+    // 해당 사용자의 투표 여부 전달
+    res.status(200).json(isVoted);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// isVoted - 투표 여부 확인
+router.get('/:id/isVoted', authenticateToken, async (req, res) => {
+  const questionId = req.params.id;
+  const userId = req.user.id;
+  try {
+    const vote = await Vote.findOne({
+      questionId,
+      userId,
+    });
+
+    if (!vote) {
+      res.status(200).json(false);
+    } else {
+      res.status(200).json(true);
+    }
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
 // Bookmark
-// login 구현 후에 userId 수정 예정
-router.put('/:id/bookmark', async (req, res) => {
+router.put('/:id/bookmark', authenticateToken, async (req, res) => {
+  const questionId = req.params.id;
+  const userId = req.user.id;
+  try {
+    const question = await Question.findById(questionId);
+    let isBookmarked = false;
+    if (!question) {
+      res.status(404).json({ error: 'Question not found!' });
+    }
+    if (question.userId.toString() === userId) {
+      return res.status(403).json({ error: 'You cannot bookmark your own question' });
+    }
+    const existingBookmark = await Bookmark.findOne({
+      questionId,
+      userId,
+    });
+
+    if (!existingBookmark) {
+      await Bookmark.create({
+        questionId,
+        userId,
+      });
+      await CopyQuestion.create({
+        questionId,
+        title: question.title,
+        content: question.content,
+        votes: question.votes,
+        answers: question.answers,
+        views: question.views,
+        saves: question.saves,
+        comments: question.comments,
+        authorId: question.userId, // Question 작성자 id
+        hashtags: question.hashtags,
+        isDeleted: question.isDeleted,
+        createdAt: question.createdAt,
+        updatedAt: question.updatedAt,
+        userId: userId, // Bookmark 한 사용자 id
+      });
+      question.saves += 1;
+      isBookmarked = true;
+    } else {
+      await Bookmark.deleteOne({ _id: existingBookmark._id });
+      await CopyQuestion.deleteOne({ questionId, userId });
+      question.saves -= 1;
+      isBookmarked = false;
+    }
+    await question.save();
+    res.status(200).json(isBookmarked);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// isBookmarked - 북마크 여부 확인
+router.get('/:id/isBookmarked', authenticateToken, async (req, res) => {
+  const questionId = req.params.id;
+  const userId = req.user.id;
+  try {
+    const bookmark = await Bookmark.findOne({
+      questionId,
+      userId,
+    });
+
+    if (!bookmark) {
+      res.status(200).json(false);
+    } else {
+      res.status(200).json(true);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Views
+router.put('/:id/view', async (req, res) => {
   const questionId = req.params.id;
 
   try {
     const question = await Question.findById(questionId);
 
     if (!question) {
-      res.status(404).json('Question not found!');
+      res.status(404).json({ error: 'Question not found!' });
     }
-    question.saves += 1;
+    question.views += 1;
     await question.save();
-    res.status(200).json('Question has been bookmarked');
+    res.status(200).json({ error: 'Question has been viewed' });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET VOTE LIST
+router.get('/:id/votelist', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const votelist = await Vote.find({ questionId: questionId });
+    res.status(200).json(votelist);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET BOOKMARK LIST
+router.get('/:id/bookmarklist', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const bookmarklist = await Bookmark.find({ questionId: questionId });
+    res.status(200).json(bookmarklist);
   } catch (err) {
     res.status(500).json(err);
   }

@@ -1,99 +1,87 @@
-import { Link } from "react-router-dom";
-import { LogoSection, LogoImg, LogoTypo } from "../../components/Header/styled";
-import{
-  Root,
-  Container,
-  IDbox,
-  PWbox,
-  ActionContainer,
-  Button1,
-  Button2
-} from "./styled";
-// import { authAtom, userAtom } from "../../stores/login-store";
-import { LoginState } from "../../stores/login-store";
-import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useUserActions } from "../../api/userAPI";
-import axios from "axios";
-import { response } from "express";
-import { stringify } from "querystring";
+import { Link } from 'react-router-dom';
+import { LogoSection, LogoImg, LogoTypo } from '../../components/Header/styled';
+import { Root, Container, IDbox, PWbox, ActionContainer, Button1, Button2 } from './styled';
+import { LoginState, UserState } from '../../stores/login-store';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export const Login = () => {
-  // const [ isLoggedIn, setIsLoggedIn ] = useRecoilState(LoginState);
-  // const [name, setName] = useState();
-  // const navigate = useNavigate();
-  
-  // const logoutHandler = async() => {
-  //   await axios.post("/signout")
-  //   .then((res) => {
-  //     if (res.status === 200) {
-  //       window.localStorage.removeItem("X-AUTH-TOKEN");
-  //       setIsLoggedIn(false);
-  //       navigate("/");
-  //     }
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   let token = window.localStorage.getItem("X-AUTH-TOKEN");
-  //   const userInfo = async(token: any) => {
-  //     let config = { headers: { "X-AUTH-TOKEN" : token},};
-  //     const response = await axios.post("/signin", config);
-  //     return response; 
-  //     }
-  //   userInfo(token).then((res) => {
-  //     setName(res.data.map.name)
-  //   });
-  // }, []);
-
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState);
+  const [userState, setUserState] = useRecoilState(UserState);
+  const [name, setName] = useState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userInfo, setUserInfo] = useState({
-    email: '',
-    password: '',
-  });
+  const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleLogin = async (event: any) => {
+    event.preventDefault();
+
     try {
-      const response = await axios.post(`/api/auth/signin`, { email, password });
-      const user = response.data;
-      // 로그인 성공 후 처리
-      console.log('Logged in:', user);
+      const tokenResponse = await axios.post(
+        '/api/auth/signin',
+        {
+          email: email,
+          password: password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      const { token } = tokenResponse.data;
+      const currentDate = new Date().getTime();
+      const expirationDate = new Date(currentDate + 60 * 60 * 1000);
+      localStorage.setItem('token', token);
+      localStorage.setItem('expirationDate', expirationDate.toString());
+      console.log('로그인 성공:', tokenResponse.data);
+
+      // 유저 정보 받아오기
+      const userResponse = await axios.get('/api/mypage', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const user = userResponse.data;
+      console.log('유저정보:', user);
+
+      // 로그인 성공 후
+      setIsLoggedIn(true);
+      setUserState(user);
+
+      navigate('/');
+      window.location.reload();
     } catch (error) {
-      // 로그인 실패 시 처리
-      console.error('Login error:', error);
+      console.error('로그인 실패:', (error as any).response.data.reason);
     }
   };
 
-  useEffect(() => {
-    setUserInfo({
-      email: email,
-      password: password
-    });
-  }, [])
-
-  return(
+  return (
     <Root>
       <Container>
-        <Link to={"/"}>
+        <Link to={'/'}>
           <LogoSection>
             <LogoImg />
             <LogoTypo>DINGDONG</LogoTypo>
           </LogoSection>
         </Link>
-        <IDbox placeholder="아이디" value={email} onChange={(e :any)=>setEmail(e.target.value)} />
-        <PWbox placeholder="비밀번호" value={password} onChange={(e:any) => setPassword(e.target.value)}/>
+        <IDbox placeholder="이메일" value={email} type="text" id="email" onChange={handleEmailChange} />
+        <PWbox placeholder="비밀번호" value={password} type="password" id="password" onChange={handlePasswordChange} />
         <ActionContainer>
-          <Button1 width="144px" height="52px" onClick={handleLogin}>
+          <Button1 type="submit" onClick={handleLogin}>
             로그인
           </Button1>
-          <Button2 width="144px" height="52px">
-            회원가입
-          </Button2>
+          <Button2>회원가입</Button2>
         </ActionContainer>
       </Container>
     </Root>
-
   );
 };

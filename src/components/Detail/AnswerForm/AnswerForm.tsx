@@ -1,33 +1,36 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import React from 'react';
 import {
   HeartIcon,
   ItemContainer,
   ItemTypo,
-  QuestionBodySection,
-  QuestionTitle,
-  QuestionTitleSection,
-  QuestionTopContainer,
-  QuestionTypo,
+  BodySection,
+  Title,
+  TitleSection,
+  TopContainer,
+  ATypo,
   SaveIcon,
   ContentTypo,
-  QuestionBottomLeftContainer,
-  QuestionBottomContainer,
+  BottomLeftContainer,
+  BottomContainer,
   Typo,
-  QuestionBottomRightContainer,
+  BottomRightContainer,
   AuthorBox,
   ViewDateContainer,
   AskedTypo,
   AuthorContainer,
   AuthorProfile,
   UserStateCircle,
-  CommentContainer,
   HeartFillIcon,
-  Item,
-} from '../QuestionForm/styled';
+  SaveFillIcon,
+} from './styled';
 import DOMPurify from 'dompurify';
 import axios, { AxiosError } from 'axios';
 import { WriteAnswerForm } from '../WriteAnswerForm';
-import { SaveFillIcon } from './styled';
+import { CommentForm } from '../CommentForm';
+import { useRecoilValue } from 'recoil';
+import { LoginState, UserState } from 'stores/login-store';
+import { QuestionDataType } from 'stores/page-store';
 
 interface AnswerDataType {
   _id: string;
@@ -35,8 +38,12 @@ interface AnswerDataType {
   questionTitle: string;
   questionId: string;
   author: string;
+  userId: string;
   votes: number;
   saves: number;
+  comments: number;
+  isVoted: boolean;
+  isSaved: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -46,44 +53,51 @@ type Props = {
 };
 
 export const AnswerForm: React.FC<Props> = ({ _id }) => {
-  // 답변 내용
   const [contents, setContents] = useState('');
-  // 답변게시글 배열
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionDataType | null>(null);
   const [answerData, setAnswerData] = useState<AnswerDataType[]>([]);
-  // State to keep track of the new answer being created
   const [newAnswer, setNewAnswer] = useState({
     content: '',
-    userId: '64d24cb479cd50b639db526a',
-    author: '임시',
   });
-  // State to keep track of the answer being edited
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
-  // State to keep track of vote and save counts for each answer
-  const [answerVotes, setAnswerVotes] = useState<{ [key: string]: number }>({});
-  const [answerSaves, setAnswerSaves] = useState<{ [key: string]: number }>({});
-  // State to keep track of whether the vote button has been clicked (로그인 구현 전까지 임시로 사용)
-  const [isVoteClicked, setIsVoteClicked] = useState<{
-    [key: string]: boolean;
-  }>({});
-  // State to keep track of whether the save button has been clicked (로그인 구현 전까지 임시로 사용)
-  const [isSaveClicked, setIsSaveClicked] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const isLogin = useRecoilValue(LoginState);
+  const user = useRecoilValue(UserState);
+  const token = useMemo(() => localStorage.getItem('token'), []);
 
   // to get the reference of the Quill editor
   const writeAnswerFormRef = useRef<HTMLFormElement>(null);
 
-  const fetchAnswerData = async () => {
+  const fetchCurrentQuestion = async () => {
     try {
-      const answerResponse = await axios.get(`/api/answer/all/${_id}`);
-      const foundAnswer = answerResponse.data;
-      if (foundAnswer) {
-        console.log('foundAnswer: ', foundAnswer);
-        setAnswerData(foundAnswer);
+      const response = await axios.get(`/api/articles/${_id}`);
+      const foundQuestion = response.data;
+      if (foundQuestion) {
+        setCurrentQuestion(foundQuestion);
       }
     } catch (error) {
-      console.error(error);
-      alert('답변 정보 가져오기 실패!');
+      console.error('질문 정보 가져오기 실패 : ' + error);
+      setCurrentQuestion(null);
+    }
+  };
+
+  const fetchAnswerData = async () => {
+    try {
+      if (isLogin) {
+        const answerResponse = await axios.get(`/api/answer/all/${_id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (answerResponse.data) {
+          setAnswerData(answerResponse.data);
+        }
+      } else {
+        const answerResponse = await axios.get(`/api/answer/all/public/${_id}`);
+        if (answerResponse.data) {
+          setAnswerData(answerResponse.data);
+        }
+      }
+    } catch (error) {
+      console.error('댓글 정보 가져오기 실패 : ' + error);
+      setAnswerData([]);
     }
   };
 
@@ -96,17 +110,16 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
       }
 
       if (editingAnswerId) {
+        if (!token) {
+          alert('로그인 후 이용해주세요!');
+          return;
+        }
         // If editingAnswerId is not null, it means we are editing an existing answer
         await axios
-          .put(`/api/answer/${editingAnswerId}`, {
-            ...newAnswer,
-            content: contents,
+          .put(`/api/answer/${editingAnswerId}`, newAnswer, {
+            headers: { Authorization: `Bearer ${token}` },
           })
           .then(res => {
-            // Update the answerData array with the updated answer
-            setAnswerData((prevAnswerData: AnswerDataType[]) =>
-              prevAnswerData.map(item => (item._id === editingAnswerId ? res.data : item)),
-            );
             alert('답변 수정 성공!');
             setContents('');
             setEditingAnswerId(null);
@@ -114,31 +127,50 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
           });
         return;
       }
+
+      // Check if the current user has already posted an answer
+      const hasPostedAnswer = answerData.some(answer => answer.userId === user._id);
+      if (hasPostedAnswer) {
+        alert('이미 답변을 작성했습니다.');
+        return;
+      }
+
       // If editingAnswerId is null, it means we are creating a new answer
-      await axios.post(`/api/answer/${_id}`, newAnswer).then(res => {
-        // setAnswerData((prevAnswerData: AnswerDataType[]) => [...prevAnswerData, res.data]);
-        alert('답변 등록 성공!');
-        setContents('');
-        fetchAnswerData();
-      });
+      await axios
+        .post(`/api/answer/${_id}`, newAnswer, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+          alert('답변 등록 성공!');
+          setContents('');
+          fetchAnswerData();
+        });
     } catch (error) {
       console.error(error);
       if ((error as AxiosError).response && (error as AxiosError).response!.status === 401) {
         alert('자신이 작성한 글만 수정할 수 있습니다.'); // 401 Unauthorized 에러 시 알림
       }
-      if ((error as AxiosError).response && (error as AxiosError).response!.status === 500) {
-        alert('답변 등록 실패!'); // 500 Internal Server Error 에러 시 알림
-      }
+      alert('답변 등록 실패!');
     }
   };
 
   // 특정 answer를 삭제하는 함수
   const deleteAnswer = async (answerId: string) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     try {
-      await axios.delete(`/api/answer/${answerId}`).then(res => {
-        setAnswerData((prevAnswerData: AnswerDataType[]) => prevAnswerData.filter(item => item._id !== answerId));
-        alert('답변 삭제 성공!');
-      });
+      if (!window.confirm('정말 삭제하시겠습니까?')) return;
+      await axios
+        .delete(`/api/answer/${answerId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+          setAnswerData((prevAnswerData: AnswerDataType[]) => prevAnswerData.filter(item => item._id !== answerId));
+          alert('답변 삭제 성공!');
+        });
     } catch (error) {
       console.error(error);
       alert('답변 삭제 실패!');
@@ -161,39 +193,24 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // Function to handle voting
   const handleVote = async (answerId: string) => {
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     try {
       const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      if (isVoteClicked[answerId]) {
-        await axios.put(`/api/answer/${answerId}`, {
-          ...answerToUpdate,
-          votes: answerToUpdate.votes! - 1,
-        });
-        setAnswerVotes(prevVotes => ({
-          ...prevVotes,
-          [answerId]: prevVotes[answerId] - 1,
-        }));
-        setIsVoteClicked(prevIsVoteClicked => ({
-          ...prevIsVoteClicked,
-          [answerId]: false,
-        }));
-        return;
-      }
-      await axios.put(`/api/answer/${answerId}`, {
+      await axios.put(`/api/answer/${answerId}/vote`, null, {
+        headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
-        votes: answerToUpdate.votes! + 1,
       });
-      setAnswerVotes(prevVotes => ({
-        ...prevVotes,
-        [answerId]: prevVotes[answerId] + 1,
-      }));
-      setIsVoteClicked(prevIsVoteClicked => ({
-        ...prevIsVoteClicked,
-        [answerId]: true,
-      }));
+      fetchAnswerData();
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신이 작성한 글은 투표할 수 없습니다.'); // 401 Unauthorized
+      }
       console.error('Error updating votes:', error);
       alert('투표 실패!');
     }
@@ -201,42 +218,32 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
 
   // Function to handle saving
   const handleSave = async (answerId: string) => {
+    if (!token) {
+      alert('로그인 후 이용해주세요!');
+      return;
+    }
     try {
       const answerResponse = await axios.get<AnswerDataType>(`/api/answer/${answerId}`);
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      if (isSaveClicked[answerId]) {
-        await axios.put(`/api/answer/${answerId}`, {
-          ...answerToUpdate,
-          saves: answerToUpdate.saves! - 1,
-        });
-        setAnswerSaves(prevSaves => ({
-          ...prevSaves,
-          [answerId]: prevSaves[answerId] - 1,
-        }));
-        setIsSaveClicked(prevIsSaveClicked => ({
-          ...prevIsSaveClicked,
-          [answerId]: false,
-        }));
-        return;
-      }
-      await axios.put(`/api/answer/${answerId}`, {
+      await axios.put(`/api/answer/${answerId}/bookmark`, null, {
+        headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
-        saves: answerToUpdate.saves! + 1,
       });
-      setAnswerSaves(prevSaves => ({
-        ...prevSaves,
-        [answerId]: prevSaves[answerId] + 1,
-      }));
-      setIsSaveClicked(prevIsSaveClicked => ({
-        ...prevIsSaveClicked,
-        [answerId]: true,
-      }));
+      fetchAnswerData();
     } catch (error) {
+      if ((error as AxiosError).response!.status === 401) {
+        alert('자신이 작성한 글은 저장할 수 없습니다.'); // 401 Unauthorized
+      }
       console.error('Error updating saves:', error);
       alert('저장 실패!');
     }
+  };
+
+  const onClickEditingCancel = () => {
+    setContents('');
+    setEditingAnswerId(null);
   };
 
   useEffect(() => {
@@ -244,61 +251,39 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
   }, [contents]);
 
   useEffect(() => {
+    fetchCurrentQuestion();
     fetchAnswerData();
   }, []);
-
-  useEffect(() => {
-    // Update vote and save counts when answerData changes
-    answerData.forEach(answer => {
-      setAnswerVotes(prevVotes => ({
-        ...prevVotes,
-        [answer._id]: answer.votes,
-      }));
-      setAnswerSaves(prevSaves => ({
-        ...prevSaves,
-        [answer._id]: answer.saves,
-      }));
-      setIsVoteClicked(prevIsVoteClicked => ({
-        ...prevIsVoteClicked,
-        [answer._id]: false,
-      }));
-      setIsSaveClicked(prevIsSaveClicked => ({
-        ...prevIsSaveClicked,
-        [answer._id]: false,
-      }));
-    });
-  }, [answerData]);
 
   return (
     <>
       {answerData.length > 0 && (
-        <QuestionTitleSection top="45px">
-          <QuestionTypo>A</QuestionTypo>
-          <QuestionTitle style={{ color: '#525458' }}>{answerData.length}개의 답변</QuestionTitle>
-        </QuestionTitleSection>
+        <TitleSection top="45px">
+          <ATypo>A</ATypo>
+          <Title>{answerData.length}개의 답변</Title>
+        </TitleSection>
       )}
       {answerData?.map((answer, index) => (
-        <QuestionBodySection key={`${answer.questionId}_${index}`}>
-          <QuestionTopContainer>
+        <BodySection key={answer._id}>
+          <TopContainer>
             <ItemContainer>
               {/* 투표 */}
-              {isVoteClicked[answer._id] ? (
+              {answer.isVoted ? (
                 <HeartFillIcon onClick={() => handleVote(answer._id)} />
               ) : (
                 <HeartIcon onClick={() => handleVote(answer._id)} />
               )}
-              <ItemTypo>{answerVotes[answer._id]}</ItemTypo>
+              <ItemTypo>{answer.votes}</ItemTypo>
               {/* 저장 */}
-              {isSaveClicked[answer._id] ? (
+              {answer.isSaved ? (
                 <SaveFillIcon onClick={() => handleSave(answer._id)} />
               ) : (
                 <SaveIcon onClick={() => handleSave(answer._id)} />
               )}
-              <ItemTypo>{answerSaves[answer._id]}</ItemTypo>
+              <ItemTypo>{answer.saves}</ItemTypo>
             </ItemContainer>
             <ItemContainer>
               <ViewDateContainer>
-                {/* <Typo>조회수 {currentQuestion?.views}</Typo> */}
                 <Typo>{answer.createdAt}</Typo>
               </ViewDateContainer>
               <ContentTypo
@@ -307,39 +292,47 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
                 }}
               />
             </ItemContainer>
-          </QuestionTopContainer>
-          <QuestionBottomContainer>
-            <QuestionBottomLeftContainer>
+          </TopContainer>
+          <BottomContainer>
+            <BottomLeftContainer>
               <Typo underline="true" pointer="true">
                 공유
               </Typo>
-              <Typo underline="true" pointer="true" onClick={() => editAnswer(answer._id)}>
-                수정
-              </Typo>
-              <Typo underline="true" pointer="true" onClick={() => deleteAnswer(answer._id)}>
-                삭제
-              </Typo>
-            </QuestionBottomLeftContainer>
-            <QuestionBottomRightContainer>
+              {user._id === answer.userId && (
+                <Typo underline="true" pointer="true" onClick={() => editAnswer(answer._id)}>
+                  수정
+                </Typo>
+              )}
+              {user._id === answer.userId && (
+                <Typo underline="true" pointer="true" onClick={() => deleteAnswer(answer._id)}>
+                  삭제
+                </Typo>
+              )}
+            </BottomLeftContainer>
+            <BottomRightContainer>
               <AuthorBox>
                 <AskedTypo>Answered</AskedTypo>
                 <AuthorContainer>
                   <AuthorProfile>{answer.author}</AuthorProfile>
-                  <UserStateCircle color={answerVotes[answer._id] < 15 ? '#D1D5DB' : '#ffd700'} />
-                  <Typo>{answerVotes[answer._id]}</Typo>
+                  <UserStateCircle color={answer.votes < 15 ? '#D1D5DB' : '#ffd700'} />
+                  <Typo>{answer.votes}</Typo>
                 </AuthorContainer>
               </AuthorBox>
-            </QuestionBottomRightContainer>
-          </QuestionBottomContainer>
-        </QuestionBodySection>
+            </BottomRightContainer>
+          </BottomContainer>
+          {isLogin && <CommentForm _id={answer._id} selected="answer" />}
+        </BodySection>
       ))}
-      <WriteAnswerForm
-        ref={writeAnswerFormRef}
-        contents={contents}
-        onContentsChange={setContents}
-        postAnswer={postAnswer}
-        editingAnswerId={editingAnswerId}
-      />
+      {isLogin && user._id !== currentQuestion?.userId && (
+        <WriteAnswerForm
+          ref={writeAnswerFormRef}
+          contents={contents}
+          onContentsChange={setContents}
+          postAnswer={postAnswer}
+          editingAnswerId={editingAnswerId}
+          onClickEditingCancel={onClickEditingCancel}
+        />
+      )}
     </>
   );
 };
