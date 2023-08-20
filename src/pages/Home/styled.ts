@@ -174,7 +174,11 @@ export const TopItems = styled.ul`
   padding-left: 5px;
 `;
 
-export const TopItem = styled.li`
+interface TopItemProps {
+  $ellipsis?: boolean;
+}
+
+export const TopItem = styled.li<TopItemProps>`
   display: block;
   color: #475569;
   font-family: Noto Sans KR;
@@ -184,6 +188,7 @@ export const TopItem = styled.li`
   line-height: normal;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ${({ $ellipsis }) => ($ellipsis ? 'ellipsis' : 'clip')};
   margin: 10px 0px;
   cursor: pointer;
   &:before {

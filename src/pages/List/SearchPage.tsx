@@ -5,6 +5,7 @@ import type { QuestionDataType } from 'stores/page-store';
 import { QuestionRow } from "../../components/QuestionRow";
 import { Table, Tbody } from "../../components/List/ArticlesTable/styled";
 import { Div} from './styled';
+import { Loading } from 'components/Loading';
 
 export const SearchPage = () => {
   const [SearchData, setSearchData] = useState<QuestionDataType[]>([]);
@@ -12,6 +13,8 @@ export const SearchPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const keyword = queryParams.get('keyword');
+
+  console.log(keyword);
 
   useEffect(() => {
     const fetchSearchData = async(keyword:string) => {
@@ -32,7 +35,7 @@ export const SearchPage = () => {
   return (
     <>
       {isLoading ? (
-        <Div> Loading ... </Div>
+        <Div> Loading ... <Loading/> </Div>
           ) : (
             <Table>
               <Tbody>
