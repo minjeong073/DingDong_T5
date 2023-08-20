@@ -170,7 +170,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      await axios.put(`/api/comment/${commentId}`, null, {
+      await axios.put(`/api/comment/${commentId}/bookmark`, null, {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });

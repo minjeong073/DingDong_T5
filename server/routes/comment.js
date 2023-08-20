@@ -325,11 +325,11 @@ router.put('/:id/bookmark', authenticateToken, async (req, res) => {
         commentId,
         userId: userIdFromToken,
       });
-      comment.bookmarks += 1;
+      comment.saves += 1;
       isBookmarked = true;
     } else {
       await Bookmark.deleteOne({ _id: existingBookmark._id });
-      comment.bookmarks -= 1;
+      comment.saves -= 1;
       isBookmarked = false;
     }
     await comment.save();
