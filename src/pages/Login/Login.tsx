@@ -38,7 +38,8 @@ export const Login = () => {
         },
       );
       const { token } = tokenResponse.data;
-      const expirationDate = new Date(new Date().getTime() + 60 * 60 * 1000);
+      const currentDate = new Date().getTime();
+      const expirationDate = new Date(currentDate + 60 * 60 * 1000);
       localStorage.setItem('token', token);
       localStorage.setItem('expirationDate', expirationDate.toString());
       console.log('로그인 성공:', tokenResponse.data);
