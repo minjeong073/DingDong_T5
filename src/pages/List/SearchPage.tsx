@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import type { QuestionDataType } from 'stores/page-store';
 import { QuestionRow } from "../../components/QuestionRow";
 import { Table, Tbody } from "../../components/List/ArticlesTable/styled";
-import { Div} from './styled';
+import { Div, NoData, SorryImg} from './styled';
 import { Loading } from 'components/Loading';
 
 export const SearchPage = () => {
@@ -13,6 +13,7 @@ export const SearchPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const keyword = queryParams.get('keyword');
+
 
   useEffect(() => {
     const fetchSearchData = async(keyword:string) => {
@@ -35,15 +36,24 @@ export const SearchPage = () => {
     <>
       {isLoading ? (
         <Div> Loading ... <Loading/> </Div>
-          ) : (
-            <Table>
-              <Tbody>
-                {SearchData?.map((item, idx) => (
-                <QuestionRow key={idx} item={item} />
-                ))}
-              </Tbody>
-            </Table>
-      )}          
+          ) : ( 
+            SearchData.length != 0 ?
+              ( 
+                <Table>
+                  <Tbody>
+                    {SearchData?.map((item, idx) => (
+                    <QuestionRow key={idx} item={item} />
+                    ))}
+                  </Tbody>
+                </Table>
+              ) : (
+              <NoData> 
+                  관련된 글이 존재하지 않습니다.
+                  <SorryImg/>
+              </NoData>
+              )
+          )
+      }          
     </>
   );
 };
