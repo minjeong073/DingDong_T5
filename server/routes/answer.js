@@ -7,6 +7,7 @@ const Comment = require('../models/Comment');
 const Bookmark = require('../models/Bookmark');
 
 const authMiddleware = require('../middlewares/authenticates');
+const CopyAnswer = require('../models/CopyAnswer');
 const authenticateToken = authMiddleware.authenticateToken;
 
 // Answer CRUD
@@ -341,10 +342,26 @@ router.put('/:id/bookmark', authenticateToken, async (req, res) => {
         answerId,
         userId: userIdFromToken,
       });
+      await CopyAnswer.create({
+        answerId,
+        content: answer.content,
+        questionTitle: answer.questionTitle,
+        questionId: answer.questionId,
+        authorId: answer.userId,
+        votes: answer.votes,
+        saves: answer.saves,
+        comments: answer.comments,
+        isDeleted: false,
+        createdAt: answer.createdAt,
+        updatedAt: answer.updatedAt,
+        userId: userIdFromToken,
+      });
+
       answer.saves += 1;
       isBookmarked = true;
     } else {
       await Bookmark.deleteOne({ _id: existingBookmark._id });
+      await CopyAnswer.deleteOne({ answerId, userId: userIdFromToken });
       answer.saves -= 1;
       isBookmarked = false;
     }
