@@ -33,7 +33,7 @@ router.get('/questions', authenticateToken, async (req, res) => {
   const startIndex = (page - 1) * pageSize;
 
   try {
-    const totalQuestions = await Question.countDocuments({ userId: userIdFromToken });
+    const totalQuestions = await Question.countDocuments({ userId: userIdFromToken, isDeleted: false });
     const questions = await Question.find({ userId: userIdFromToken, isDeleted: false })
       .sort({ createdAt: -1 })
       .skip(startIndex)

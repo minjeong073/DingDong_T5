@@ -19,10 +19,11 @@ export const MyPageQuestion = () => {
   const path = location.pathname;
 
   const getMyQuestion = async () => {
-    const response = await axios.get(`/api/mypage/questions`, {
+    const response = await axios.get(`/api/mypage/questions?page=${page}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setTotalQuestions(response.data.totalQuestions);
+    console.log(response.data.totalQuestions);
 
     const updatedQuestions = response.data.updatedQuestions;
     setQuestionData(updatedQuestions);
@@ -30,7 +31,7 @@ export const MyPageQuestion = () => {
   };
 
   const getBookmarkQuestion = async () => {
-    const response = await axios.get(`/api/mypage/bookmarks/questions`, {
+    const response = await axios.get(`/api/mypage/bookmarks/questions?page=${page}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setTotalQuestions(response.data.totalQuestions);
@@ -51,7 +52,7 @@ export const MyPageQuestion = () => {
     if (path === '/mypage/bookmarks/questions') {
       getBookmarkQuestion();
     }
-  }, [location]);
+  }, [location, page])
 
   return (
     <>
