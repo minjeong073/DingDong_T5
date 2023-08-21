@@ -55,8 +55,8 @@ export const LoginLogoutButton = () => {
         setLoginState(false);
       }
     }
-    console.log(localStorage.getItem('token'));
-    console.log(loginState);
+    // console.log(localStorage.getItem('token'));
+    // console.log(loginState);
   }, [token]);
 
   return (
