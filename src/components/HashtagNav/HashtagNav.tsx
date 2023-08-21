@@ -41,7 +41,6 @@ export const HashTagNav = () => {
 
   useEffect(() => {
     fetchData();
-    console.log(onlyHashtag);
   }, [setQuestionData, selectedNav]);
 
   const handleClick = useCallback(
