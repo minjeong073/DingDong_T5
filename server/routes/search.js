@@ -2,6 +2,14 @@ const router = require('express').Router();
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 
+const convertToKoreanTime = data => {
+  return data.map(item => ({
+    ...item.toObject(),
+    createdAt: new Date(item.createdAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+    updatedAt: new Date(item.updatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+  }));
+};
+
 // keyword, hashtag 검색
 router.get('/', async (req, res) => {
   const keyword = req.query.keyword;
@@ -26,7 +34,10 @@ router.get('/', async (req, res) => {
     const answerResults = await Answer.find({
       $and: searchConditions,
     });
-    const result = [...questionResults, ...answerResults];
+
+    const convertedQuestions = convertToKoreanTime(questionResults);
+    const convertedAnswers = convertToKoreanTime(answerResults);
+    const result = [...convertedQuestions, ...convertedAnswers];
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json(err);
@@ -40,8 +51,8 @@ router.get('/hashtag', async (req, res) => {
     const result = await Question.find({
       hashtags: { $regex: hashtag },
     });
-
-    res.status(200).json(result);
+    const convertedResult = convertToKoreanTime(result);
+    res.status(200).json(convertedResult);
   } catch (err) {
     res.status(500).json(err);
   }
