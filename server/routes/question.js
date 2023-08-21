@@ -485,6 +485,32 @@ router.get('/:id/isBookmarked', authenticateToken, async (req, res) => {
   }
 });
 
+// questionId 로 copyQuestion 조회
+router.get('/:id/bookmark', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const copyQuestion = await CopyQuestion.findOne({
+      questionId,
+    });
+    const user = await User.findById(copyQuestion.authorId);
+    const author = user ? user.username : 'unknown';
+    const updatedQuestion = {
+      ...copyQuestion._doc,
+      author,
+      createdAt: new Date(copyQuestion.createdAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+      updatedAt: new Date(copyQuestion.updatedAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+    };
+
+    res.status(200).json(updatedQuestion);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 // Views
 router.put('/:id/view', async (req, res) => {
   const questionId = req.params.id;

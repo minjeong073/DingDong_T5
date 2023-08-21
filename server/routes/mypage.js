@@ -206,7 +206,7 @@ router.get('/bookmarks/questions', authenticateToken, async (req, res) => {
           copyQuestion.isDeleted = true;
           await copyQuestion.save();
         }
-        const user = await User.findById(copyQuestion.userId);
+        const user = await User.findById(copyQuestion.authorId);
         const author = user ? user.username : 'unknown';
         return {
           ...copyQuestion._doc,
