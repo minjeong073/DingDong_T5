@@ -46,3 +46,13 @@ export const QuestionListState = selector({
   get: ({ get }) => QuestionData,
   set: ({ set }, newValue) => set(QuestionData, newValue),
 });
+
+export const hashtagState = atom({
+  key: 'hashtagState',
+  default: [] as string[],
+});
+
+export const clickState = atom({
+  key: 'clickState',
+  default: false,
+});
