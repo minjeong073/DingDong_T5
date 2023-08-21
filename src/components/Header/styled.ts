@@ -71,6 +71,8 @@ export const Wrapper = styled.div<IWrapper>`
   width: ${props => (props.$ishome ? '686px' : '661px')};
   height: ${props => (props.$ishome ? '68px' : '48px')};
   border-radius: ${props => (props.$isSearching ? '15px' : '50px')};
+  border-bottom-left-radius: ${props => (props.$isSearching ? '0' : '50px')};
+  border-bottom-right-radius: ${props => (props.$isSearching ? '0' : '50px')};
   background: #fff;
   box-shadow: 0px 0px ${props => (props.$ishome ? '20px' : '8px')} 0px rgba(100, 116, 139, 0.18);
   transition: all 0.3s ease-in-out;
@@ -144,11 +146,12 @@ export const DataResult = styled.div`
   height: 200px;
   background-color: white;
   border-radius: 0 0 20px 20px;
-  margin-top: 60px;
+  margin-top: 65px;
   box-shadow: 0px 8px 8px 0px rgba(100, 116, 139, 0.1);
   overflow: hidden;
   overflow-y: auto;
   position: absolute;
+  /* padding: 0 0 0 10px; */
   z-index: 2;
 
   &::-webkit-scrollbar {
@@ -156,8 +159,12 @@ export const DataResult = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: #e2e8f0;
     border-radius: 1rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
   }
 
   a {
@@ -168,18 +175,22 @@ export const DataResult = styled.div`
     // align-items: center;
     color: black;
     text-decoration: none;
-    padding: 5px 15px;
+    padding: 8px 25px;
 
     &:hover {
-      background-color: #ede9fe;
+      background-color: #f1f5f9;
       cursor: pointer;
     }
     .title {
+      font-size: 16px;
+      color: #1e293b;
       font-weight: 500;
     }
     .content {
       all: unset;
       font-size: 13px;
+      color: #1e293b;
+
       > * {
         all: unset;
         display: inline-block;
