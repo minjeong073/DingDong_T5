@@ -89,7 +89,6 @@ export const HashTagNav = () => {
       setSelectedNav(`/search`);
       setClicked(false);
     }
-    console.log(selectedNav);
   }, [selectedNav]);
 
   const toggleExpanded = useCallback(() => {
