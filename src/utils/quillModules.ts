@@ -5,7 +5,7 @@ const modules = {
       [{ align: [] }],
       ["bold", "italic", "underline", "strike"],
       [{ color: [] }],
-      ["image", "video", "link"],
+      ["image"],
     ],
     history: {
       delay: 500,
