@@ -30,14 +30,8 @@ export const SearchTagPage = () => {
       }
     };
     if (hashtag) fetchSearchData(hashtag);
-  }, [hashtag]);
 
-  // useEffect(() => {
-  //   const fetchHashtag = async() => {
-  //     const allhashtags = await axios.get(`/api/articles/allhashtags`);
-  //   };
-  //   fetchHashtag();
-  // }, []);
+  }, [hashtag]);
 
   return (
     <Root>

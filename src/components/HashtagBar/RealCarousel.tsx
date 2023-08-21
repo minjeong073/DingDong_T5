@@ -6,6 +6,7 @@ import { CustomPrevArrow, CustomNextArrow, CustomDotStyle } from './HashTagButto
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { PageState } from '../../stores/link-store';
+import { clickState } from '../../stores/page-store';
 
 interface CarouselComponentProps {
   items: string[];
@@ -14,9 +15,11 @@ interface CarouselComponentProps {
 export const RealCarousel: React.FC<CarouselComponentProps> = ({ items }) => {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useRecoilState(PageState);
+  const [clicked, setClicked] = useRecoilState(clickState);
 
   const HashtagNav = ( item : string ) => {
     navigate(`/search/hashtag?hashtag=${encodeURIComponent(item)}`);
+    setClicked(true);
     setSelectedNav(`/search`);
   }
 
