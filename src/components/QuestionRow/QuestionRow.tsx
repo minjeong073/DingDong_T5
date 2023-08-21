@@ -20,12 +20,18 @@ import {
 import { Link } from 'react-router-dom';
 import { QuestionDataType } from 'stores/page-store';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { PageState } from '../../stores/link-store';
+import { HashTagNav } from '..';
 
 type QuestionRowProps = {
   item: QuestionDataType;
 };
 
 export const QuestionRow = ({ item }: QuestionRowProps) => {
+  const navigate = useNavigate();
+  const [selectedNav, setSelectedNav] = useRecoilState(PageState);
   const isValidQuestion = async (e: React.MouseEvent<HTMLAnchorElement>, questionId: any) => {
     e.preventDefault();
     const response = await axios.get(`/api/articles/valid/${questionId}`);
@@ -33,6 +39,11 @@ export const QuestionRow = ({ item }: QuestionRowProps) => {
       alert('삭제된 질문입니다');
     }
   };
+
+  const HashtagNav = ( item : string ) => {
+    navigate(`/search/hashtag?hashtag=${encodeURIComponent(item)}`);
+    setSelectedNav(`/search`);
+  }
 
   return (
     <TableRow key={item._id}>
@@ -67,7 +78,7 @@ export const QuestionRow = ({ item }: QuestionRowProps) => {
           <Addition>
             <HashTagWrapper>
               {item.hashtags?.map(content => (
-                <HashTag key={content}>{content}</HashTag>
+                <HashTag key={content} onClick={()=>HashtagNav(content)}>{content}</HashTag>
               ))}
             </HashTagWrapper>
             <Author>{item.author}</Author>

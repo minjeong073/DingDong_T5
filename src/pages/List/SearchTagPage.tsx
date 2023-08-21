@@ -15,6 +15,7 @@ export const SearchTagPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const hashtag = queryParams.get('hashtag');
   const navigate = useNavigate();
+  // console.log(hashtag);
 
   useEffect(() => {
     const fetchSearchData = async (hashtag: string) => {
@@ -30,6 +31,13 @@ export const SearchTagPage = () => {
     };
     if (hashtag) fetchSearchData(hashtag);
   }, [hashtag]);
+
+  // useEffect(() => {
+  //   const fetchHashtag = async() => {
+  //     const allhashtags = await axios.get(`/api/articles/allhashtags`);
+  //   };
+  //   fetchHashtag();
+  // }, []);
 
   return (
     <Root>

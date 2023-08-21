@@ -18,10 +18,11 @@ export const HashTagNav = () => {
   const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([true, ...Array(0).fill(false)]);
   const [hashtag, setHashtag] = useState<string[]>([]);
   const [onlyHashtag, setOnlyHashtag] = useState<string[]>([]);
+  // const [selectedIndex, setSelectedIndex] = useState(-1);
   const navigate = useNavigate();
   const location = useLocation();
-
-  // console.log(selectedNav);
+  const queryParams = new URLSearchParams(location.search);
+  const homeTag = queryParams.get('hashtag');
 
   const fetchData = async () => {
     try {
@@ -39,7 +40,8 @@ export const HashTagNav = () => {
 
   useEffect(() => {
     fetchData();
-  }, [setQuestionData]);
+    console.log(onlyHashtag);
+  }, [setQuestionData, selectedNav]);
 
   const handleClick = useCallback(
     (index: number) => {
@@ -51,8 +53,7 @@ export const HashTagNav = () => {
     },
     [clickedHashtags, navigate],
   );
-  const filterTag = location.pathname ==='/articles' || location.pathname === '/replies';
-  //boolean값
+
   useEffect(() => {
     
     const target: boolean = true;
@@ -68,7 +69,6 @@ export const HashTagNav = () => {
       navigate(`/articles`);
       setSelectedNav(`/articles`);
     }
-
   }, [clickedHashtags ]);
 
   useEffect(() => {
@@ -79,11 +79,38 @@ export const HashTagNav = () => {
       setClickedHashtags([true, ...Array(0).fill(false)]);
       setSelectedNav(`/articles`);
     }
+    // console.log(onlyHashtag);
+    // console.log(selectedNav);
   }, [selectedNav]);
 
   const toggleExpanded = useCallback(() => {
     setExpanded(prevExpanded => !prevExpanded);
   }, []);
+
+  useEffect(() => {
+    fetchData();
+    console.log(onlyHashtag);
+  }, [location.pathname]);
+
+  
+  // useEffect(() => {
+  //   const TagChange = () => {
+  //     if(homeTag){
+  //       const changeTarget = onlyHashtag.indexOf(homeTag);
+  //       console.log(changeTarget);
+  //       const newClickedHashtags = [...clickedHashtags];
+  //       newClickedHashtags.fill(false);
+  //       newClickedHashtags[changeTarget] = true;
+  //       setClickedHashtags(newClickedHashtags);
+  //     }
+  //   }
+  //   TagChange();
+    
+  // }, []);
+  
+  // const queryParams = new URLSearchParams(location.search);
+  // const homeTag = queryParams.get('hashtag');
+  // console.log(homeTag);
 
   const displayedHashtags = useMemo(() => {
     if (expanded) {

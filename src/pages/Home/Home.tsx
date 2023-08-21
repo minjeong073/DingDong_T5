@@ -26,6 +26,8 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { QuestionData, QuestionDataType } from 'stores/page-store';
 import DOMPurify from 'dompurify';
+import { useRecoilState } from 'recoil';
+import { PageState } from "../../stores/link-store";
 
 interface AnswerDataType {
   _id: string;
@@ -41,6 +43,7 @@ interface AnswerDataType {
 
 export const Home = () => {
   const [user, setUser] = useState();
+  const [currentPage, setCurrentPage] = useRecoilState(PageState);
   const [allArticle, setAllArticle] = useState<QuestionDataType[]>([]);
   const [topQuestion, setTopQuestion] = useState<QuestionDataType[]>([]);
   const [topAnswer, setTopAnswer] = useState<AnswerDataType[]>([]);
@@ -93,6 +96,11 @@ export const Home = () => {
     getAllHashTags();
   }, []);
 
+  const handlePageChange = (page:string) => {
+    navigate(page);
+    setCurrentPage(page);
+  };
+
   return (
     <Root>
       <Header>
@@ -107,12 +115,8 @@ export const Home = () => {
       <Container>
         <SearchBar placeholder="함께 이어지는 여정, 여행 커뮤니티 딩동" data={allArticle} />
         <ButtonBar>
-          <Link to={'/articles/write'}>
-            <Button1> 질문하기</Button1>
-          </Link>
-          <Link to={'/articles'}>
-            <Button2> 바로가기</Button2>
-          </Link>
+          <Button1 onClick={()=>handlePageChange(`/articles/write`)} > 질문하기</Button1>         
+          <Button2 onClick={()=>handlePageChange(`/articles`)}> 바로가기</Button2>
         </ButtonBar>
         <Block>
           <QuestionBlock>

@@ -28,7 +28,6 @@ export const SearchPage = () => {
     };
     if (keyword) fetchSearchData(keyword);
 
-    // console.log(keyword);
   }, [keyword]);
 
   return (
