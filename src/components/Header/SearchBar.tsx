@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MdClose } from 'react-icons/md';
-import { Fragment, DataResult, Wrapper } from './styled';
+import { Fragment, DataResult, Wrapper, SearchInput } from './styled';
 import type { QuestionDataType } from '../../stores/page-store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
@@ -32,7 +32,6 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
     );
     if (!searchWord) return setFilteredData([]);
     setFilteredData(newFilter);
-    
   };
 
   const truncateText = (text: string, selectedWord: string, maxLength: number) => {
@@ -83,8 +82,8 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
 
   return (
     <Fragment>
-      <Wrapper $ishome={ishome}>
-        <input
+      <Wrapper $ishome={ishome} $isSearching={filteredData.length !== 0}>
+        <SearchInput
           className="SearchInput"
           type="text"
           placeholder={placeholder}
@@ -102,11 +101,11 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
               <span className="title">{data.title}</span>
               <span
                 className="content"
-                dangerouslySetInnerHTML={
-                  data.content.includes(wordEntered)
-                    ? { __html: DOMPurify.sanitize(truncateText(data.content, wordEntered, 10)) }
-                    : undefined
-                }
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(
+                    data.content.length > 80 ? data.content.slice(0, 80) + '...' : data.content,
+                  ),
+                }}
               />
             </a>
           ))}
