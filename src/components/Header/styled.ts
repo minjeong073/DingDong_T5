@@ -5,19 +5,23 @@ import NotificationIcon from '../../assets/icon/notification.svg';
 import { SearchBar } from './SearchBar';
 
 export const Root = styled.header`
+  width: 1300px;
   padding-top: 32px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 50px;
 `;
 
 export const LogoSection = styled.div`
   display: flex;
-  width: 136px;
+  width: 185px;
   height: 54px;
   justify-content: center;
   align-items: center;
-  padding-right: 25px;
-  margin-right: 50px;
+  /* padding-right: 25px; */
+  /* margin-right: 20px; */
+  margin-left: 65px;
   &:hover {
     cursor: pointer;
   }
@@ -68,11 +72,11 @@ export const Wrapper = styled.div<IWrapper>`
   height: ${props => (props.$ishome ? '68px' : '48px')};
   border-radius: ${props => (props.$isSearching ? '15px' : '50px')};
   background: #fff;
-  box-shadow: 0px 0px ${props => (props.$ishome ? '30px' : '8px')} 0px rgba(100, 116, 139, 0.18);
-  margin-left: ${props => (props.$ishome ? '0' : '27px')};
-
+  box-shadow: 0px 0px ${props => (props.$ishome ? '20px' : '8px')} 0px rgba(100, 116, 139, 0.18);
+  /*   margin-left: ${props => (props.$ishome ? '0' : '27px')};
+ */
   .SearchInput {
-    width: 100%;
+    width: 661px;
     height: 100%;
     border-radius: 50px;
     background-image: url(${SearchIcon});

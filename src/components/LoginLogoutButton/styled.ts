@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 
+export const Root = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 186px;
+  margin-right: 57px;
+`;
+
 export const UserSection = styled.div`
   display: flex;
   width: 72px;
@@ -7,7 +14,7 @@ export const UserSection = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  margin-left: 50px;
+  /* margin-left: 50px; */
   background: #f1f5f9;
   color: #64748b;
   font-size: 20px;
@@ -23,7 +30,7 @@ export const LoginTypo = styled.div`
   align-items: center;
   width: 72px;
   height: 38px;
-  margin-left: 63px;
+  /* margin-left: 63px; */
   color: #64748b;
   font-size: 15px;
   &:hover {
