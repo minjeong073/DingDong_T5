@@ -49,7 +49,13 @@ router.get('/hashtag', async (req, res) => {
   const hashtag = req.query.hashtag;
   try {
     const result = await Question.find({
-      hashtags: { $regex: hashtag },
+      hashtags: { $regex: hashtag, $options: 'i' },
+    });
+
+    result.forEach(question => {
+      question.createdAt = new Date(question.createdAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      });
     });
     const convertedResult = convertToKoreanTime(result);
     res.status(200).json(convertedResult);
