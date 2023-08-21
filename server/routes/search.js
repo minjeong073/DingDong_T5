@@ -3,11 +3,14 @@ const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 
 const convertToKoreanTime = data => {
-  return data.map(item => ({
-    ...item.toObject(),
-    createdAt: new Date(item.createdAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
-    updatedAt: new Date(item.updatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
-  }));
+  return data.map(item => {
+    const convertedItem = item.toObject ? item.toObject() : item; // Check if item is a Mongoose document
+    return {
+      ...convertedItem,
+      createdAt: new Date(convertedItem.createdAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+      updatedAt: new Date(convertedItem.updatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+    };
+  });
 };
 
 // keyword, hashtag 검색
@@ -35,8 +38,21 @@ router.get('/', async (req, res) => {
       $and: searchConditions,
     });
 
+    const answerResultsWithHashtags = await Promise.all(
+      answerResults.map(async answer => {
+        const question = await Question.findById(answer.questionId);
+        const questionHashtags = question ? question.hashtags : [];
+
+        return {
+          ...answer._doc,
+          questionHashtags,
+        };
+      }),
+    );
+
     const convertedQuestions = convertToKoreanTime(questionResults);
-    const convertedAnswers = convertToKoreanTime(answerResults);
+    const convertedAnswers = convertToKoreanTime(answerResultsWithHashtags);
+
     const result = [...convertedQuestions, ...convertedAnswers];
     res.status(200).json(result);
   } catch (err) {
