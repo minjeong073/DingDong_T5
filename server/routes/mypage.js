@@ -188,9 +188,8 @@ router.get('/bookmarks/questions', authenticateToken, async (req, res) => {
   try {
     const bookmarks = await Bookmark.find({ userId: userIdFromToken });
     const questionIdList = bookmarks.map(bookmark => bookmark.questionId);
-    console.log(await Question.find({ _id: { $in: questionIdList }, isDeleted: false }));
     const [questions, copyQuestions] = await Promise.all([
-      Question.find({ _id: { $in: questionIdList }, isDeleted: false })
+      Question.find({ _id: { $in: questionIdList } })
         .sort({ createdAt: -1 })
         .skip(startIndex)
         .limit(pageSize)
