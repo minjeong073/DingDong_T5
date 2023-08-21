@@ -143,7 +143,7 @@ export const SearchInput = styled.input<IWrapper>`
 
 export const DataResult = styled.div`
   width: 100%;
-  height: 200px;
+  max-height: 200px;
   background-color: white;
   border-radius: 0 0 20px 20px;
   margin-top: 65px;
@@ -176,6 +176,11 @@ export const DataResult = styled.div`
     color: black;
     text-decoration: none;
     padding: 8px 25px;
+    padding-left: 75px;
+
+    &:last-child {
+      padding-bottom: 12px;
+    }
 
     &:hover {
       background-color: #f1f5f9;

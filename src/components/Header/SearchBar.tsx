@@ -34,7 +34,7 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
     setFilteredData(newFilter);
   };
 
-  const truncateText = (text: string, selectedWord: string, maxLength: number) => {
+  /* const truncateText = (text: string, selectedWord: string, maxLength: number) => {
     const startIndex = text.indexOf(selectedWord);
     const endIndex = startIndex + selectedWord.length;
 
@@ -56,7 +56,7 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
         (truncatedEndIndex < text.length ? '...' : '');
     }
     return truncatedText;
-  };
+  }; */
 
   const clearInput = (): void => {
     setFilteredData([]);
@@ -98,19 +98,22 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
       </Wrapper>
       {filteredData.length !== 0 && (
         <DataResult>
-          {filteredData.map(data => (
-            <a onClick={() => navigate(`/articles/${data._id}`)} key={data?._id} target="_blank">
-              <span className="title">{data.title}</span>
-              <span
-                className="content"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(
-                    data.content.length > 80 ? data.content.slice(0, 80) + '...' : data.content,
-                  ),
-                }}
-              />
-            </a>
-          ))}
+          {filteredData.map(
+            data =>
+              !data.isDeleted && (
+                <a onClick={() => navigate(`/articles/${data._id}`)} key={data?._id} target="_blank">
+                  <span className="title">{data.title}</span>
+                  <span
+                    className="content"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(
+                        data.content.length > 80 ? data.content.slice(0, 80) + '...' : data.content,
+                      ),
+                    }}
+                  />
+                </a>
+              ),
+          )}
         </DataResult>
       )}
     </Fragment>
