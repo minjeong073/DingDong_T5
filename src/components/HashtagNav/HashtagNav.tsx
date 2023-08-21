@@ -41,7 +41,6 @@ export const HashTagNav = () => {
 
   useEffect(() => {
     fetchData();
-    console.log(onlyHashtag);
   }, [setQuestionData, selectedNav]);
 
   const handleClick = useCallback(
@@ -55,8 +54,6 @@ export const HashTagNav = () => {
     [clickedHashtags, navigate],
   );
 
-    const filterURL = location.pathname.includes('replies') && location.pathname.includes('articles');
-
   useEffect(() => {
     
     const target: boolean = true;
@@ -69,12 +66,11 @@ export const HashTagNav = () => {
       setClicked(false);
     }
     // hashtag 'ALL'누른 경우
-    else if( !selectedNav.includes('search') && onlyHashtag[targetIndex] === 'ALL'){
+    else if( !selectedNav.includes('replies') && !selectedNav.includes('search') && onlyHashtag[targetIndex] === 'ALL'){
       navigate(`/articles`);
       setSelectedNav(`/articles`);
       setClicked(false);
     }
-    console.log(clicked);
   }, [clickedHashtags ]);
 
   useEffect(() => {
@@ -93,36 +89,11 @@ export const HashTagNav = () => {
       setSelectedNav(`/search`);
       setClicked(false);
     }
-    // console.log(onlyHashtag);
-    console.log(selectedNav);
   }, [selectedNav]);
 
   const toggleExpanded = useCallback(() => {
     setExpanded(prevExpanded => !prevExpanded);
   }, []);
-
-  // useEffect(() => {
-  //   console.log(onlyHashtag);
-  // }, [location.pathname]);
-
-  
-  // useEffect(() => {
-  //   const TagChange = () => {
-  //     if(homeTag){
-  //       const changeTarget = onlyHashtag.indexOf(homeTag);
-  //       const newClickedHashtags = [...clickedHashtags];
-  //       newClickedHashtags.fill(false);
-  //       newClickedHashtags[changeTarget] = true;
-  //       setClickedHashtags(newClickedHashtags);
-  //     }
-  //   }
-  //   TagChange();
-    
-  // }, [selectedNav]);
-  
-  // const queryParams = new URLSearchParams(location.search);
-  // const homeTag = queryParams.get('hashtag');
-  // console.log(homeTag);
 
   const displayedHashtags = useMemo(() => {
     if (expanded) {
