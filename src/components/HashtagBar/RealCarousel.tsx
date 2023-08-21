@@ -3,12 +3,23 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { Div, HashTag } from './styled';
 import { CustomPrevArrow, CustomNextArrow, CustomDotStyle } from './HashTagButton';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { PageState } from '../../stores/link-store';
 
 interface CarouselComponentProps {
   items: string[];
 }
 
 export const RealCarousel: React.FC<CarouselComponentProps> = ({ items }) => {
+  const navigate = useNavigate();
+  const [selectedNav, setSelectedNav] = useRecoilState(PageState);
+
+  const HashtagNav = ( item : string ) => {
+    navigate(`/search/hashtag?hashtag=${encodeURIComponent(item)}`);
+    setSelectedNav(`/search`);
+  }
+
   return (
     <Div>
       <Carousel
@@ -33,7 +44,7 @@ export const RealCarousel: React.FC<CarouselComponentProps> = ({ items }) => {
         infiniteLoop={true}
         dynamicHeight={true}>
         {items.map((item, index) => (
-          <HashTag key={index}>{item}</HashTag>
+          <HashTag key={index} onClick={()=>HashtagNav(item)}>{item}</HashTag>
         ))}
       </Carousel>
     </Div>
