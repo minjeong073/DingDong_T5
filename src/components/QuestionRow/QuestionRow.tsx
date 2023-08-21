@@ -32,18 +32,21 @@ type QuestionRowProps = {
 export const QuestionRow = ({ item }: QuestionRowProps) => {
   const navigate = useNavigate();
   const [selectedNav, setSelectedNav] = useRecoilState(PageState);
+
   const isValidQuestion = async (e: React.MouseEvent<HTMLAnchorElement>, questionId: any) => {
     e.preventDefault();
     const response = await axios.get(`/api/articles/valid/${questionId}`);
     if (!response.data.isValid) {
       alert('삭제된 질문입니다');
+    } else {
+      navigate(`/articles/${questionId}`);
     }
   };
 
-  const HashtagNav = ( item : string ) => {
+  const HashtagNav = (item: string) => {
     navigate(`/search/hashtag?hashtag=${encodeURIComponent(item)}`);
     setSelectedNav(`/search`);
-  }
+  };
 
   return (
     <TableRow key={item._id}>
@@ -78,7 +81,9 @@ export const QuestionRow = ({ item }: QuestionRowProps) => {
           <Addition>
             <HashTagWrapper>
               {item.hashtags?.map(content => (
-                <HashTag key={content} onClick={()=>HashtagNav(content)}>{content}</HashTag>
+                <HashTag key={content} onClick={() => HashtagNav(content)}>
+                  {content}
+                </HashTag>
               ))}
             </HashTagWrapper>
             <Author>{item.author}</Author>
