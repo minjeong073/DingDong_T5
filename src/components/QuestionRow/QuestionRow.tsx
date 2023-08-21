@@ -70,10 +70,10 @@ export const QuestionRow = ({ item }: QuestionRowProps) => {
           </Box>
         </Info>
         <Context>
-          <Title>
-            <Link to={`/articles/${item._id}`} onClick={event => isValidQuestion(event, item._id)}>
+          <Title onClick={()=>navigate(`/articles/${item._id}`)}>
+            {/* <Link to={`/articles/${item._id}`} onClick={event => isValidQuestion(event, item._id)} > */}
               {item.title}
-            </Link>
+            {/* </Link> */}
           </Title>
           <Addition>
             <HashTagWrapper>
