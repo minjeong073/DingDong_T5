@@ -188,22 +188,21 @@ router.get('/bookmarks/questions', authenticateToken, async (req, res) => {
   try {
     const bookmarks = await Bookmark.find({ userId: userIdFromToken });
     const questionIdList = bookmarks.map(bookmark => bookmark.questionId);
-
+    console.log(await Question.find({ _id: { $in: questionIdList }, isDeleted: false }));
     const [questions, copyQuestions] = await Promise.all([
       Question.find({ _id: { $in: questionIdList }, isDeleted: false })
         .sort({ createdAt: -1 })
         .skip(startIndex)
         .limit(pageSize)
         .exec(),
-      CopyQuestion.find({ _id: { $in: questionIdList }, userId: userIdFromToken }),
+      CopyQuestion.find({ questionId: { $in: questionIdList }, userId: userIdFromToken }),
     ]);
-
-    console.log(questions);
-    console.log(copyQuestions);
 
     const populatedQuestions = await Promise.all(
       copyQuestions.map(async copyQuestion => {
-        const originalQuestion = questions.find(question => question._id.toString() === copyQuestion._id.toString());
+        const originalQuestion = questions.find(
+          question => question._id.toString() === copyQuestion.questionId.toString(),
+        );
         if (originalQuestion && originalQuestion.isDeleted) {
           copyQuestion.isDeleted = true;
           await copyQuestion.save();
@@ -238,14 +237,11 @@ router.get('/bookmarks/answers', authenticateToken, async (req, res) => {
   try {
     const bookmarks = await Bookmark.find({ userId: userIdFromToken });
     const answerIdList = bookmarks.map(bookmark => bookmark.answerId);
-    const answers = await CopyAnswer.find({ _id: { $in: answerIdList }, userId: userIdFromToken })
+    const answers = await CopyAnswer.find({ answerId: { $in: answerIdList }, userId: userIdFromToken })
       .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(pageSize)
       .exec();
-
-    console.log(answerIdList);
-    console.log(answers);
 
     const populatedAnswers = await Promise.all(
       answers.map(async answer => {
@@ -285,9 +281,6 @@ router.get('/bookmarks/comments', authenticateToken, async (req, res) => {
       .skip(startIndex)
       .limit(pageSize)
       .exec();
-
-    console.log(commentIdList);
-    console.log(comments);
 
     const populatedComments = await Promise.all(
       comments.map(async comment => {
