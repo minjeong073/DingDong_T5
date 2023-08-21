@@ -42,6 +42,15 @@ export const LoginLogoutButton = () => {
           localStorage.removeItem('token');
           token = null;
           localStorage.removeItem('expirationDate');
+          setUserState({
+            _id: '',
+            username: '',
+            email: '',
+            password: '',
+            createdAt: '',
+            updatedAt: '',
+            bookmarkedQuestions: [],
+          });
           setLoginState(false);
         }, timeGap);
 
@@ -55,8 +64,8 @@ export const LoginLogoutButton = () => {
         setLoginState(false);
       }
     }
-    console.log(localStorage.getItem('token'));
-    console.log(loginState);
+    /* console.log(localStorage.getItem('token'));
+    console.log(loginState); */
   }, [token]);
 
   return (
