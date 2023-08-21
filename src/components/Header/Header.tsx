@@ -74,16 +74,16 @@ export const Header = () => {
         <LogoTypo>DINGDONG</LogoTypo>
       </LogoSection>
       {/* <SearchBar data={allArticle}/> */}
-      <Wrapper $ishome={ishome} >
-      <input
-        className='SearchInput'
-        type="text"
-        value={wordEntered}
-        onChange={handleFilter}
-        ref={inputRef}
-        onKeyPress={handleKeyPress}      
-      />
-      <div className='Div'>{wordEntered.length !== 0 && <MdClose id="clearBtn" onClick={clearInput} />}</div>
+      <Wrapper $ishome={ishome}>
+        <input
+          className="SearchInput"
+          type="text"
+          value={wordEntered}
+          onChange={handleFilter}
+          ref={inputRef}
+          onKeyPress={handleKeyPress}
+        />
+        <div className="Div">{wordEntered.length !== 0 && <MdClose id="clearBtn" onClick={clearInput} />}</div>
       </Wrapper>
       <LoginLogoutButton />
     </Root>

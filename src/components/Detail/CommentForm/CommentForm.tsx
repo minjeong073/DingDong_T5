@@ -154,6 +154,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
         alert('자신의 댓글은 투표할 수 없습니다.');
+        return;
       }
       console.error('Error updating votes:', error);
       alert('투표 실패!');
@@ -178,6 +179,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
         alert('자신의 댓글은 저장할 수 없습니다.');
+        return;
       }
       console.error('Error updating saves:', error);
       alert('저장 실패!');

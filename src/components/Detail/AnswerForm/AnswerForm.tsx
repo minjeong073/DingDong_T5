@@ -147,8 +147,13 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
         });
     } catch (error) {
       console.error(error);
+      if ((error as AxiosError).response!.status === 413) {
+        alert('용량이 너무 큽니다.');
+        return;
+      }
       if ((error as AxiosError).response && (error as AxiosError).response!.status === 401) {
         alert('자신이 작성한 글만 수정할 수 있습니다.'); // 401 Unauthorized 에러 시 알림
+        return;
       }
       alert('답변 등록 실패!');
     }
@@ -210,6 +215,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
         alert('자신이 작성한 글은 투표할 수 없습니다.'); // 401 Unauthorized
+        return;
       }
       console.error('Error updating votes:', error);
       alert('투표 실패!');
@@ -235,6 +241,7 @@ export const AnswerForm: React.FC<Props> = ({ _id }) => {
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
         alert('자신이 작성한 글은 저장할 수 없습니다.'); // 401 Unauthorized
+        return;
       }
       console.error('Error updating saves:', error);
       alert('저장 실패!');

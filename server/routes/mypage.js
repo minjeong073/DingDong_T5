@@ -242,13 +242,20 @@ router.get('/bookmarks/answers', authenticateToken, async (req, res) => {
       .limit(pageSize)
       .exec();
 
+    console.log(answerIdList);
+    console.log(answers);
+
     const populatedAnswers = await Promise.all(
       answers.map(async answer => {
         const user = await User.findById(answer.userId);
         const author = user ? user.username : 'unknown';
+
+        const question = await Question.findById(answer.questionId);
+        const questionHashtags = question ? question.hashtags : [];
         return {
           ...answer._doc,
           author,
+          questionHashtags,
           createdAt: getFormattedDate(answer.createdAt),
           updatedAt: getFormattedDate(answer.updatedAt),
         };
@@ -285,9 +292,25 @@ router.get('/bookmarks/comments', authenticateToken, async (req, res) => {
       comments.map(async comment => {
         const user = await User.findById(comment.userId);
         const author = user ? user.username : 'unknown';
+
+        let questionHashtags;
+
+        if (comment.answerId) {
+          const answer = await Answer.findById(comment.answerId);
+          if (answer && answer.questionId) {
+            const question = await Question.findById(answer.questionId);
+            questionHashtags = question ? question.hashtags : [];
+          }
+        }
+        if (comment.questionId) {
+          const question = await Question.findById(comment.questionId);
+          questionHashtags = question ? question.hashtags : [];
+        }
+
         return {
           ...comment._doc,
           author,
+          questionHashtags,
           createdAt: getFormattedDate(comment.createdAt),
           updatedAt: getFormattedDate(comment.updatedAt),
         };
