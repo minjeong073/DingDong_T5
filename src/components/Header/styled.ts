@@ -73,8 +73,8 @@ export const Wrapper = styled.div<IWrapper>`
   border-radius: ${props => (props.$isSearching ? '15px' : '50px')};
   background: #fff;
   box-shadow: 0px 0px ${props => (props.$ishome ? '20px' : '8px')} 0px rgba(100, 116, 139, 0.18);
-  /*   margin-left: ${props => (props.$ishome ? '0' : '27px')};
- */
+  transition: all 0.3s ease-in-out;
+
   .SearchInput {
     width: 661px;
     height: 100%;
@@ -92,9 +92,9 @@ export const Wrapper = styled.div<IWrapper>`
   &::placeholder {
     color: #94a3b8;
     text-align: center;
-    font-size: 18px;
+    font-size: 19px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 400;
     line-height: normal;
   }
 `}

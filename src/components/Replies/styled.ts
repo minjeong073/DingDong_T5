@@ -4,6 +4,7 @@ import loadingImg from 'assets/icon/loading.svg';
 export const LButton = styled.div`
   display: flex;
   flex-direction: row;
+  margin-top: 3px;
   margin-left: 10px;
 `;
 
