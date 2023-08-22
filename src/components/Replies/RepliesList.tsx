@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Tbody, Table, LButton, Button1, Button2 } from './styled';
+import { Text, Tbody, Table, LButton, Button1, Button2 } from './styled';
 import { useNavigate } from 'react-router-dom';
 import WhiteLogo from '../../assets/icon/white_logo.svg';
 import { Holder, Img, Span } from '../List/ArticleList/styled';
@@ -73,6 +73,7 @@ export const RepliesList = () => {
   return (
     <>
       <Holder>
+        <Text>Replies</Text>
         <LButton>
           <Button1 onClick={() => ButtonClick(1)} $result={result}>
             답변
@@ -81,7 +82,7 @@ export const RepliesList = () => {
             댓글
           </Button2>
         </LButton>
-        <Button width="123px" bottom="10px" right="10px" onClick={onClickWrite}>
+        <Button width="123px" bottom="8px" right="10px" onClick={onClickWrite}>
           <Img src={WhiteLogo} />
           <Span>질문하기</Span>
         </Button>

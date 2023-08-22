@@ -1,11 +1,21 @@
 import styled, { keyframes } from 'styled-components';
 import loadingImg from 'assets/icon/loading.svg';
 
+export const Text = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 22px;
+  color: #475569;
+  margin-left: 20px;
+  padding-bottom: 10px;
+  margin-right: auto;
+`;
+
 export const LButton = styled.div`
   display: flex;
   flex-direction: row;
   margin-top: 3px;
-  margin-left: 10px;
+  margin-right: 10px;
 `;
 
 export const Button1 = styled.button<{ $result?: string }>`
