@@ -28,6 +28,12 @@ const authenticateToken = authMiddleware.authenticateToken;
   - getBookmarkList
 */
 
+const getFormattedDate = date => {
+  return new Date(date).toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+  });
+};
+
 // CREATE
 router.post('/', authenticateToken, async (req, res) => {
   const userId = req.body.userId;
@@ -63,12 +69,8 @@ router.get('/', async (req, res) => {
         const updatedQuestion = {
           ...question._doc,
           author,
-          createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
-          updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
+          createdAt: getFormattedDate(question.createdAt),
+          updatedAt: getFormattedDate(question.updatedAt),
         };
         return updatedQuestion;
       }),
@@ -102,12 +104,8 @@ router.get('/popular', async (req, res) => {
         const updatedQuestion = {
           ...question._doc,
           author,
-          createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
-          updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
+          createdAt: getFormattedDate(question.createdAt),
+          updatedAt: getFormattedDate(question.updatedAt),
         };
         return updatedQuestion;
       }),
@@ -137,12 +135,8 @@ router.get('/interest', async (req, res) => {
         const updatedQuestion = {
           ...question._doc,
           author,
-          createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
-          updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
+          createdAt: getFormattedDate(question.createdAt),
+          updatedAt: getFormattedDate(question.updatedAt),
         };
         return updatedQuestion;
       }),
@@ -160,12 +154,8 @@ router.get('/all', async (req, res) => {
     const updatedQuestions = questions.map(question => {
       return {
         ...question._doc,
-        createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
-        updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
+        createdAt: getFormattedDate(question.createdAt),
+        updatedAt: getFormattedDate(question.updatedAt),
       };
     });
     res.status(200).json(updatedQuestions);
@@ -229,12 +219,8 @@ router.get('/:id', async (req, res) => {
       ...question._doc,
       author,
       commentList,
-      createdAt: new Date(question.createdAt).toLocaleString('ko-KR', {
-        timeZone: 'Asia/Seoul',
-      }),
-      updatedAt: new Date(question.updatedAt).toLocaleString('ko-KR', {
-        timeZone: 'Asia/Seoul',
-      }),
+      createdAt: getFormattedDate(question.createdAt),
+      updatedAt: getFormattedDate(question.updatedAt),
     };
     res.status(200).json(updatedQuestion);
   } catch (err) {
@@ -277,9 +263,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
         req.params.id,
         {
           $set: req.body,
-          updatedAt: new Date().toLocaleString('ko-KR', {
-            timeZone: 'Asia/Seoul',
-          }),
+          updatedAt: getFormattedDate(question.updatedAt),
         },
         { new: true },
       );
@@ -307,11 +291,9 @@ router.put('/:id/delete', authenticateToken, async (req, res) => {
     await Question.findByIdAndUpdate(
       questionId,
       {
-        content: '',
+        content: '삭제된 게시물 입니다. (' + getFormattedDate(question.updatedAt) + ')',
         isDeleted: true,
-        updatedAt: new Date().toLocaleString('ko-KR', {
-          timeZone: 'Asia/Seoul',
-        }),
+        updatedAt: getFormattedDate(question.updatedAt),
         hardDeletedAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toLocaleString('ko-KR', {
           timeZone: 'Asia/Seoul',
         }),
@@ -497,12 +479,8 @@ router.get('/:id/bookmark', async (req, res) => {
     const updatedQuestion = {
       ...copyQuestion._doc,
       author,
-      createdAt: new Date(copyQuestion.createdAt).toLocaleString('ko-KR', {
-        timeZone: 'Asia/Seoul',
-      }),
-      updatedAt: new Date(copyQuestion.updatedAt).toLocaleString('ko-KR', {
-        timeZone: 'Asia/Seoul',
-      }),
+      createdAt: getFormattedDate(copyQuestion.createdAt),
+      updatedAt: getFormattedDate(copyQuestion.updatedAt),
     };
 
     res.status(200).json(updatedQuestion);
