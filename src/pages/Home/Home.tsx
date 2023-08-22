@@ -24,7 +24,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Articles from '../../db/articles.json';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { QuestionData, QuestionDataType } from 'stores/page-store';
+import { QuestionData, QuestionDataType, hashtagState } from 'stores/page-store';
 import DOMPurify from 'dompurify';
 import { useRecoilState } from 'recoil';
 import { PageState } from "../../stores/link-store";
@@ -47,14 +47,15 @@ export const Home = () => {
   const [allArticle, setAllArticle] = useState<QuestionDataType[]>([]);
   const [topQuestion, setTopQuestion] = useState<QuestionDataType[]>([]);
   const [topAnswer, setTopAnswer] = useState<AnswerDataType[]>([]);
-  const [hashTags, setHashTags] = useState<string[]>([]);
+  const [hashTags, setHashTags] = useRecoilState(hashtagState);
 
   const navigate = useNavigate();
 
   const getAllHashTags = useCallback(async () => {
     const response = await axios.get('/api/articles/allhashtags');
     const data = response.data;
-    setHashTags(data.hashtags);
+    setHashTags(['ALL', ...data.hashtags]);
+    console.log(hashTags);
   }, []);
 
   const getAllArticles = async () => {

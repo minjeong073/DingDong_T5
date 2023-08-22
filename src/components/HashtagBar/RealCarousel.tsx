@@ -23,6 +23,8 @@ export const RealCarousel: React.FC<CarouselComponentProps> = ({ items }) => {
     setSelectedNav(`/search`);
   }
 
+  const filterItems = items.filter(item => item !== 'ALL');
+
   return (
     <Div>
       <Carousel
@@ -46,7 +48,7 @@ export const RealCarousel: React.FC<CarouselComponentProps> = ({ items }) => {
         autoFocus={true}
         infiniteLoop={true}
         dynamicHeight={true}>
-        {items.map((item, index) => (
+        {filterItems.map((item, index) => (
           <HashTag key={index} onClick={()=>HashtagNav(item)}>{item}</HashTag>
         ))}
       </Carousel>
