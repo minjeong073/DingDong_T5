@@ -42,7 +42,8 @@ root.render(
               <Route index element={<List />} />
               <Route path="/articles/:_id" element={<Detail />} />
               <Route path="/articles/write" element={<WriteQuestion />} />
-              <Route path="/articles/modify/:_id" element={<ModifyQuestion />} />              
+              <Route path="/articles/modify/:_id" element={<ModifyQuestion />} />
+              {/* <Route path="/articles/:id/bookmark" element={<Detail />} /> */}
             </Route>
             <Route path="/replies" element={<Layout />}>
               <Route index element={<Replies />} />
@@ -61,7 +62,7 @@ root.render(
             </Route>
           </Routes>
         </BrowserRouter>
-        <ReactQueryDevtools />
+        {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </RecoilRoot>
   </React.StrictMode>,

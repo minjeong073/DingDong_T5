@@ -50,9 +50,10 @@ export const Header = () => {
   }, []);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (wordEntered.trim() === '') {
-      alert('검색어가 입력되지 않았습니다.');
-    } else if (e.key === 'Enter') {
+    if (e.key === 'Enter') {
+      if (wordEntered.trim() === '') {
+        alert('검색어가 입력되지 않았습니다.');
+      }
       navigateSearchPage();
     }
   };

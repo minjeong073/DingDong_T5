@@ -247,7 +247,7 @@ router.get('/valid/:id', async (req, res) => {
   try {
     const questionId = req.params.id;
 
-    const question = await Question.findById(questionId);
+    const question = await Question.findOne({ _id: questionId, isDeleted: false });
 
     if (question) {
       // 유효한 질문 ID인 경우

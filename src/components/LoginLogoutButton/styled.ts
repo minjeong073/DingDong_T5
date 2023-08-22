@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const Root = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 186px;
   margin-right: 57px;
 `;

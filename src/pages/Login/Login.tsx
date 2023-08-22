@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LogoSection, LogoImg, LogoTypo } from '../../components/Header/styled';
-import { Root, Container, IDbox, PWbox, ActionContainer, Button1, Button2 } from './styled';
+import { Root, LogoSection, LogoImg, LogoTypo, Container, IDbox, PWbox, ActionContainer, Button1, Button2 } from './styled';
 import { LoginState, UserState } from '../../stores/login-store';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';

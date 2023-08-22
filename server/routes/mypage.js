@@ -242,9 +242,6 @@ router.get('/bookmarks/answers', authenticateToken, async (req, res) => {
       .limit(pageSize)
       .exec();
 
-    console.log(answerIdList);
-    console.log(answers);
-
     const populatedAnswers = await Promise.all(
       answers.map(async answer => {
         const user = await User.findById(answer.userId);
