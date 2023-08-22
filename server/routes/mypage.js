@@ -167,7 +167,7 @@ router.get('/comments', authenticateToken, async (req, res) => {
       nextPageUrl,
     });
   } catch (err) {
-    console.error(err); // Log the error for debugging purposes
+    console.error(err);
     res.status(500).json(err);
   }
 });
@@ -178,7 +178,7 @@ const getFormattedDate = date => {
   });
 };
 
-// GET BOOKMARKED QUESTIONS WITH PAGINATION
+// 북마크 한 질문
 router.get('/bookmarks/questions', authenticateToken, async (req, res) => {
   const userIdFromToken = req.user.id;
   const page = parseInt(req.query.page) || 1;
@@ -189,7 +189,7 @@ router.get('/bookmarks/questions', authenticateToken, async (req, res) => {
     const bookmarks = await Bookmark.find({ userId: userIdFromToken });
     const questionIdList = bookmarks.map(bookmark => bookmark.questionId);
     const [questions, copyQuestions] = await Promise.all([
-      Question.find({ _id: { $in: questionIdList } })
+      Question.find({ _id: { $in: questionIdList }, isDeleted: false })
         .sort({ createdAt: -1 })
         .skip(startIndex)
         .limit(pageSize)
@@ -241,7 +241,6 @@ router.get('/bookmarks/answers', authenticateToken, async (req, res) => {
       .skip(startIndex)
       .limit(pageSize)
       .exec();
-
     const populatedAnswers = await Promise.all(
       answers.map(async answer => {
         const user = await User.findById(answer.userId);
