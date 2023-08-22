@@ -7,7 +7,20 @@ import { RecoilRoot } from 'recoil';
 import axios from 'axios';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { Home, Login, List, Detail, WriteQuestion, ModifyQuestion, Replies, SearchPage, SearchTagPage } from './pages';
+import {
+  Home,
+  Login,
+  List,
+  Detail,
+  WriteQuestion,
+  ModifyQuestion,
+  Replies,
+  SearchPage,
+  SearchTagPage,
+  MyPageQuestion,
+  MyPageAnswer,
+} from './pages';
+import { MyPageComment } from 'pages/MyPage/MyPageComment';
 
 axios.defaults.baseURL = 'http://localhost:3000';
 axios.defaults.withCredentials = true;
@@ -29,7 +42,8 @@ root.render(
               <Route index element={<List />} />
               <Route path="/articles/:_id" element={<Detail />} />
               <Route path="/articles/write" element={<WriteQuestion />} />
-              <Route path="/articles/modify/:_id" element={<ModifyQuestion />} />              
+              <Route path="/articles/modify/:_id" element={<ModifyQuestion />} />
+              {/* <Route path="/articles/:id/bookmark" element={<Detail />} /> */}
             </Route>
             <Route path="/replies" element={<Layout />}>
               <Route index element={<Replies />} />
@@ -38,10 +52,17 @@ root.render(
               <Route index element={<SearchPage />} />
               <Route path="/search/hashtag" element={<SearchTagPage />} />
             </Route>
-            <Route path="/mypage" element={<Layout />}></Route>
+            <Route path="/mypage" element={<Layout />}>
+              <Route index path="/mypage" element={<MyPageQuestion />} />
+              <Route path="/mypage/answers" element={<MyPageAnswer />} />
+              <Route path="/mypage/comments" element={<MyPageComment />} />
+              <Route path="/mypage/bookmarks/questions" element={<MyPageQuestion />} />
+              <Route path="/mypage/bookmarks/answers" element={<MyPageAnswer />} />
+              <Route path="/mypage/bookmarks/comments" element={<MyPageComment />} />
+            </Route>
           </Routes>
         </BrowserRouter>
-        <ReactQueryDevtools />
+        {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </RecoilRoot>
   </React.StrictMode>,

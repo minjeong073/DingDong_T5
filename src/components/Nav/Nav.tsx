@@ -37,7 +37,7 @@ export const Nav = () => {
   // 작성한 질문, 작성한 답변, 작성한 댓글, 저장한 질문, 저장한 답변, 저장한 댓글
   const navMyPageItems = useMemo<navItems>(
     () => [
-      { name: '작성한 질문', src: '/mypage/questions' },
+      { name: '작성한 질문', src: '/mypage' },
       { name: '작성한 답변', src: '/mypage/answers' },
       { name: '작성한 댓글', src: '/mypage/comments' },
       { name: '저장한 질문', src: '/mypage/bookmarks/questions' },

@@ -154,6 +154,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
         alert('자신의 댓글은 투표할 수 없습니다.');
+        return;
       }
       console.error('Error updating votes:', error);
       alert('투표 실패!');
@@ -170,7 +171,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
       const answerToUpdate = answerResponse.data;
       if (!answerToUpdate) return;
 
-      await axios.put(`/api/comment/${commentId}`, null, {
+      await axios.put(`/api/comment/${commentId}/bookmark`, null, {
         headers: { Authorization: `Bearer ${token}` },
         ...answerToUpdate,
       });
@@ -178,6 +179,7 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
     } catch (error) {
       if ((error as AxiosError).response!.status === 401) {
         alert('자신의 댓글은 저장할 수 없습니다.');
+        return;
       }
       console.error('Error updating saves:', error);
       alert('저장 실패!');
@@ -218,9 +220,6 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
             <InfoContainer>
               <Typo size="12px">{comment?.author}</Typo>
               <Typo size="12px">{comment?.updatedAt || comment?.createdAt}</Typo>
-              <Typo pointer="true" underline="true" size="12px">
-                공유
-              </Typo>
               {user._id === comment.userId && (
                 <Typo onClick={() => onClickCommentEdit(comment._id!)} pointer="true" underline="true" size="12px">
                   수정
@@ -235,24 +234,26 @@ export const CommentForm: React.FC<Props> = ({ _id, selected }) => {
           </ContentContainer>
         </Container>
       ))}
-      <Input placeholder="댓글을 입력하세요" value={newComment.content} onChange={onChangeCommentInput} />
-      <ButtonContainer>
-        <Button onClick={onSubmitComment} width="88px" height="38px" fontsize="15px" top="5px" borderradius="8px">
-          {editingCommentId ? '댓글수정' : '댓글작성'}
-        </Button>
-        {editingCommentId && (
-          <Button
-            onClick={onClickEditingCancel}
-            width="58px"
-            height="38px"
-            fontsize="15px"
-            top="5px"
-            left="2px"
-            borderradius="8px">
-            취소
+      {isLogin && <Input placeholder="댓글을 입력하세요" value={newComment.content} onChange={onChangeCommentInput} />}
+      {isLogin && (
+        <ButtonContainer>
+          <Button onClick={onSubmitComment} width="88px" height="38px" fontsize="15px" top="5px" borderradius="8px">
+            {editingCommentId ? '댓글수정' : '댓글작성'}
           </Button>
-        )}
-      </ButtonContainer>
+          {editingCommentId && (
+            <Button
+              onClick={onClickEditingCancel}
+              width="58px"
+              height="38px"
+              fontsize="15px"
+              top="5px"
+              left="2px"
+              borderradius="8px">
+              취소
+            </Button>
+          )}
+        </ButtonContainer>
+      )}
     </Root>
   );
 };

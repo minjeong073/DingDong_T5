@@ -1,11 +1,42 @@
 import styled from 'styled-components';
 import { Button } from '../../components/Button';
+import Logo from 'assets/icon/logo.svg';
 
 export const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 260px;
+`;
+
+export const LogoSection = styled.div`
+  display: flex;
+  width: 115px;
+  height: 54px;
+  justify-content: center;
+  align-items: center;
+  /* padding-right: 25px; */
+  /* margin-right: 20px; */
+  /* margin-left: 65px; */
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const LogoImg = styled.img.attrs({
+  src: Logo,
+})`
+  width: 22px;
+  height: 22px;
+`;
+
+export const LogoTypo = styled.div`
+  color: #7c3aed;
+  text-align: right;
+  font-family: 'Inter';
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -1px;
 `;
 
 export const Container = styled.div`

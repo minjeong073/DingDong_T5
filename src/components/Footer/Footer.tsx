@@ -34,7 +34,7 @@ export const Footer = () => {
         </GiveRunContainer>
         <CategoryContainer>
           <Title pointer="true" onClick={() => navigate('/articles/write')}>
-            질문하러 가기
+            질문하러가기
           </Title>
           <Typo top="25px" bottom="12px" weight={500}>
             All Category

@@ -4,10 +4,10 @@ import styled from 'styled-components';
 export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  td {
+  /* td {
     min-height: 150px;
     border-bottom: 1px solid #e2e8f0;
-  }
+  } */
 `;
 
 export const Tbody = styled.tbody`

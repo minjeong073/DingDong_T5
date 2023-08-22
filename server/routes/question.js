@@ -247,7 +247,7 @@ router.get('/valid/:id', async (req, res) => {
   try {
     const questionId = req.params.id;
 
-    const question = await Question.findById(questionId);
+    const question = await Question.findOne({ _id: questionId, isDeleted: false });
 
     if (question) {
       // 유효한 질문 ID인 경우
@@ -480,6 +480,32 @@ router.get('/:id/isBookmarked', authenticateToken, async (req, res) => {
     } else {
       res.status(200).json(true);
     }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// questionId 로 copyQuestion 조회
+router.get('/:id/bookmark', async (req, res) => {
+  const questionId = req.params.id;
+  try {
+    const copyQuestion = await CopyQuestion.findOne({
+      questionId,
+    });
+    const user = await User.findById(copyQuestion.authorId);
+    const author = user ? user.username : 'unknown';
+    const updatedQuestion = {
+      ...copyQuestion._doc,
+      author,
+      createdAt: new Date(copyQuestion.createdAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+      updatedAt: new Date(copyQuestion.updatedAt).toLocaleString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+      }),
+    };
+
+    res.status(200).json(updatedQuestion);
   } catch (err) {
     res.status(500).json(err);
   }

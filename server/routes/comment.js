@@ -152,7 +152,7 @@ router.get('/all', async (req, res) => {
 
     const hasNextPage = page < totalPages;
     const nextPage = hasNextPage ? page + 1 : null;
-    const nextPageUrl = nextPage ? `http://localhost:5001/api/comment/all?page=${nextPage}` : null;
+    const nextPageUrl = nextPage ? `/api/comment/all?page=${nextPage}` : null;
 
     res.status(200).json({
       comments: updatedComments,
@@ -325,11 +325,11 @@ router.put('/:id/bookmark', authenticateToken, async (req, res) => {
         commentId,
         userId: userIdFromToken,
       });
-      comment.bookmarks += 1;
+      comment.saves += 1;
       isBookmarked = true;
     } else {
       await Bookmark.deleteOne({ _id: existingBookmark._id });
-      comment.bookmarks -= 1;
+      comment.saves -= 1;
       isBookmarked = false;
     }
     await comment.save();

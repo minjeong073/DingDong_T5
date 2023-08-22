@@ -1,4 +1,4 @@
-import { UserSection, LoginTypo, LogoutTypo, SignUpTypo } from './styled';
+import { Root, UserSection, LoginTypo, LogoutTypo, SignUpTypo } from './styled';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { LoginState, UserState } from 'stores/login-store';
@@ -29,38 +29,47 @@ export const LoginLogoutButton = () => {
     });
     setLoginState(false);
   };
-  
+
   useEffect(() => {
     const expirationDate = localStorage.getItem('expirationDate');
-    if(expirationDate){
+    if (expirationDate) {
       const currentDate = new Date().getTime();
       const ComExpirationDate = new Date(expirationDate as string).getTime();
-      const timeGap = ComExpirationDate - currentDate ;
+      const timeGap = ComExpirationDate - currentDate;
 
-      if(timeGap > 0) {
+      if (timeGap > 0) {
         const timeout = setTimeout(() => {
           localStorage.removeItem('token');
           token = null;
           localStorage.removeItem('expirationDate');
+          setUserState({
+            _id: '',
+            username: '',
+            email: '',
+            password: '',
+            createdAt: '',
+            updatedAt: '',
+            bookmarkedQuestions: [],
+          });
           setLoginState(false);
         }, timeGap);
-        
+
         return () => {
           clearTimeout(timeout);
         };
-      } else{
+      } else {
         localStorage.removeItem('token');
         localStorage.removeItem('expirationDate');
         token = null;
         setLoginState(false);
-      }      
+      }
     }
-    console.log(localStorage.getItem('token'));
-    console.log(loginState);
-  }, [token])
+    // console.log(localStorage.getItem('token'));
+    // console.log(loginState);
+  }, [token]);
 
   return (
-    <>
+    <Root>
       {token && isLogin ? (
         <UserSection onClick={() => navigate('/mypage')}>{userState?.username}</UserSection>
       ) : (
@@ -71,6 +80,6 @@ export const LoginLogoutButton = () => {
       ) : (
         <SignUpTypo onClick={() => navigate('/signup')}>회원가입</SignUpTypo>
       )}
-    </>
+    </Root>
   );
 };

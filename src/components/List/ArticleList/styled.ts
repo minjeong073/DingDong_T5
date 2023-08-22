@@ -11,7 +11,8 @@ export const OrderContainer = styled.div`
   flex-shrink: 0;
   color: #0f172a;
   margin-top: 3px;
-  margin-left: 10px;
+  /* margin-left: 10px; */
+  margin-right: 10px;
   /* border: 0.5px solid #e2e8f0; */
   /* border-radius: 10px; */
   /* background: #f1f5f9; */
@@ -69,7 +70,7 @@ export const VoteOrder = styled.div<OrderProps>`
 export const Holder = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   width: 683px;
   height: 47px;
 `;
@@ -77,10 +78,11 @@ export const Holder = styled.div`
 export const Text = styled.div`
   display: flex;
   align-items: center;
-  font-size: 24px;
+  font-size: 22px;
   color: #475569;
   margin-left: 20px;
   padding-bottom: 10px;
+  margin-right: auto;
 `;
 
 /* export const Button = styled.button`

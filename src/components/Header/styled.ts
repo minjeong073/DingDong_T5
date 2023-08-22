@@ -5,19 +5,23 @@ import NotificationIcon from '../../assets/icon/notification.svg';
 import { SearchBar } from './SearchBar';
 
 export const Root = styled.header`
+  width: 1300px;
   padding-top: 32px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 50px;
 `;
 
 export const LogoSection = styled.div`
   display: flex;
-  width: 136px;
+  width: 185px;
   height: 54px;
   justify-content: center;
   align-items: center;
-  padding-right: 25px;
-  margin-right: 50px;
+  /* padding-right: 25px; */
+  /* margin-right: 20px; */
+  margin-left: 65px;
   &:hover {
     cursor: pointer;
   }
@@ -58,6 +62,7 @@ export const Fragment = styled.div`
 
 interface IWrapper {
   $ishome?: boolean;
+  $isSearching?: boolean;
 }
 
 export const Wrapper = styled.div<IWrapper>`
@@ -65,15 +70,17 @@ export const Wrapper = styled.div<IWrapper>`
   justify-content: center;
   width: ${props => (props.$ishome ? '686px' : '661px')};
   height: ${props => (props.$ishome ? '68px' : '48px')};
-  border-radius: ${props => (props.$ishome ? '50px' : '20px')};
+  border-radius: ${props => (props.$isSearching ? '15px' : '50px')};
+  border-bottom-left-radius: ${props => (props.$isSearching ? '0' : '50px')};
+  border-bottom-right-radius: ${props => (props.$isSearching ? '0' : '50px')};
   background: #fff;
-  box-shadow: 0px 0px ${props => (props.$ishome ? '30px' : '8px')} 0px rgba(100, 116, 139, 0.18);
-  margin-left: ${props => (props.$ishome ? '0' : '16px')};
+  box-shadow: 0px 0px ${props => (props.$ishome ? '20px' : '8px')} 0px rgba(100, 116, 139, 0.18);
+  transition: all 0.3s ease-in-out;
 
   .SearchInput {
-    width: 100%;
+    width: 661px;
     height: 100%;
-    border-radius: inherit;
+    border-radius: 50px;
     background-image: url(${SearchIcon});
     background-size: ${props => (props.$ishome ? '23px' : '18px')};
     background-repeat: no-repeat;
@@ -87,9 +94,9 @@ export const Wrapper = styled.div<IWrapper>`
   &::placeholder {
     color: #94a3b8;
     text-align: center;
-    font-size: 18px;
+    font-size: 19px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 400;
     line-height: normal;
   }
 `}
@@ -109,64 +116,94 @@ export const Wrapper = styled.div<IWrapper>`
   }
 `;
 
-export const SearchInput = styled.input`
-  width: 661px;
-  height: 48px;
-  display:flex;
-  flex-direction: row;
-  padding-left: 60px;
-  place-holder:none;
-  border-radius: 20px;
-  background: #fff;
-  box-shadow: 0px 0px 8px 0px rgba(100, 116, 139, 0.18);
+export const SearchInput = styled.input<IWrapper>`
+  width: 100%;
+  height: 100%;
+  border-radius: ${props => (props.$isSearching ? '5px' : '20px')};
   background-image: url(${SearchIcon});
+  background-size: ${props => (props.$ishome ? '23px' : '18px')};
   background-repeat: no-repeat;
-  background-position: 20px 50%;
-  font-size: 16px;
-  margin-left: 16px;
-
+  background-position: ${props => (props.$ishome ? '30px 50%' : '18px 50%')};
+  padding-left: ${props => (props.$ishome ? '75px' : '60px')};
+  padding-right: ${props => (props.$ishome ? '25px' : '0')};
+  font-size: ${props => (props.$ishome ? '18px' : '16px')};
+  ${props =>
+    props.$ishome &&
+    `
+  &::placeholder {
+    color: #94a3b8;
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+  }
+`}
 `;
 
 export const DataResult = styled.div`
   width: 100%;
-  height: 200px;
+  max-height: 200px;
   background-color: white;
   border-radius: 0 0 20px 20px;
-  margin-top: 48px;
-  box-shadow: #0004 0px 5px 15px;
+  margin-top: 65px;
+  box-shadow: 0px 8px 8px 0px rgba(100, 116, 139, 0.1);
   overflow: hidden;
   overflow-y: auto;
   position: absolute;
+  /* padding: 0 0 0 10px; */
   z-index: 2;
 
   &::-webkit-scrollbar {
-    width: 1rem;
+    width: 10px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #333;
+    background: #e2e8f0;
     border-radius: 1rem;
   }
 
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
   a {
+    box-sizing: border-box;
     width: 100%;
-    height: 50px;
     display: flex;
     flex-direction: column;
     // align-items: center;
     color: black;
     text-decoration: none;
-    padding-left: 10px;
+    padding: 8px 25px;
+    padding-left: 75px;
+
+    &:last-child {
+      padding-bottom: 12px;
+    }
 
     &:hover {
-      background-color: lightgrey;
+      background-color: #f1f5f9;
       cursor: pointer;
     }
     .title {
-      font-weight: 600;
+      font-size: 16px;
+      color: #1e293b;
+      font-weight: 500;
     }
     .content {
+      all: unset;
       font-size: 13px;
+      color: #1e293b;
+
+      > * {
+        all: unset;
+        display: inline-block;
+
+        &:not(:first-child) {
+          margin-left: 2px;
+        }
+      }
     }
   }
 `;

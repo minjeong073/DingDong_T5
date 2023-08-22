@@ -6,12 +6,16 @@ export const Layout = () => {
 
   // 푸터가 나타날 URL 조건 설정
   // /articles나 /mypage를 포함할 때만 푸터가 나타남
-  const showFooter = location.pathname.includes('/articles') || location.pathname.includes('/mypage');
+  const showFooter =
+    location.pathname.includes('/articles') ||
+    location.pathname.includes('/questions') ||
+    location.pathname === '/mypage';
 
   /*   // 해시태그 네비게이션 바가 나타날 URL 조건 설정
   // /articles나 /replies 일 때만 해시태그 네비게이션 바가 나타남*/
-  const showHashTagNav = location.pathname === '/articles' || location.pathname === '/replies' || location.pathname.includes(`/search`);
- 
+  const showHashTagNav =
+    location.pathname === '/articles' || location.pathname === '/replies' || location.pathname.includes(`/search`);
+
   return (
     <Root>
       <Header />

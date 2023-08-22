@@ -87,7 +87,7 @@ export const Typo = styled.div<ILink & ICustomMargin>`
 `;
 
 export const Title = styled.div<ILink & ICustomMargin>`
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 500;
   cursor: ${props => (props.pointer ? 'pointer' : 'default')};
   ${props => customMargin(props)}; // Apply customMargin  cursor: ${props => (props.pointer ? 'pointer' : 'default')};

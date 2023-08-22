@@ -5,3 +5,4 @@ export { List, SearchPage, SearchTagPage } from './List';
 export { Replies } from './Replies';
 export { WriteQuestion } from './WriteQuestion';
 export { ModifyQuestion } from './ModifyQuestion';
+export { MyPageAnswer, MyPageQuestion } from './MyPage';

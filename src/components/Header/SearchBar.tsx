@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MdClose } from 'react-icons/md';
-import { Fragment, DataResult, Wrapper } from './styled';
+import { Fragment, DataResult, Wrapper, SearchInput } from './styled';
 import type { QuestionDataType } from '../../stores/page-store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
@@ -32,10 +32,9 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
     );
     if (!searchWord) return setFilteredData([]);
     setFilteredData(newFilter);
-    
   };
 
-  const truncateText = (text: string, selectedWord: string, maxLength: number) => {
+  /* const truncateText = (text: string, selectedWord: string, maxLength: number) => {
     const startIndex = text.indexOf(selectedWord);
     const endIndex = startIndex + selectedWord.length;
 
@@ -57,7 +56,7 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
         (truncatedEndIndex < text.length ? '...' : '');
     }
     return truncatedText;
-  };
+  }; */
 
   const clearInput = (): void => {
     setFilteredData([]);
@@ -66,9 +65,11 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (wordEntered.trim() === '') {
-      alert('검색어가 입력되지 않았습니다.');
-    } else if (e.key === 'Enter') {
+    if (e.key === 'Enter') {
+      if (wordEntered.trim() === '') {
+        alert('검색어가 입력되지 않았습니다.');
+        return;
+      }
       navigateSearchPage();
     }
   };
@@ -83,8 +84,8 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
 
   return (
     <Fragment>
-      <Wrapper $ishome={ishome}>
-        <input
+      <Wrapper $ishome={ishome} $isSearching={filteredData.length !== 0}>
+        <SearchInput
           className="SearchInput"
           type="text"
           placeholder={placeholder}
@@ -97,19 +98,22 @@ export const SearchBar: React.FC<SearchProps> = ({ data, placeholder }): JSX.Ele
       </Wrapper>
       {filteredData.length !== 0 && (
         <DataResult>
-          {filteredData.map(data => (
-            <a onClick={() => navigate(`/articles/${data._id}`)} key={data?._id} target="_blank">
-              <span className="title">{data.title}</span>
-              <span
-                className="content"
-                dangerouslySetInnerHTML={
-                  data.content.includes(wordEntered)
-                    ? { __html: DOMPurify.sanitize(truncateText(data.content, wordEntered, 10)) }
-                    : undefined
-                }
-              />
-            </a>
-          ))}
+          {filteredData.map(
+            data =>
+              !data.isDeleted && (
+                <a onClick={() => navigate(`/articles/${data._id}`)} key={data?._id} target="_blank">
+                  <span className="title">{data.title}</span>
+                  <span
+                    className="content"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(
+                        data.content.length > 80 ? data.content.slice(0, 80) + '...' : data.content,
+                      ),
+                    }}
+                  />
+                </a>
+              ),
+          )}
         </DataResult>
       )}
     </Fragment>

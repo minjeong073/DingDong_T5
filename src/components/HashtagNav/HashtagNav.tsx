@@ -2,6 +2,7 @@ import { NavBar, Table, Tr, Td, HashTag, Button, Img } from './styled';
 import { useRecoilState } from 'recoil';
 import { QuestionListState } from '../../stores/page-store';
 import { PageState } from '../../stores/link-store';
+import { hashtagState, clickState } from '../../stores/page-store';
 import type { QuestionDataType } from '../../stores/page-store';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import unfold from '../../assets/icon/unfold.svg';
@@ -13,15 +14,16 @@ export const HashTagNav = () => {
   const [page, setPage] = useState(1);
   const [selectedNav, setSelectedNav] = useRecoilState(PageState);
   const [expanded, setExpanded] = useState(false);
-  const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useRecoilState(clickState);
   const [questionData, setQuestionData] = useRecoilState<QuestionDataType[]>(QuestionListState);
   const [clickedHashtags, setClickedHashtags] = useState<boolean[]>([true, ...Array(0).fill(false)]);
-  const [hashtag, setHashtag] = useState<string[]>([]);
-  const [onlyHashtag, setOnlyHashtag] = useState<string[]>([]);
+  // const [hashtag, setHashtag] = useRecoilState(hashtagState);
+  const [onlyHashtag, setOnlyHashtag] = useRecoilState(hashtagState);
+  // const [selectedIndex, setSelectedIndex] = useState(-1);
   const navigate = useNavigate();
   const location = useLocation();
-
-  // console.log(selectedNav);
+  const queryParams = new URLSearchParams(location.search);
+  const homeTag = queryParams.get('hashtag');
 
   const fetchData = async () => {
     try {
@@ -39,7 +41,7 @@ export const HashTagNav = () => {
 
   useEffect(() => {
     fetchData();
-  }, [setQuestionData]);
+  }, [setQuestionData, selectedNav]);
 
   const handleClick = useCallback(
     (index: number) => {
@@ -51,8 +53,7 @@ export const HashTagNav = () => {
     },
     [clickedHashtags, navigate],
   );
-  const filterTag = location.pathname ==='/articles' || location.pathname === '/replies';
-  //boolean값
+
   useEffect(() => {
     
     const target: boolean = true;
@@ -62,13 +63,14 @@ export const HashTagNav = () => {
     if(clicked && onlyHashtag[targetIndex]!='ALL'){
       navigate(`/search/hashtag?hashtag=${encodeURIComponent(onlyHashtag[targetIndex])}`);
       setSelectedNav(`/search`);
+      setClicked(false);
     }
     // hashtag 'ALL'누른 경우
-    else if( !selectedNav.includes('/replies') && onlyHashtag[targetIndex] === 'ALL'){
+    else if( !selectedNav.includes('replies') && !selectedNav.includes('search') && onlyHashtag[targetIndex] === 'ALL'){
       navigate(`/articles`);
       setSelectedNav(`/articles`);
+      setClicked(false);
     }
-
   }, [clickedHashtags ]);
 
   useEffect(() => {
@@ -78,6 +80,14 @@ export const HashTagNav = () => {
     }else if(selectedNav.includes(`articles`)){
       setClickedHashtags([true, ...Array(0).fill(false)]);
       setSelectedNav(`/articles`);
+    }else if(homeTag){
+      const changeTarget = onlyHashtag.indexOf(homeTag);
+      const newClickedHashtags = [...clickedHashtags];
+      newClickedHashtags.fill(false);
+      newClickedHashtags[changeTarget] = true;
+      setClickedHashtags(newClickedHashtags);
+      setSelectedNav(`/search`);
+      setClicked(false);
     }
   }, [selectedNav]);
 
