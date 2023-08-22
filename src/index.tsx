@@ -22,7 +22,9 @@ import {
 } from './pages';
 import { MyPageComment } from 'pages/MyPage/MyPageComment';
 
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}:3000`
+  : 'http://localhost:3000';
 axios.defaults.withCredentials = true;
 
 const queryClient = new QueryClient();
