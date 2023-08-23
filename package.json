@@ -37,10 +37,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "./node_modules/.bin/react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "nodemon public --host=0.0.0.0 --port=5001 --watch server.js --exec babel-node"
   },
   "eslintConfig": {
     "extends": [

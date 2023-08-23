@@ -40,32 +40,8 @@ type ReplyRowProps = {
 export const ReplyRow: React.FC<ReplyRowProps> = ({ type, item, expandedStates, onClickExpanded }) => {
   const navigate = useNavigate();
 
-  const isValidQuestion = async (questionId: string) => {
-    const response = await axios.get(`/api/articles/valid/${questionId}`);
-    if (response.data.isValid) {
-      navigate(`/articles/${questionId}`);
-    } else {
-      alert('삭제된 게시글입니다.');
-    }
-  };
-
   const onClickNavigateQuestion = async (item: any) => {
-    try {
-      let questionId;
-      if (item.answerId) {
-        const answerResponse = await axios.get(`/api/answer/${item.answerId}`);
-        const answerData = answerResponse.data;
-        questionId = answerData.questionId;
-        isValidQuestion(questionId);
-      }
-      if (item.questionId) {
-        questionId = item.questionId;
-        isValidQuestion(questionId);
-      }
-    } catch (error) {
-      console.log(error);
-      alert('오류가 발생했습니다.');
-    }
+    navigate(`/articles/${item.questionId}`);
   };
 
   return (
