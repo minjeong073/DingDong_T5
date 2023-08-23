@@ -26,7 +26,7 @@ app.use(passport.initialize());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ['http://localhost:3000', '43.201.8.14:3000'],
+    origin: ['http://localhost:3000', 'http://ec2-52-79-243-215.ap-northeast-2.compute.amazonaws.com:3000'],
   }),
 );
 app.use(express.json({ limit: '50mb' }));
