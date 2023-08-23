@@ -26,7 +26,7 @@ app.use(passport.initialize());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ['http://localhost:3000', '52.79.242.189:3000'],
+    origin: ['http://localhost:3000', '43.201.8.14:3000'],
   }),
 );
 app.use(express.json({ limit: '50mb' }));
